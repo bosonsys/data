@@ -210,6 +210,30 @@ public function updatePosition()
 		return json_encode('Success'.date('Y-m-d H:i:s'));
 	}
 
+public function updateSinglePosition()
+	{
+		// print_r($id);
+		date_default_timezone_set('Asia/Kolkata');
+
+		$input = Input::all();
+
+		$update['stock'] = $input['stock'];
+		$update['per'] = $input['per'];
+		 $lastRec = DB::table('singlePosition')
+		->where('stock','=', $input['stock'])
+		->take(1)
+		->orderBy('id','DESC')
+        ->get();
+		if (isset($lastRec[0]->stock)) {
+			$update['diff'] = $input['per'] - $lastRec[0]->per;
+		} else {
+			$update['diff'] = 0;
+		}
+		// $update['diff'] = $input['per'] - $lastRec[0]->per;
+		DB::table('singlePosition')->insert($update);
+		return json_encode($lastRec);
+	}
+
 
 	/**
 	 * Show the form for editing the specified resource.
