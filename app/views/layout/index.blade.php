@@ -29,9 +29,9 @@
                 <li class="{{ Request::is('*market/lastlose') ? 'active' : '' }}"><a href="{{url('/market/lastlose')}}">Last Losers</a></li>
                 <li class="{{ Request::is('*news') ? 'active' : '' }}"><a href="{{url('/news')}}">News</a></li>
                 <li class="{{ Request::is('*marketwatch') ? 'active' : '' }}"><a href="{{url('/marketwatch')}}">Market Watch</a></li>
-                <li class="{{ Request::is('*strategy/first15') ? 'active' : '' }}"><a href="{{url('/strategy/first15')}}">Strategy</a></li>
-                <li class="{{ Request::is('*strategy/uptrend') ? 'active' : '' }}"><a href="{{url('/strategy/uptrend')}}">Strategy Uptrend</a></li>
-                <li class="{{ Request::is('*strategy/open') ? 'active' : '' }}"><a href="{{url('/strategy/open')}}">Strategy Open High Low</a></li>
+                <li class="{{ Request::is('*strategy/first15') ? 'active' : '' }}"><a href="{{url('/strategy/first15')}}">First 15M</a></li>
+                <li class="{{ Request::is('*strategy/uptrend') ? 'active' : '' }}"><a href="{{url('/strategy/uptrend')}}">Uptrend</a></li>
+                <li class="{{ Request::is('*strategy/open') ? 'active' : '' }}"><a href="{{url('/strategy/open')}}">Open High Low</a></li>
                 <!-- <li><a href="{{url('/buysell')}}">Buy/Sell Calls</a></li> -->
                 <!-- <li><a href="{{url('/call')}}">Trade Script</a></li> -->
             </ul>

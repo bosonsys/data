@@ -170,6 +170,46 @@ $table['rows'] = array();
 		return json_encode('Success'.date('Y-m-d H:i:s'));
 	}
 
+public function updatePosition()
+	{
+		// print_r($id);
+		date_default_timezone_set('Asia/Kolkata');
+
+		$input = Input::all();
+		// echo '<pre>'; print_r($input); exit();
+		$json = 'C:\xampp\htdocs\market\public\json\position_'.date("d-m-Y").'.json';
+		$lastRec = 'C:\xampp\htdocs\market\public\json\position'.date("d-m-Y").'.json';
+		
+		// //open or read json data
+		if (!file_exists($lastRec)) {
+			foreach ($input['data'] as $key => $value) {
+				$t[$value['Stock Code']] =  $value['LTP'];
+			}
+			$fh = fopen($lastRec, 'w');
+			fwrite($fh, json_encode($t));
+			fclose($fh);
+		}
+		$lastRec_results = file_get_contents($lastRec);
+		$lastRecArray = json_decode($lastRec_results);
+		// echo '<pre>'; print_r($lastRecArray); exit();
+		// //append additional json to json file
+
+		foreach ($input['data'] as $k => $v) {
+			$update['code'] = $v['Stock Code'];
+			$update['BuyQty'] = str_replace(',', '', $v['Buy Qty']);
+			$update['BuyPrice'] =  str_replace(',', '', $v['Avg. Buy Price']);
+			$update['SellQty'] =  str_replace(',', '', $v['Sell Qty']);
+			$update['SellPrice'] = str_replace(',', '', $v['Avg. Sell Price']);
+			$update['NetQty'] =  str_replace(',', '', $v['Net Qty']);
+			$update['LTP'] = str_replace(',', '', $v['LTP']);
+			$update['diff'] = str_replace(',', '', $v['LTP']) - $lastRecArray->$v['Stock Code'];
+			DB::table('position')->insert($update);
+			$lastRecArray->$v['Stock Code'] = $v['LTP'];
+		}
+		file_put_contents($lastRec, json_encode($lastRecArray));
+		return json_encode('Success'.date('Y-m-d H:i:s'));
+	}
+
 
 	/**
 	 * Show the form for editing the specified resource.
