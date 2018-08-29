@@ -1,0 +1,50 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the Closure to execute when that URI is requested.
+|
+
+
+Route::get('/', function()
+{
+	return View::make('hello');
+});
+*/
+Route::get('/', 'HomeController@dashboard');
+Route::get('/movezip', 'HomeController@download');
+Route::get('/upload', 'HomeController@upload');
+Route::get('/market/{filter}', 'MarketController@index');
+Route::get('/updatetable/{date}/{day}', 'MarketController@storeTable');
+Route::get('/market/stock/{nse}', 'MarketController@stock');
+Route::get('/updatetable/{script}', 'MarketController@updateTable');
+Route::get('/marketwatch', 'MarketwatchController@index');
+Route::get('/marketwatch/nsedata', 'MarketwatchController@getNSDdata');
+Route::get('/marketwatch/nse50', 'MarketwatchController@nse50');
+Route::get('/news', 'MarketController@newsReader');
+Route::get('/buysell', 'MarketController@callsReader');
+Route::get('/trade/day', 'TradeController@index');
+Route::post('/trade/add', 'TradeController@create');
+Route::get('/trade/add', 'TradeController@create');
+Route::get('/trade/settings', 'TradeController@getSettings');
+Route::get('/call/{nse}', 'CallController@create');
+Route::get('/call', 'CallController@index');
+Route::get('/call/json/getRunningCall', 'CallController@getRunningCall');
+Route::get('/call/json/portfolio', 'CallController@getPortfolio');
+Route::post('/call/update/portfolio', 'CallController@updatePortfolio');
+Route::post('/call/update/marketwatch', 'CallController@updateMarketwatch');
+Route::get('/call/edel/{nse}', 'CallController@redirect');
+Route::get('/call/json/marketwatch', 'MarketwatchController@getData');
+Route::get('/store/nsedata', 'MarketwatchController@getAllData');
+// Route::get('/store/nsedata', 'MarketwatchController@gainerLoser');
+Route::get('/call/json/gainers', 'MarketwatchController@getGainers');
+Route::get('/call/json/nse50', 'MarketwatchController@getNSE50');
+Route::get('/trade/calls', 'CallController@getCalls');
+Route::get('/strategy/first15', 'StrategyController@first15');
+Route::get('/strategy/uptrend', 'StrategyController@upTrend');
+Route::get('/strategy/open', 'StrategyController@getCalls');

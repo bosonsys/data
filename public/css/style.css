@@ -1,0 +1,54 @@
+/*table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    *//*text-align: left;*//*
+}
+
+tbody {
+    height: 570px;
+    overflow-y: auto;
+}
+
+thead {
+    *//* fallback *//*
+}
+
+
+tbody td, thead th {
+    width: 10%;
+    float: left;
+}*/
+
+.container{
+    background-color: #245269;
+}
+.news img{
+    float: left;
+    width:75px;
+    height:75px;
+}
+#chart{
+    width: 100%;
+    height:120%;
+}
+#chart_gainer{
+    width: 100%;
+    height:48%;
+}
+#chart_nse50{
+    width: 100%;
+    height:140%;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Data Analyser</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="<?php echo url('css/bootstrap.min.css'); ?>">
+    <link rel="stylesheet" href="<?php echo url('css/nv.d3.css'); ?>">
+    <link rel="stylesheet" href="<?php echo url('css/style.css'); ?>">
+	<script src="<?php echo url('js/jquery-1.10.2.js'); ?>"></script>
+	<script src="<?php echo url('js/bootstrap.min.js'); ?>"></script>
+
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="<?php echo url('/'); ?>">Data Analyser</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="<?php echo Request::is('/') ? 'active' : ''; ?>"><a href="<?php echo url('/'); ?>">Home</a></li>
+                <li class="<?php echo Request::is('*market/top') ? 'active' : ''; ?>"><a href="<?php echo url('/market/top'); ?>">Top</a></li>
+                <li class="<?php echo Request::is('*market/top1') ? 'active' : ''; ?>"><a href="<?php echo url('/market/top1'); ?>">Always Top</a></li>
+                <li class="<?php echo Request::is('*market/lasttop') ? 'active' : ''; ?>"><a href="<?php echo url('/market/lasttop'); ?>">Last Top</a></li>
+                <li class="<?php echo Request::is('*market/lose') ? 'active' : ''; ?>"><a href="<?php echo url('/market/lose'); ?>">Top Losers</a></li>
+                <li class="<?php echo Request::is('*market/lose1') ? 'active' : ''; ?>"><a href="<?php echo url('/market/lose1'); ?>">Always Losers</a></li>
+                <li class="<?php echo Request::is('*market/lastlose') ? 'active' : ''; ?>"><a href="<?php echo url('/market/lastlose'); ?>">Last Losers</a></li>
+                <li class="<?php echo Request::is('*news') ? 'active' : ''; ?>"><a href="<?php echo url('/news'); ?>">News</a></li>
+                <li class="<?php echo Request::is('*marketwatch') ? 'active' : ''; ?>"><a href="<?php echo url('/marketwatch'); ?>">Market Watch</a></li>
+                <li class="<?php echo Request::is('*strategy/first15') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/first15'); ?>">Strategy</a></li>
+                <li class="<?php echo Request::is('*strategy/uptrend') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/uptrend'); ?>">Strategy Uptrend</a></li>
+                <li class="<?php echo Request::is('*strategy/open') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/open'); ?>">Strategy Open High Low</a></li>
+                <!-- <li><a href="<?php echo url('/buysell'); ?>">Buy/Sell Calls</a></li> -->
+                <!-- <li><a href="<?php echo url('/call'); ?>">Trade Script</a></li> -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <?php echo $__env->yieldContent('content'); ?>
+</div>
+
+</body>
+</html>
