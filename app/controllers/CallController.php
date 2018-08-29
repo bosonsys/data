@@ -221,7 +221,7 @@ public function updateSinglePosition()
 		$update['per'] = $input['per'];
 		 $lastRec = DB::table('singlePosition')
 		->where('stock','=', $input['stock'])
-		->take(1)
+		->take(10)
 		->orderBy('id','DESC')
         ->get();
 		if (isset($lastRec[0]->stock)) {
