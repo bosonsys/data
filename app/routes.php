@@ -49,3 +49,4 @@ Route::get('/trade/calls', 'CallController@getCalls');
 Route::get('/strategy/first15', 'StrategyController@first15');
 Route::get('/strategy/uptrend', 'StrategyController@upTrend');
 Route::get('/strategy/open', 'StrategyController@getCalls');
+Route::get('/strategy/upDown', 'StrategyController@upDown');

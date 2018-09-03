@@ -206,16 +206,16 @@ class MarketController extends \BaseController {
 
     public function newsReader()
     {
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/economy.xml');
+        // $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/economy.xml');
 //        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/business.xml');
         $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/marketoutlook.xml');
         $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/technicals.xml');
        // $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/mostpopular.xml');
       //  $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/marketedge.xml');
      //   $rss[] = Feed::loadRss('http://feeds.feedburner.com/NDTV-Business?format=xml');
-        $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/2146842.cms');
+        // $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/2146842.cms');
         $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/Markets/markets/rssfeeds/1977021501.cms');
-        $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/594027522.cms');
+        // $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/594027522.cms');
 //        $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/markets/stocks/recos/articlelist/3053611.cms');
 //print_r($rss);
 //exit;

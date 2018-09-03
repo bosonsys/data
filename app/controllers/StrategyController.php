@@ -70,14 +70,73 @@ class StrategyController extends \BaseController {
          ->orderBy('per', 'DESC')->get();
         return View::make('strategy.upTrend')->with('data', $data)->with('topP', $topP);
     }
+    public function upDown()
+    {
+        $ldate = date('Y-m-d');
+        // $ldate = '2018-08-31 ';
+        $up = DB::table('intra_data')
+        //  ->join('company', 'intra_data.symbol', '=', 'company.symbol')
+        ->select(DB::raw('intra_data.symbol, max(intra_data.per) as maxPer, intra_data.updated_on' ))
+        // ->where('intra_data.symbol', '=',  $m->symbol)
+        // ->where('intra_data.ltP', '>',  $m->maxLTP)
+        ->where('intra_data.updated_on', '>',  $ldate.' 09:30:00')
+        ->where('intra_data.updated_on', '<',  $ldate.' 16:00:00')
+        ->groupBy('symbol')
+        ->get();
+
+         // Top and Down percentage
+         $down = DB::table('intra_data')
+         ->whereRaw('id IN (select MAX(id) FROM intra_data GROUP BY symbol)')
+        //  ->take(15)
+          ->orderBy('per', 'DESC')->get();
+        $upDown = $this->getMaxDiff($up,$down);
+        // echo "<pre>";
+        // print_r($upDown);
+        // exit;
+         return View::make('strategy.upDown')->with('data', $upDown);
+    }
+    public function getMaxDiff($up, $c)
+    {
+        foreach($up as $v){
+            foreach($c as $cv){
+                if($v->symbol == $cv->symbol){
+                    $diff = $v->maxPer - $cv->per;
+                    if ($diff>=3) {
+                        $v->diff = $diff;
+                        $arr[] = $v;
+                    } else if ($diff<=3) {
+                            $v->diff = $diff;
+                            $arr[] = $v;
+                        }
+                    break;
+                }
+            }
+        }
+        return $arr;
+    }
 
     function getCalls()
     {
         $url = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json';
         $data = $this->getCURL($url);
         $callData = $this->getCallData($data->data);
+          // Junior Nifty
+        $junior = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/juniorNiftyStockWatch.json';
+          $junior_data = $this->getCURL($junior);
+          $callData1 = $this->getCallData($junior_data->data);
+        //   array_push($callData, $callData1);
+
+          // Midcap50 Nifty
+          $Midcap50 = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyMidcap50StockWatch.json';
+          $Midcap50_data = $this->getCURL($Midcap50);
+          $callData2 = $this->getCallData($Midcap50_data->data);
+
+          $r = array_merge($callData, $callData1, $callData2);
+        //   echo "<pre>";
+        //   print_r($r);
+        //   exit;
         return View::make('strategy.calls')
-        ->with('data', $callData);
+        ->with('data', $r);
     }
 
 
