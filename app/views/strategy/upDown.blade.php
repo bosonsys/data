@@ -10,7 +10,8 @@
         <thead>
             <tr>
                 <th>Symbol</th>
-                <th>Avg Diff</th>
+                <th>Max Per</th>
+                <th>Diff</th>
                 <th>Updated on</th>
             </tr>
         </thead>
@@ -23,6 +24,7 @@
             echo "<tr>
                 <td><a href='http://localhost/market/public/call/edel/".$row->symbol."' target='_blank'>".$row->symbol."</a></td>
                 <td><a href='http://localhost/market/public/market/stock/".$row->symbol."' target='_blank'>".$row->maxPer."</a></td>
+                <td>$row->diff</td>
                 <td>$row->updated_on</td>
             </tr>";
         }

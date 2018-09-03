@@ -72,8 +72,8 @@ class StrategyController extends \BaseController {
     }
     public function upDown()
     {
-        // $ldate = date('Y-m-d');
-        $ldate = '2018-08-31 ';
+        $ldate = date('Y-m-d');
+        // $ldate = '2018-08-31 ';
         $up = DB::table('intra_data')
         //  ->join('company', 'intra_data.symbol', '=', 'company.symbol')
         ->select(DB::raw('intra_data.symbol, max(intra_data.per) as maxPer, intra_data.updated_on' ))
@@ -100,9 +100,14 @@ class StrategyController extends \BaseController {
         foreach($up as $v){
             foreach($c as $cv){
                 if($v->symbol == $cv->symbol){
-                    if (($v->maxPer - $cv->per)>=3) {
+                    $diff = $v->maxPer - $cv->per;
+                    if ($diff>=3) {
+                        $v->diff = $diff;
                         $arr[] = $v;
-                    }
+                    } else if ($diff<=3) {
+                            $v->diff = $diff;
+                            $arr[] = $v;
+                        }
                     break;
                 }
             }
