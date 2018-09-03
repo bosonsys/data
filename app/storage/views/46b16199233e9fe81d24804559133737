@@ -29,9 +29,9 @@
                 <li class="<?php echo Request::is('*market/lastlose') ? 'active' : ''; ?>"><a href="<?php echo url('/market/lastlose'); ?>">Last Losers</a></li>
                 <li class="<?php echo Request::is('*news') ? 'active' : ''; ?>"><a href="<?php echo url('/news'); ?>">News</a></li>
                 <li class="<?php echo Request::is('*marketwatch') ? 'active' : ''; ?>"><a href="<?php echo url('/marketwatch'); ?>">Market Watch</a></li>
-                <li class="<?php echo Request::is('*strategy/first15') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/first15'); ?>">Strategy</a></li>
-                <li class="<?php echo Request::is('*strategy/uptrend') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/uptrend'); ?>">Strategy Uptrend</a></li>
-                <li class="<?php echo Request::is('*strategy/open') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/open'); ?>">Strategy Open High Low</a></li>
+                <li class="<?php echo Request::is('*strategy/first15') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/first15'); ?>">First 15M</a></li>
+                <li class="<?php echo Request::is('*strategy/uptrend') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/uptrend'); ?>">Uptrend</a></li>
+                <li class="<?php echo Request::is('*strategy/open') ? 'active' : ''; ?>"><a href="<?php echo url('/strategy/open'); ?>">Open High Low</a></li>
                 <!-- <li><a href="<?php echo url('/buysell'); ?>">Buy/Sell Calls</a></li> -->
                 <!-- <li><a href="<?php echo url('/call'); ?>">Trade Script</a></li> -->
             </ul>
