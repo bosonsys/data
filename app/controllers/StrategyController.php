@@ -100,7 +100,7 @@ class StrategyController extends \BaseController {
         foreach($up as $v){
             foreach($c as $cv){
                 if($v->symbol == $cv->symbol){
-                    $diff = $v->maxPer - $cv->per;
+                    $diff = $cv->per - $v->maxPer;
                     if ($diff>=3) {
                         $v->diff = $diff;
                         $arr[] = $v;

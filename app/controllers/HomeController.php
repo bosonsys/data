@@ -66,7 +66,7 @@ class HomeController extends BaseController {
 		//exit;
         //$path = "C:\\wamp\\www\\Muthu\\market\\public\\zip\\";
         // $path = "C:\\Users\\Administrator\\Downloads\\";
-        $path = "C:\\Users\\muthu\\Downloads\\";
+        // $path = "C:\\Users\\muthu\\Downloads\\";
         foreach(glob($path.'*bhav.csv.zip') as $filename){
             echo "<br>File Name : ".$filename;
             $res = $zip->open($filename);
