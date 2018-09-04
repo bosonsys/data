@@ -34,9 +34,9 @@
         </table>
     </div>
 </div>  
-<!-- <script>
+<script>
 	$(document).ready(function() {
 		$('#sort').DataTable();
 	} );
-</script> -->
+</script>
 @stop
