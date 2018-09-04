@@ -31,6 +31,7 @@
                 <li class="{{ Request::is('*marketwatch') ? 'active' : '' }}"><a href="{{url('/marketwatch')}}">Market Watch</a></li>
                 <li class="{{ Request::is('*strategy/first15') ? 'active' : '' }}"><a href="{{url('/strategy/first15')}}">First 15M</a></li>
                 <li class="{{ Request::is('*strategy/uptrend') ? 'active' : '' }}"><a href="{{url('/strategy/uptrend')}}">Uptrend</a></li>
+                <li class="{{ Request::is('*strategy/upDown') ? 'active' : '' }}"><a href="{{url('/strategy/upDown')}}">upDown</a></li>
                 <li class="{{ Request::is('*strategy/open') ? 'active' : '' }}"><a href="{{url('/strategy/open')}}">Open High Low</a></li>
                 <!-- <li><a href="{{url('/buysell')}}">Buy/Sell Calls</a></li> -->
                 <!-- <li><a href="{{url('/call')}}">Trade Script</a></li> -->

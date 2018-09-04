@@ -42,7 +42,9 @@ foreach($data as $row) {
 </table>
 <script>
 	$(document).ready(function() {
-		$('#sort').DataTable();
+		$('#sort').DataTable({
+        "order": [[ 4, "desc" ]]
+    });
 	} );
 </script>
 @stop
