@@ -10,10 +10,6 @@ npm-debug.log
 bootstrap/compiled.php
 app/storage
 app/storage/views/
-public/json
-
-# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
-.rocketeer/
-
+public/json/
 
 # End of https://www.gitignore.io/api/laravel
