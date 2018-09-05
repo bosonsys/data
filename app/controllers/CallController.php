@@ -144,9 +144,14 @@ $table['rows'] = array();
 				$update['TradingSymbol'] = $v['TradingSymbol'];
                 $update['LTPrice'] = str_replace(',', '', $v['LTPrice']);
                 $update['per'] = $v['%'];
-                $update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
+				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
+				$count = $this->screenCall($v['TradingSymbol'], $update);
+                $update['count'] = $count;
                 $update['LTQty'] = $v['LTQty'];
                 $update['Vol'] = $v['Vol'];
+                $update['Open'] = $v['Open'];
+                $update['High'] = $v['High'];
+                $update['Low'] = $v['Low'];
                 $update['Close'] = $v['Close'];
                 $update['LastTraded'] = $v['Last Traded Date'];
 				DB::table('marketwatch')->insert($update);
@@ -270,6 +275,34 @@ public function updateSinglePosition()
 		return Redirect::to($url);
 	}
 
+	public function screenCall($script, $data)
+	{
+		// $update['diff']
+		$count = 0;
+		if($data['diff'] > 0) {
+			if(Session::get($script)){
+				$count = Session::get($script);
+			}
+			$count++;
+			Session::put($script, $count);
+		} else if($data['diff'] < 0) {
+			Session::put($script, $count);
+		}
+		if ($count == 3) {
+			$this->insIntraCall($script, $data['per']);
+		}
+		return $count;
+	}
+
+	public function insIntraCall($script, $per)
+	{
+		$i['nse'] = $script;
+        $i['price'] = $per;
+		$i['call'] = 1;
+		$EdelCode = DB::table('intraday_edel')->where('company','=', $script)->take(1)->get();
+		$i['edel'] = $EdelCode[0]->company;
+		DB::table('intra_call')->insert($i);
+	}
 
 	/**
 	 * Remove the specified resource from storage.
