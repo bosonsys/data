@@ -1,6 +1,10 @@
 @extends('layout.index')
 @section('content')
-<table class="table table-striped table-hover">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.x-git.min.js"></script> 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+
+<table id="sort" class="table table-striped table-hover">
     <thead>
     <tr><th>Symbol</th>
     <th>Open</th>
@@ -32,5 +36,11 @@
     ?>
     </tbody>
 </table>
-
+<script>
+	$(document).ready(function() {
+		$('#sort').DataTable({
+        "order": [[ 5, "desc" ]]
+    });
+	} );
+</script>
 @stop

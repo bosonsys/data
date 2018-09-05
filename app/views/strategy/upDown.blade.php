@@ -1,7 +1,6 @@
 @extends('layout.index')
 @section('content')
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
- 
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.x-git.min.js"></script> 
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
 <div class="row row-list">
@@ -36,7 +35,9 @@
 </div>  
 <script>
 	$(document).ready(function() {
-		$('#sort').DataTable();
+		$('#sort').DataTable({
+        "order": [[ 2, "desc" ]]
+    });
 	} );
 </script>
 @stop

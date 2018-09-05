@@ -55,7 +55,7 @@ class StrategyController extends \BaseController {
 	{
         $ldate = date('Y-m-d');
         $data = DB::table('intra_data')
-        ->where('updated_on', '>',  '(now() - interval 10 minute)')
+        ->where('updated_on', '>',  '(now() - interval 5 minute)')
         ->select(DB::raw('intra_data.symbol, AVG(intra_data.diff) as avgDiff, intra_data.nse_time' ))
         //  ->where('type', '=',  'NSE50')
          ->groupBy('symbol')
@@ -100,7 +100,7 @@ class StrategyController extends \BaseController {
         foreach($up as $v){
             foreach($c as $cv){
                 if($v->symbol == $cv->symbol){
-                    $diff = $v->maxPer - $cv->per;
+                    $diff = $cv->per - $v->maxPer;
                     if ($diff>=3) {
                         $v->diff = $diff;
                         $arr[] = $v;
