@@ -137,10 +137,17 @@ class MarketwatchController extends \BaseController {
     public function insertTable ($data, $type)
     {
         // echo '<pre>'; print_r($data); exit();
-        $lastRec = 'C:\xampp\htdocs\market\public\json\nsedata.json';
+        $lastRec = 'C:\xampp\htdocs\market\public\json\nsedata_'.date("d-m-Y").'.json';
+        // //open or read json data
+        if (!file_exists($lastRec)) {
+                $t['TradingSymbol'] =  10;
+            $fh = fopen($lastRec, 'w');
+                fwrite($fh, json_encode($t));
+            fclose($fh);
+        }
         $lastRec_results = file_get_contents($lastRec);
         $lastRecArray = json_decode($lastRec_results);
-				
+        		
         foreach ($data->data as $k => $v) {
             $update['symbol'] = $v->symbol;
             $update['ltP'] = str_replace(',', '', isset($v->ltP) ? $v->ltP : $v->ltp);

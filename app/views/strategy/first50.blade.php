@@ -1,5 +1,8 @@
 @extends('layout.index')
 @section('content')
+@section('title')
+    First 15 MIN Breakout
+@stop
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
  
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.x-git.min.js"></script> 

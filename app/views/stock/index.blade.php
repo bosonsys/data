@@ -1,5 +1,7 @@
 @extends('layout.index')
-
+@section('title')
+    History Data
+@stop
 @section('content')
 <?php
 /*
@@ -29,7 +31,7 @@ exit;
         <td>".number_format((float)$stock->closediff3, 2, '.', '')."</td>
         <td>".number_format((float)$stock->closediff4, 2, '.', '')."</td>
         <td>".number_format((float)$stock->closediff5, 2, '.', '')."</td>
-		<td>".round($stock->closetotal,2)."</td>
+        <td><a href='https://mmb.moneycontrol.com$stock->mmbURL' target='_blank'>".round($stock->closetotal,2)."</a></td>
         <td>".number_format((float)$stock->closeavg, 2, '.', '')."</td>
         </tr>";
     }

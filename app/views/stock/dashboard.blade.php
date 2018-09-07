@@ -1,4 +1,7 @@
 @extends('layout.index')
+@section('title')
+    Dashboard
+@stop
 @section('content')
 	@if(Session::has('message'))
 		<div class="row">

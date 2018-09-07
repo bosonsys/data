@@ -1,7 +1,9 @@
 @extends('layout.index')
 {{ HTML::script('js/d3.min.js') }}
 {{ HTML::script('js/nv.d3.js') }}
-
+@section('title')
+    Watch List
+@stop
 @section('content')
 
 <!-- <div id="chart_gainer"></div> -->
