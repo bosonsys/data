@@ -145,12 +145,7 @@ $table['rows'] = array();
                 $update['LTPrice'] = str_replace(',', '', $v['LTPrice']);
                 $update['per'] = $v['%'];
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
-				$state = '';
-				if($update['diff'] > 0){
-					$state = "HU";
-				} else if($update['diff'] < 0){
-					$state = "LD";
-				}
+				$state = $this->getState($v['TradingSymbol'], $lastRecArray->$v['TradingSymbol'], $update['LTPrice']);
 				$update['state'] = $state;
 				$count = $this->screenCall($v['TradingSymbol'], $update);
                 $update['count'] = $count;
@@ -181,6 +176,27 @@ $table['rows'] = array();
 
 		return json_encode('Success'.date('Y-m-d H:i:s'));
 	}
+public function getState($name, $p, $c)
+{
+	$res = "N";
+	if ($p< $c) {
+		$PH = $this->getPHigh();
+		if ($PH < $c) {
+			$res = "HU";
+		} else {
+			$res = "HD";
+		}
+		
+	} else if ($p > $c) {
+		$PL = $this->getPLow();
+		if ($PL < $c) {
+			$res = "HU";
+		} else {
+			$res = "HD";
+		}
+	}
+return $res;
+}
 
 public function updatePosition()
 	{
