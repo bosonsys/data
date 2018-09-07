@@ -1,4 +1,7 @@
 @extends('layout.index')
+@section('title')
+    Open High Low
+@stop
 @section('content')
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.x-git.min.js"></script> 

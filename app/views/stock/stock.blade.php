@@ -1,5 +1,7 @@
 @extends('layout.index')
-
+@section('title')
+	{{$nse}}
+@stop
 @section('content')
 <script type="text/javascript" src="{{ asset('js/chart/moment.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/chart/Chart.js') }}"></script>
