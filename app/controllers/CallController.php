@@ -278,20 +278,39 @@ public function updateSinglePosition()
 	public function screenCall($script, $data)
 	{
 		// $update['diff']
-		$count = 0;
-		if($data['diff'] > 0) {
-			if(Session::get($script)){
-				$count = Session::get($script);
+		$target = 0.8;
+		$stop = -0.8;
+		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
+		// $callExist = $calls[0];
+		if (isset($calls[0])) {
+			$diff = $data['per'] - $calls[0]->price;
+			echo $calls[0]->nse."=> Entry: ".$calls[0]->price."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+			if ($diff >= $target) {
+				DB::table('intra_call')
+					->where('id', $calls[0]->id)
+					->update(array('status' => 1));
+			} else if ($diff <= $stop) {
+				DB::table('intra_call')
+					->where('id', $calls[0]->id)
+					->update(array('status' => -1));
 			}
-			$count++;
-			Session::put($script, $count);
-		} else if($data['diff'] < 0) {
-			Session::put($script, $count);
+			return 0;
+		} else {
+			$count = 0;
+			if($data['diff'] > 0) {
+				if(Session::get($script)){
+					$count = Session::get($script);
+				}
+				$count++;
+				Session::put($script, $count);
+			} else if($data['diff'] < 0) {
+				Session::put($script, $count);
+			}
+			if ($count == 5) {
+				$this->insIntraCall($script, $data['per']);
+			}
+			return $count;
 		}
-		if ($count == 3) {
-			$this->insIntraCall($script, $data['per']);
-		}
-		return $count;
 	}
 
 	public function insIntraCall($script, $per)
@@ -300,7 +319,7 @@ public function updateSinglePosition()
         $i['price'] = $per;
 		$i['call'] = 1;
 		$EdelCode = DB::table('intraday_edel')->where('company','=', $script)->take(1)->get();
-		$i['edel'] = $EdelCode[0]->company;
+		$i['edel'] = $EdelCode[0]->symbol;
 		DB::table('intra_call')->insert($i);
 	}
 
