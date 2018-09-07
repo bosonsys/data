@@ -145,6 +145,13 @@ $table['rows'] = array();
                 $update['LTPrice'] = str_replace(',', '', $v['LTPrice']);
                 $update['per'] = $v['%'];
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
+				$state = '';
+				if($update['diff'] > 0){
+					$state = "HU";
+				} else if($update['diff'] < 0){
+					$state = "LD";
+				}
+				$update['state'] = $state;
 				$count = $this->screenCall($v['TradingSymbol'], $update);
                 $update['count'] = $count;
                 $update['LTQty'] = $v['LTQty'];
@@ -283,16 +290,16 @@ public function updateSinglePosition()
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		// $callExist = $calls[0];
 		if (isset($calls[0])) {
-			$diff = $data['per'] - $calls[0]->price;
-			echo $calls[0]->nse."=> Entry: ".$calls[0]->price."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+			$diff = $data['per'] - $calls[0]->per;
+			echo $calls[0]->nse."=> Entry: ".$calls[0]->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 			if ($diff >= $target) {
 				DB::table('intra_call')
 					->where('id', $calls[0]->id)
-					->update(array('status' => 1));
+					->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
 			} else if ($diff <= $stop) {
 				DB::table('intra_call')
 					->where('id', $calls[0]->id)
-					->update(array('status' => -1));
+					->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
 			}
 			return 0;
 		} else {
@@ -306,18 +313,23 @@ public function updateSinglePosition()
 			} else if($data['diff'] < 0) {
 				Session::put($script, $count);
 			}
-			if ($count == 5) {
-				$this->insIntraCall($script, $data['per']);
-			}
+			// if ($count == 5) {
+			// 	$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 5');
+			// }
+			// if ($count == 3) {
+			// 	$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 3');
+			// }
 			return $count;
 		}
 	}
 
-	public function insIntraCall($script, $per)
+	public function insIntraCall($script, $price, $per, $str)
 	{
 		$i['nse'] = $script;
-        $i['price'] = $per;
+        $i['price'] = $price;
+        $i['per'] = $per;
 		$i['call'] = 1;
+		$i['strategy'] = $str;
 		$EdelCode = DB::table('intraday_edel')->where('company','=', $script)->take(1)->get();
 		$i['edel'] = $EdelCode[0]->symbol;
 		DB::table('intra_call')->insert($i);
