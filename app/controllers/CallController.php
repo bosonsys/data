@@ -180,22 +180,52 @@ public function getState($name, $p, $c)
 {
 	$res = "N";
 	if ($p< $c) {
-		$PH = $this->getPHigh();
-		if ($PH < $c) {
-			$res = "HU";
-		} else {
-			$res = "HD";
-		}
-		
+		$res = $this->getPHigh($name, $c);
 	} else if ($p > $c) {
-		$PL = $this->getPLow();
-		if ($PL < $c) {
-			$res = "HU";
-		} else {
-			$res = "HD";
-		}
+		$res = $this->getPLow($name, $c);
 	}
-return $res;
+ return $res;
+}
+
+public function getPHigh($name, $c)
+{
+	$sdata = Session::get($name);
+	if(isset($sdata->LHP)){
+		$val = $sdata->LHP;
+		if ($val > $c) {
+			$state = "HD";
+		} else if($val < $c) {
+			$state = "HU";
+		}
+		else {
+			$state = "N";
+		}
+	} else {
+		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c );
+		Session::put($name, $arr);
+		$state = "N";
+	}
+ return $state;
+}
+
+public function getPLow($name, $c)
+{
+	if(Session::get($script->LLP)){
+		$val = Session::get($script->LLP);
+		if ($val > $c) {
+			$state = "LU";
+		} else if($val < $c){
+			$state = "LD";
+		}
+		else {
+			$state = "N";
+		}
+	} else {
+		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c );
+		Session::put($name, $arr);
+		$state = "N";
+	}
+ return $state;
 }
 
 public function updatePosition()
@@ -321,13 +351,13 @@ public function updateSinglePosition()
 		} else {
 			$count = 0;
 			if($data['diff'] > 0) {
-				if(Session::get($script)){
-					$count = Session::get($script);
+				if(Session::get($script->count)){
+					$count = Session::get($script->count);
 				}
 				$count++;
-				Session::put($script, $count);
+				Session::put($script->count, $count);
 			} else if($data['diff'] < 0) {
-				Session::put($script, $count);
+				Session::put($script->count, $count);
 			}
 			// if ($count == 5) {
 			// 	$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 5');
