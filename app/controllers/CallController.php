@@ -145,7 +145,7 @@ $table['rows'] = array();
                 $update['LTPrice'] = str_replace(',', '', $v['LTPrice']);
                 $update['per'] = $v['%'];
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
-				$state = $this->getState($v['TradingSymbol'], $lastRecArray->$v['TradingSymbol'], $update['LTPrice']);
+				$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
 				$update['state'] = $state;
 				$count = $this->screenCall($v['TradingSymbol'], $update);
                 $update['count'] = $count;
@@ -176,22 +176,26 @@ $table['rows'] = array();
 
 		return json_encode('Success'.date('Y-m-d H:i:s'));
 	}
-public function getState($name, $p, $c)
+public function getState($name, $c)
 {
+	$sdata = Session::get($name);
 	$res = "N";
-	if ($p< $c) {
+	if ($sdata['LTP'] < $c) {
 		$res = $this->getPHigh($name, $c);
-	} else if ($p > $c) {
+	} else if ($sdata['LTP'] > $c) {
 		$res = $this->getPLow($name, $c);
 	}
+	$sdata['LTP'] = $c;
+	$sdata['state'] = $res;
+	Session::put($name, $sdata);
  return $res;
 }
 
 public function getPHigh($name, $c)
 {
 	$sdata = Session::get($name);
-	if(isset($sdata->LHP)){
-		$val = $sdata->LHP;
+	if(isset($sdata['LHP'])){
+		$val = $sdata['LHP'];
 		if ($val > $c) {
 			$state = "HD";
 		} else if($val < $c) {
@@ -200,8 +204,10 @@ public function getPHigh($name, $c)
 		else {
 			$state = "N";
 		}
+		$sdata['LHP'] = $c;
+		Session::put($name, $sdata);
 	} else {
-		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c );
+		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c , 'LTP' => $c );
 		Session::put($name, $arr);
 		$state = "N";
 	}
@@ -210,8 +216,9 @@ public function getPHigh($name, $c)
 
 public function getPLow($name, $c)
 {
-	if(Session::get($script->LLP)){
-		$val = Session::get($script->LLP);
+	$sdata = Session::get($name);
+	if($sdata['LLP']){
+		$val = $sdata['LLP'];
 		if ($val > $c) {
 			$state = "LU";
 		} else if($val < $c){
@@ -220,8 +227,10 @@ public function getPLow($name, $c)
 		else {
 			$state = "N";
 		}
+		$sdata['LLP'] = $c;
+		Session::put($name, $sdata);
 	} else {
-		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c );
+		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c , 'LTP' => $c );
 		Session::put($name, $arr);
 		$state = "N";
 	}
@@ -331,6 +340,7 @@ public function updateSinglePosition()
 	public function screenCall($script, $data)
 	{
 		// $update['diff']
+		$sData = Session::get($script);
 		$target = 0.8;
 		$stop = -0.8;
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
@@ -351,20 +361,22 @@ public function updateSinglePosition()
 		} else {
 			$count = 0;
 			if($data['diff'] > 0) {
-				if(Session::get($script->count)){
-					$count = Session::get($script->count);
+				if(isset($sData['count'])){
+					$count = $sData['count'];
 				}
 				$count++;
-				Session::put($script->count, $count);
+				$sData['count'] = $count;
+				Session::put($script, $sData);
 			} else if($data['diff'] < 0) {
-				Session::put($script->count, $count);
+				$sData['count'] = $count;
+				Session::put($script, $sData);
 			}
-			// if ($count == 5) {
-			// 	$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 5');
-			// }
-			// if ($count == 3) {
-			// 	$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 3');
-			// }
+			if ($count == 5) {
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 5');
+			}
+			if ($count == 4) {
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 4');
+			}
 			return $count;
 		}
 	}
