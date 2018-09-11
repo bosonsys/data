@@ -178,12 +178,17 @@ $table['rows'] = array();
 	}
 public function getState($name, $c)
 {
+	// Session::flush();
+	if (!Session::get($name)) {
+		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c , 'LTP' => $c );
+		Session::put($name, $arr);
+	}
 	$sdata = Session::get($name);
 	$res = "N";
 	if ($sdata['LTP'] < $c) {
-		$res = $this->getPHigh($name, $c);
+		$res = $this->getPHigh($name, $c, $sdata);
 	} else if ($sdata['LTP'] > $c) {
-		$res = $this->getPLow($name, $c);
+		$res = $this->getPLow($name, $c, $sdata);
 	}
 	$sdata['LTP'] = $c;
 	$sdata['state'] = $res;
@@ -191,49 +196,37 @@ public function getState($name, $c)
  return $res;
 }
 
-public function getPHigh($name, $c)
+public function getPHigh($name, $c, $sdata)
 {
-	$sdata = Session::get($name);
 	if(isset($sdata['LHP'])){
 		$val = $sdata['LHP'];
 		if ($val > $c) {
 			$state = "HD";
-		} else if($val < $c) {
+		} else {
 			$state = "HU";
 		}
-		else {
-			$state = "N";
-		}
-		$sdata['LHP'] = $c;
-		Session::put($name, $sdata);
 	} else {
-		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c , 'LTP' => $c );
-		Session::put($name, $arr);
-		$state = "N";
+		$state = "NA";
 	}
+	$sdata['LHP'] = $c;
+	Session::put($name, $sdata);
  return $state;
 }
 
-public function getPLow($name, $c)
+public function getPLow($name, $c, $sdata)
 {
-	$sdata = Session::get($name);
-	if($sdata['LLP']){
+	if(isset($sdata['LLP'])){
 		$val = $sdata['LLP'];
 		if ($val > $c) {
-			$state = "LU";
-		} else if($val < $c){
 			$state = "LD";
+		} else {
+			$state = "LU";
 		}
-		else {
-			$state = "N";
-		}
-		$sdata['LLP'] = $c;
-		Session::put($name, $sdata);
 	} else {
-		$arr = array('count' => 0, 'LHP' => $c, 'LLP' => $c , 'LTP' => $c );
-		Session::put($name, $arr);
-		$state = "N";
+		$state = "NA";
 	}
+	$sdata['LLP'] = $c;
+	Session::put($name, $sdata);
  return $state;
 }
 
