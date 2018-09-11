@@ -12,6 +12,21 @@ class MarketwatchController extends \BaseController {
 	{
         // return View::make('watch.gainers');
         return View::make('watch.watch');
+    }
+    public function v2()
+	{
+        $ldate = date('Y-m-d');
+        $names = DB::table('marketwatch')
+            ->select('TradingSymbol')
+            ->where('updatedTime', '>',  $ldate.' 09:30:00')
+            ->groupBy('TradingSymbol')
+            ->get();
+        $arr = array();
+        foreach ($names as $key => $name) {
+            array_push($arr,$name->TradingSymbol);
+        }
+        // return View::make('watch.watchv2')->with('name', $stocks);
+        return View::make('watch.watchv2')->with('names', $arr);
 	}
 	public function nse50()
 	{
