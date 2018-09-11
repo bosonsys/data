@@ -79,6 +79,15 @@ class MarketController extends \BaseController {
         // return json_encode($stock);
 	}
 
+    public function stockJSON($nse)
+	{
+        $stock = DB::table('csvdata')->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t')
+        ->where('SYMBOL',$nse)
+        ->where('SERIES','EQ')->get();
+        // return View::make('stock.stock')->with('d', $stock)->with('nse', $nse);
+        return json_encode($stock);
+	}
+
     public function storeTable($date, $day)
     {
         $company = DB::table('cnx500')->get();
