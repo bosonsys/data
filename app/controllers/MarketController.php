@@ -81,11 +81,19 @@ class MarketController extends \BaseController {
 
     public function stockJSON($nse)
 	{
-        $stock = DB::table('csvdata')->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t')
-        ->where('SYMBOL',$nse)
-        ->where('SERIES','EQ')->get();
+        $stock = DB::table('marketwatch')->select('updatedTime', 'LTPrice')
+        ->where('TradingSymbol',$nse)
+        ->get();
+        $arr = array();
+        foreach ($stock as $key => $value) {
+            // echo $key." - ".$value;
+            $rec = array(strtotime($value->updatedTime)*1000 ,$value->LTPrice);
+            array_push($arr, $rec);
+        }
+                    // print_r($arr);
         // return View::make('stock.stock')->with('d', $stock)->with('nse', $nse);
-        return json_encode($stock);
+        return Response::json($arr);
+// json_encode($arr);
 	}
 
     public function storeTable($date, $day)
