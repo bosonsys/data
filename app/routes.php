@@ -22,6 +22,7 @@ Route::get('/upload', 'HomeController@upload');
 Route::get('/market/{filter}', 'MarketController@index');
 Route::get('/updatetable/{date}/{day}', 'MarketController@storeTable');
 Route::get('/market/stock/{nse}', 'MarketController@stock');
+Route::get('/market/stockJSON/{nse}', 'MarketController@stockJSON');
 Route::get('/updatetable/{script}', 'MarketController@updateTable');
 Route::get('/marketwatch', 'MarketwatchController@index');
 Route::get('/marketwatch/nsedata', 'MarketwatchController@getNSDdata');
