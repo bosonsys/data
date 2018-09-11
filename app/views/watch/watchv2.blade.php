@@ -49,21 +49,23 @@ function createChart() {
         series: seriesOptions
     });
 }
-
-$.each(names, function (i, name) {
-    $.getJSON('http://localhost/market/public/market/stockJSON/' + name.toLowerCase(),
-	function (data) {
-        seriesOptions[i] = {
-            name: name,
-            data: data
-        };
-        // As we're loading the data asynchronously, we don't know what order it will arrive. So
-        // we keep a counter and create the chart when all the data is loaded.
-        seriesCounter += 1;
-        if (seriesCounter === names.length) {
-            createChart();
-        }
+setInterval(function () {
+    $.each(names, function (i, name) {
+        $.getJSON('http://localhost/market/public/market/stockJSON/' + name.toLowerCase(),
+        function (data) {
+            seriesOptions[i] = {
+                name: name,
+                data: data
+            };
+            // As we're loading the data asynchronously, we don't know what order it will arrive. So
+            // we keep a counter and create the chart when all the data is loaded.
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
     });
-});
+}, (10 * 1000));
+
 		</script>
 @stop
