@@ -187,8 +187,10 @@ public function getState($name, $c)
 	$res = "N";
 	if ($sdata['LTP'] < $c) {
 		$res = $this->getPHigh($name, $c, $sdata);
+		$sdata['LHP'] = $c;
 	} else if ($sdata['LTP'] > $c) {
 		$res = $this->getPLow($name, $c, $sdata);
+		$sdata['LLP'] = $c;
 	}
 	$sdata['LTP'] = $c;
 	$sdata['state'] = $res;
@@ -202,14 +204,14 @@ public function getPHigh($name, $c, $sdata)
 		$val = $sdata['LHP'];
 		if ($val > $c) {
 			$state = "HD";
-		} else {
+		} else if ($val < $c) {
 			$state = "HU";
+		} else {
+			$state = "HN";
 		}
 	} else {
 		$state = "NA";
 	}
-	$sdata['LHP'] = $c;
-	Session::put($name, $sdata);
  return $state;
 }
 
@@ -219,14 +221,14 @@ public function getPLow($name, $c, $sdata)
 		$val = $sdata['LLP'];
 		if ($val > $c) {
 			$state = "LD";
-		} else {
+		} else if ($val < $c) {
 			$state = "LU";
+		} else {
+			$state = "LN";
 		}
 	} else {
 		$state = "NA";
 	}
-	$sdata['LLP'] = $c;
-	Session::put($name, $sdata);
  return $state;
 }
 
