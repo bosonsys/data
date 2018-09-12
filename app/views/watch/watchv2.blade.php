@@ -49,7 +49,7 @@ function createChart() {
         series: seriesOptions
     });
 }
-setInterval(function () {
+// setInterval(function () {
     $.each(names, function (i, name) {
         $.getJSON('http://localhost/market/public/market/stockJSON/' + name.toLowerCase(),
         function (data) {
@@ -65,7 +65,7 @@ setInterval(function () {
             }
         });
     });
-}, (10 * 1000));
+// }, 50000);
 
 		</script>
 @stop
