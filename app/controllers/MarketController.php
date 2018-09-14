@@ -156,27 +156,22 @@ class MarketController extends \BaseController {
 
     public function updateTable($script)
     {
-        $company = DB::table($script)->get();
-//         echo "<pre>";
-// print_r($company);
-// exit();
+        $data = fopen("C:\\xampp\\htdocs\\market\\public\\data\\".$script.".csv", "r");
+
         $dates = DB::table('csvdata')->distinct('TIMESTAMP')->take(5)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
         $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
         $l = iterator_to_array($it, false);
-//        $company = DB::table('company')->distinct()->take(20)->get();
-//        echo "<pre>";
-//        sort($l);
-//        print_r($l);
-//        exit;
 
         DB::table('eqdata')->truncate();
-        $j = 1;
-        foreach($company as $row) {
+        $j = 0;
+        while (($d = fgetcsv($data)) !== FALSE)
+        {
+          if ($j!=0) {
             $opentotal  = 0;
             $closetotal = 0;
-            echo $j.") ".$row->symbol;
+            echo $j.") ".$d[0];
             $stock = DB::table('csvdata')
-                ->where('isin',$row->isin)
+                ->where('isin',$d[4])
                 ->where('series','EQ')
                 ->whereIn('timestamp', $l)
                 ->orderBy('TIMESTAMP', 'asc')
@@ -200,10 +195,9 @@ class MarketController extends \BaseController {
                 $openavg = $opentotal / ($i-1);
                 $closeavg = $closetotal / ($i-1);
 
-            //`nse`, `date1`, `opendiff1`, `closediff1`, `date2`, `opendiff2`, `closediff2`, `date3`, `opendiff3`, `closediff3`, `date4`, `opendiff4`, `closediff4`, `date5`, `opendiff5`, `closediff5`, `opentotal`, `openavg`, `closetotal`, `closeavg`
-                $q = array('nse' => $row->symbol,
-                    'isin'=>$row->isin,
-                    'series'=>$row->series,
+                $q = array('nse' => $d[2],
+                    'isin'=>$d[4],
+                    'series'=>$d[3],
                     'price'=>$price,
                     'date1' => $tmpdate[1],'date2' => $tmpdate[2],'date3' => $tmpdate[3],'date4' => $tmpdate[4],'date5' => $tmpdate[5],
                     'closediff1' => $tmppv[1],'closediff2' => $tmppv[2],'closediff3' => $tmppv[3],'closediff4' => $tmppv[4],'closediff5' => $tmppv[5],
@@ -218,6 +212,7 @@ class MarketController extends \BaseController {
             }
             flush();
             ob_flush();
+        }
             $j++;
         }
 		return Redirect::to('/')->with('message', 'Data updated Successfully');
@@ -241,23 +236,7 @@ class MarketController extends \BaseController {
         return View::make('stock.news')
             ->with('rss', $rss);
     }
-    public function callsReader()
-    {
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/economy.xml');
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/business.xml');
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/marketoutlook.xml');
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/technicals.xml');
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/mostpopular.xml');
-        $rss[] = Feed::loadRss('http://www.moneycontrol.com/rss/marketedge.xml');
-        $rss[] = Feed::loadRss('http://feeds.feedburner.com/NDTV-Business?format=xml');
-       // $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/2146842.cms');
-        //$rss[] = Feed::loadRss('http://economictimes.indiatimes.com/Markets/markets/rssfeeds/1977021501.cms');
-        //$rss[] = Feed::loadRss('http://economictimes.indiatimes.com/rssfeeds/594027522.cms');
-//        $rss[] = Feed::loadRss('http://economictimes.indiatimes.com/markets/stocks/recos/articlelist/3053611.cms');
 
-        return View::make('stock.calls')
-            ->with('rss', $rss);
-    }
 
     public function getData($stock)
 	{
@@ -279,72 +258,6 @@ print_r($response);*/
 //        $json = file_get_contents($nseUrl.$stock);
 //        $obj = json_decode($json);
         return View::make('stock.stock');
-	}
-
-
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
 	}
 
 }
