@@ -81,9 +81,9 @@ class MarketController extends \BaseController {
 
     public function stockJSON($nse)
 	{
-        $ldate = date('Y-m-d');
+        //$ldate = date('Y-m-d');
         $stock = DB::table('marketwatch')->select('updatedTime', 'LTPrice')
-        ->where('updatedTime', '>',  $ldate.' 09:30:00')
+       // ->where('updatedTime', '>',  $ldate.' 09:30:00')
         ->where('TradingSymbol',$nse)
         ->get();
         $arr = array();

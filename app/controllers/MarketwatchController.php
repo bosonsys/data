@@ -15,18 +15,30 @@ class MarketwatchController extends \BaseController {
     }
     public function v2()
 	{
-        $ldate = date('Y-m-d');
+        //$ldate = date('Y-m-d');
         $names = DB::table('marketwatch')
             ->select('TradingSymbol')
-            ->where('updatedTime', '>',  $ldate.' 09:30:00')
+            //->where('updatedTime', '>',  $ldate.' 09:30:00')
             ->groupBy('TradingSymbol')
             ->get();
         $arr = array();
         foreach ($names as $key => $name) {
             array_push($arr,$name->TradingSymbol);
         }
+        $datas = DB::table('marketwatch')
+               ->select('updatedTime')
+               ->groupBy('TradingSymbol')
+               ->get();
+        $a = array();
+        foreach ($datas as $key => $data){
+            array_push($a,$data->updatedTime);
+        }
+
+//  for($i=0; $i<=$datas; $i++){
+//  echo "<pre>"; print_r($datas); exit();
+//  }
         // return View::make('watch.watchv2')->with('name', $stocks);
-        return View::make('watch.watchv2')->with('names', $arr);
+        return View::make('watch.watchv2')->with('names',$arr)->with('datas',$a);
 	}
 	public function nse50()
 	{

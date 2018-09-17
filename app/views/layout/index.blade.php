@@ -21,12 +21,26 @@
         <div>
             <ul class="nav navbar-nav">
                 <li class="{{ Request::is('/') ? 'active' : '' }}"><a href="{{url('/')}}">Home</a></li>
-                <li class="{{ Request::is('*market/top') ? 'active' : '' }}"><a href="{{url('/market/top')}}">Top</a></li>
-                <li class="{{ Request::is('*market/top1') ? 'active' : '' }}"><a href="{{url('/market/top1')}}">Always Top</a></li>
-                <li class="{{ Request::is('*market/lasttop') ? 'active' : '' }}"><a href="{{url('/market/lasttop')}}">Last Top</a></li>
-                <li class="{{ Request::is('*market/lose') ? 'active' : '' }}"><a href="{{url('/market/lose')}}">Top Losers</a></li>
-                <li class="{{ Request::is('*market/lose1') ? 'active' : '' }}"><a href="{{url('/market/lose1')}}">Always Losers</a></li>
-                <li class="{{ Request::is('*market/lastlose') ? 'active' : '' }}"><a href="{{url('/market/lastlose')}}">Last Losers</a></li>
+                <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Gainers<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ Request::is('*market/top') ? 'active' : '' }}"><a href="{{url('/market/top')}}">Top</a></li>
+                        <li class="{{ Request::is('*market/top1') ? 'active' : '' }}"><a href="{{url('/market/top1')}}">Always Top</a></li>
+                        <li class="{{ Request::is('*market/lasttop') ? 'active' : '' }}"><a href="{{url('/market/lasttop')}}">Last Top</a></li>
+                    </ul>
+                </li>
+                <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Losers<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ Request::is('*market/lose') ? 'active' : '' }}"><a href="{{url('/market/lose')}}">Top Losers</a></li>
+                        <li class="{{ Request::is('*market/lose1') ? 'active' : '' }}"><a href="{{url('/market/lose1')}}">Always Losers</a></li>
+                        <li class="{{ Request::is('*market/lastlose') ? 'active' : '' }}"><a href="{{url('/market/lastlose')}}">Last Losers</a></li>
+                    </ul>
+                </li>
                 <li class="{{ Request::is('*news') ? 'active' : '' }}"><a href="{{url('/news')}}">News</a></li>
                 <li class="{{ Request::is('*marketwatch') ? 'active' : '' }}"><a href="{{url('/marketwatch')}}">Market Watch</a></li>
                 <li class="{{ Request::is('*strategy/first15') ? 'active' : '' }}"><a href="{{url('/strategy/first15')}}">First 15M</a></li>
