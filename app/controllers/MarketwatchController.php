@@ -48,8 +48,9 @@ class MarketwatchController extends \BaseController {
 	{
         $url = "https://etmarketsapis.indiatimes.com/ET_Stats/gainers?pagesize=25&pid=0&pageno=1&sort=intraday&sortby=percentchange&sortorder=desc&duration=1d&callback=ajaxResponse&totalpages=7&index=2371";
         $ET_data = $this->getCURL($url);
-        echo '<pre>'; print_r($ET_data); exit();
+       // echo '<pre>'; print_r($ET_data); exit();
         // return View::make('watch.nse50');
+        $this->insertETG($ET_data);
 	}
 	public function getNSDdata()
 	{
@@ -198,6 +199,43 @@ class MarketwatchController extends \BaseController {
             DB::table('intra_data')->insert($update);
         }
         file_put_contents($lastRec, json_encode($lastRecArray));
+    }
+
+    public function insertETG($data)
+    {
+        echo "<pre>";
+        foreach($data->searchresult as $row)
+        {
+            // echo $row->companyShortName."<br>";
+            // print_r($row);
+            $update['companyShortName'] = $row->companyShortName;
+            $update['nseScripCode'] = $row->nseScripCode;
+            $update['updateddatetime'] = str_replace(',', '|',$row->updatedDateTime);
+            $update['volume'] = $row->volume;
+            $update['current'] = $row->current;
+            $update['high'] = $row->high;
+            $update['low'] = $row->low;
+            $update['percentChange'] = $row->percentChange;
+            $update['seoName'] = $row->seoName;
+           //echo '<pre>'; print_r($update);
+           // exit();
+       DB::table('etg500')->insert($update);
+        
+        }
+        exit;
+        // $data = DB::select($ET_data)->get();
+        //$data = json_decode(json_encode((array)$ET_data), true);
+        // foreach ($data->ET_data as $k => $row) {
+        //     $update['companyShortName'] = $v->DenaBank;
+        //     $update['nseScripCode'] = $v->DENABANKEQ;
+            //     /*$update['ltP'] = str_replace(',', '', $v->ltp);
+            //     $update['trdVol'] =str_replace(',', '', $v->tradedQuantity);
+            //     $update['per'] = $v->netPrice;
+            //     $update['type'] = $type;
+            //     $update['nse_time'] = $data->time;*/
+        //     echo '<pre>'; print_r($update);exit();
+        // DB::table('etg500')->insert($update);
+        //  }
     }
 	public function getData()
 	{
