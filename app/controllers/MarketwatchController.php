@@ -42,8 +42,14 @@ class MarketwatchController extends \BaseController {
 	}
 	public function nse50()
 	{
-        // return View::make('watch.gainers');
         return View::make('watch.nse50');
+	}
+	public function ETGainersData()
+	{
+        $url = "https://etmarketsapis.indiatimes.com/ET_Stats/gainers?pagesize=25&pid=0&pageno=1&sort=intraday&sortby=percentchange&sortorder=desc&duration=1d&callback=ajaxResponse&totalpages=7&index=2371";
+        $ET_data = $this->getCURL($url);
+        echo '<pre>'; print_r($ET_data); exit();
+        // return View::make('watch.nse50');
 	}
 	public function getNSDdata()
 	{

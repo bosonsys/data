@@ -28,6 +28,7 @@ Route::get('/marketwatch', 'MarketwatchController@index');
 Route::get('/marketwatch1', 'MarketwatchController@v2');
 Route::get('/marketwatch/nsedata', 'MarketwatchController@getNSDdata');
 Route::get('/marketwatch/nse50', 'MarketwatchController@nse50');
+Route::get('/marketwatch/ETG500', 'MarketwatchController@ETGainersData');
 Route::get('/news', 'MarketController@newsReader');
 Route::get('/buysell', 'MarketController@callsReader');
 Route::get('/trade/day', 'TradeController@index');
