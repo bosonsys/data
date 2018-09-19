@@ -406,36 +406,36 @@
     cursor: crosshair;
 }
 
-		</style>
+</style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="{{ asset('js/highstock.js') }}"></script>
 
-<script src="../../code/modules/annotations.js"></script>
-<script src="../../code/modules/drag-panes.js"></script>
-<script src="../../code/modules/data.js"></script>
+<script src="{{ asset('js/annotations.js') }}"></script>
+<script src="{{ asset('js/drag-panes.js') }}"></script>
+<script src="{{ asset('js/data.js') }}"></script>
 
-<script src="../../code/indicators/indicators.js"></script>
+<script src="{{ asset('indicators/indicators.js') }}"></script>
 
-<script src="../../code/indicators/accumulation-distribution.js"></script>
-<script src="../../code/indicators/atr.js"></script>
-<script src="../../code/indicators/bollinger-bands.js"></script>
-<script src="../../code/indicators/cci.js"></script>
-<script src="../../code/indicators/cmf.js"></script>
-<script src="../../code/indicators/ema.js"></script>
-<script src="../../code/indicators/ichimoku-kinko-hyo.js"></script>
-<script src="../../code/indicators/macd.js"></script>
-<script src="../../code/indicators/mfi.js"></script>
-<script src="../../code/indicators/momentum.js"></script>
-<script src="../../code/indicators/pivot-points.js"></script>
-<script src="../../code/indicators/price-envelopes.js"></script>
-<script src="../../code/indicators/roc.js"></script>
-<script src="../../code/indicators/rsi.js"></script>
-<script src="../../code/indicators/stochastic.js"></script>
-<script src="../../code/indicators/volume-by-price.js"></script>
-<script src="../../code/indicators/wma.js"></script>
-<script src="../../code/indicators/vwap.js"></script>
-<script src="../../code/indicators/zigzag.js"></script>
+<script src="{{ asset('indicators/accumulation-distribution.js') }}"></script>
+<script src="{{ asset('indicators/atr.js') }}"></script>
+<!--<script src="../../code/indicators/bollinger-bands.js"></script>-->
+<script src="{{ asset('indicators/cci.js') }}"></script>
+<script src="{{ asset('indicators/cmf.js') }}"></script>
+<script src="{{ asset('indicators/ema.js') }}"></script>
+<script src="{{ asset('indicators/ichimoku-kinko-hyo.js') }}"></script>
+<script src="{{ asset('indicators/macd.js') }}"></script>
+<script src="{{ asset('indicators/mfi.js') }}"></script>
+<script src="{{ asset('indicators/momentum.js') }}"></script>
+<script src="{{ asset('indicators/pivot-points.js') }}"></script>
+<script src="{{ asset('indicators/price-envelopes.js') }}"></script>
+<script src="{{ asset('indicators/roc.js') }}"></script>
+<script src="{{ asset('indicators/rsi.js') }}"></script>
+<script src="{{ asset('indicators/stochastic.js') }}"></script>
+<script src="{{ asset('indicators/volume-by-price.js') }}"></script>
+<script src="{{ asset('indicators/wma.js') }}"></script>
+<script src="{{ asset('indicators/vwap.js') }}"></script>
+<script src="{{ asset('indicators/zigzag.js') }}"></script>
 
  <div id="demo">
         <div id="menu-side">
@@ -673,6 +673,8 @@
         </div>
     </div>
     		<script type="text/javascript">
+            var sname = "{{$sname}}";
+
 /**
  * This is a complex demo to demonstrate how Highstock can be set up to
  * provide a full trading dashboard. It is not intended for implementers who
@@ -2760,7 +2762,6 @@ window.onload = function () {
         );
     }
     document.getElementById('container-inner').style.height = getHeight() + 'px';
-
     var indicatorsList = ['rsi', 'sma'],
         indicatorContainer = document.getElementById('indicators-container'),
         indicatorsButton = document.getElementById('indicators-dropdown'),
@@ -2946,7 +2947,7 @@ window.onload = function () {
             series: [{
                 cropThreshold: 0,
                 id: 'main',
-                name: 'AAPL',
+                name: sname,
                 data: [],
                 tooltip: {
                     valueDecimals: 2
@@ -3259,7 +3260,7 @@ window.onload = function () {
         highchartsReset.addEventListener('click', function () {
             if (confirm('Are you sure you want to clear the chart?')) {
                 Highcharts.ajax({
-                    url: 'https://www.highcharts.com/samples/data/aapl-ohlc.json',
+                    url: 'http://localhost/market/public/market/stockJSON/20MICRONS' ,
                     dataType: 'text',
                     success: function (data) {
                         var chart = Highcharts.getChartById('container-inner');
@@ -3316,7 +3317,7 @@ window.onload = function () {
         );
     } else {
         Highcharts.ajax({
-            url: 'https://www.highcharts.com/samples/data/aapl-ohlc.json',
+            url: 'http://localhost/market/public/market/stockJSON/20MICRONS',
             dataType: 'text',
             success: function (data) {
                 data = data.replace(/\/\*.*\*\//g, '');

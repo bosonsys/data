@@ -10,7 +10,7 @@ class StockController extends \BaseController {
 
 	public function index()
 	{
-        return View::make('stock.view');
+        return View::make('stock.view')->with('sname','Stock Name');
 	}
     public function stock($nse)
 	{

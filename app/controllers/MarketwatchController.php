@@ -205,23 +205,35 @@ class MarketwatchController extends \BaseController {
 
     public function insertETG($data)
     {
-        echo "<pre>";
+        echo "<pre>";  
+        
+
+
         foreach($data->searchresult as $row)
         {
+            $dt = $row->updatedDateTime;
+            $dt = strtotime(str_replace('|', '', $dt));
+            $d = date('Y-m-d',$dt);
+            $t = date('h:i A',$dt);
+           // echo $d,'<br/>',$t;
+
             // echo $row->companyShortName."<br>";
             // print_r($row);
             $update['companyShortName'] = $row->companyShortName;
-            $update['nseScripCode'] = $row->nseScripCode;
-            $update['updateddatetime'] = str_replace(',', '|',$row->updatedDateTime);
+            $update['nseScripCode'] = substr($row->nseScripCode,0,-2);
+            $update['series'] = substr($row->nseScripCode,strlen($update['nseScripCode']));
+            $update['updateddatetime'] = strtotime(str_replace(',', '|',$row->updatedDateTime));
             $update['volume'] = $row->volume;
             $update['current'] = $row->current;
             $update['high'] = $row->high;
             $update['low'] = $row->low;
             $update['percentChange'] = $row->percentChange;
-            $update['seoName'] = $row->seoName;
-           //echo '<pre>'; print_r($update);
-           // exit();
-       DB::table('etg500')->insert($update);
+            $update['sectorName'] = $row->sectorName;
+            $update['t_date'] = $d;
+            $update['t_time'] = $t;
+           echo '<pre>'; print_r($update);
+           exit();
+       //DB::table('etg500')->insert($update);
         
         }
         exit;

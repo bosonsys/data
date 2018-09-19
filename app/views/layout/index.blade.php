@@ -48,7 +48,7 @@
                 <li class="{{ Request::is('*strategy/upDown') ? 'active' : '' }}"><a href="{{url('/strategy/upDown')}}">upDown</a></li>
                 <li class="{{ Request::is('*strategy/open') ? 'active' : '' }}"><a href="{{url('/strategy/open')}}">Open High Low</a></li>
                 <li class="{{ Request::is('*breakout/5days') ? 'active' : '' }}"><a href="{{url('/breakout/5days')}}">Breakout</a></li>
-                <li class="{{ Request::is('*stock/view') ? 'active' : '' }}"><a href="{{url('/stock/view')}}">Stock</a></li>
+                <li class="{{ Request::is('*stock') ? 'active' : '' }}"><a href="{{url('/stock')}}">Stock</a></li>
                 <!-- <li><a href="{{url('/buysell')}}">Buy/Sell Calls</a></li> -->
                 <!-- <li><a href="{{url('/call')}}">Trade Script</a></li> -->
             </ul>
