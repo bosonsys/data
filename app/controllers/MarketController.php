@@ -81,15 +81,16 @@ class MarketController extends \BaseController {
 
     public function stockJSON($nse)
 	{
+       
         //$ldate = date('Y-m-d');
-        $stock = DB::table('marketwatch')->select('updatedTime', 'LTPrice')
+        $stock = DB::table('csvdata')->select('Timestamp','High', 'Low', 'Open', 'Close')
        // ->where('updatedTime', '>',  $ldate.' 09:30:00')
-        ->where('TradingSymbol',$nse)
+        ->where('Symbol',$nse)
         ->get();
         $arr = array();
         foreach ($stock as $key => $value) {
             // echo $key." - ".$value;
-            $rec = array(strtotime($value->updatedTime)*1000 ,$value->LTPrice);
+            $rec = array(strtotime($value->Timestamp)*1000 ,$value->High,$value->Low,$value->Open,$value->Close);
             array_push($arr, $rec);
         }
                     // print_r($arr);
@@ -97,6 +98,26 @@ class MarketController extends \BaseController {
         return Response::json($arr);
 // json_encode($arr);
 	}
+
+    /*public function stockJSON($nse)
+	{
+       
+        //$ldate = date('Y-m-d');
+        $stock = DB::table('marketwatch')->select('updatedTime', 'LTPrice', 'High', 'Low', 'Open', 'Close')
+       // ->where('updatedTime', '>',  $ldate.' 09:30:00')
+        ->where('TradingSymbol',$nse)
+        ->get();
+        $arr = array();
+        foreach ($stock as $key => $value) {
+            // echo $key." - ".$value;
+            $rec = array(strtotime($value->updatedTime)*1000 ,$value->LTPrice,$value->High,$value->Low,$value->Open,$value->Close);
+            array_push($arr, $rec);
+        }
+                    // print_r($arr);
+        // return View::make('stock.stock')->with('d', $stock)->with('nse', $nse);
+        return Response::json($arr);
+// json_encode($arr);
+	}*/
 
     public function storeTable($date, $day)
     {
