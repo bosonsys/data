@@ -54,3 +54,4 @@ Route::get('/strategy/uptrend', 'StrategyController@upTrend');
 Route::get('/strategy/open', 'StrategyController@getCalls');
 Route::get('/strategy/upDown', 'StrategyController@upDown');
 Route::get('/breakout/5days', 'BreakoutController@days5');
+Route::get('/stock', 'StockController@index');
