@@ -205,10 +205,6 @@ class MarketwatchController extends \BaseController {
 
     public function insertETG($data)
     {
-        echo "<pre>";  
-        
-
-
         foreach($data->searchresult as $row)
         {
             $dt = $row->updatedDateTime;
@@ -222,7 +218,6 @@ class MarketwatchController extends \BaseController {
             $update['companyShortName'] = $row->companyShortName;
             $update['nseScripCode'] = substr($row->nseScripCode,0,-2);
             $update['series'] = substr($row->nseScripCode,strlen($update['nseScripCode']));
-            $update['updateddatetime'] = strtotime(str_replace(',', '|',$row->updatedDateTime));
             $update['volume'] = $row->volume;
             $update['current'] = $row->current;
             $update['high'] = $row->high;
@@ -231,12 +226,8 @@ class MarketwatchController extends \BaseController {
             $update['sectorName'] = $row->sectorName;
             $update['t_date'] = $d;
             $update['t_time'] = $t;
-           echo '<pre>'; print_r($update);
-           exit();
-       //DB::table('etg500')->insert($update);
-        
+            DB::table('etg500')->insert($update);
         }
-        exit;
         // $data = DB::select($ET_data)->get();
         //$data = json_decode(json_encode((array)$ET_data), true);
         // foreach ($data->ET_data as $k => $row) {
