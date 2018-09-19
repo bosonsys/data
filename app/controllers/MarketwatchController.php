@@ -15,19 +15,21 @@ class MarketwatchController extends \BaseController {
     }
     public function v2()
 	{
-        //$ldate = date('Y-m-d');
+        $ldate = date('Y-m-d');
         $names = DB::table('marketwatch')
-            ->select('TradingSymbol')
-            //->where('updatedTime', '>',  $ldate.' 09:30:00')
-            ->groupBy('TradingSymbol')
+            ->select('TradingSymbol', 'per', 'updatedTime')
+            ->where('updatedTime', '>',  $ldate.' 09:30:00')
+            // ->groupBy('TradingSymbol')
             ->get();
         $arr = array();
+        echo '<pre>'; print_r($names); exit();
         foreach ($names as $key => $name) {
             array_push($arr,$name->TradingSymbol);
         }
         $datas = DB::table('marketwatch')
                ->select('updatedTime')
-               ->groupBy('TradingSymbol')
+               ->where('updatedTime', '>',  $ldate.' 09:30:00')
+               ->groupBy('updatedTime')
                ->get();
         $a = array();
         foreach ($datas as $key => $data){
