@@ -94,7 +94,7 @@ class MarketController extends \BaseController {
             array_push($arr, $rec);
         }
                     // print_r($arr);
-        // return View::make('stock.stock')->with('d', $stock)->with('nse', $nse);
+        //return View::make('stock.stock')->with('d', $stock)->with('nse', $nse);
         return Response::json($arr);
 // json_encode($arr);
 	}

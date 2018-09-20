@@ -405,7 +405,7 @@
 #demo #container-inner .crosshair-on-annotation .highcharts-flags-series:hover {
     cursor: crosshair;
 }
-
+.ui-autocomplete { max-height: 200px; overflow-y: scroll; overflow-x: hidden;}
 </style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -485,22 +485,9 @@
 
         <div id="menu-nav">
             <div id="analyze-container">
-                <div class="button-group">
-                    <button id="analyze-dropdown" class="menu-btn select-dropdown">
-                        Demos
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" class="small" data-value="0" tabIndex="-1">
-                                <span> Demo #1 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="small" data-value="1" tabIndex="-1">
-                                <span> Demo #2 </span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class = "ui-widget">
+                    <label for = "automplete-3">Search: </label>
+                    <input id = "automplete-3">
                 </div>
             </div>
             <div id="indicators-container">
@@ -674,7 +661,7 @@
     </div>
     		<script type="text/javascript">
             var sname = "{{$sname}}";
-
+            var cname = {{json_encode($cname)}};
 /**
  * This is a complex demo to demonstrate how Highstock can be set up to
  * provide a full trading dashboard. It is not intended for implementers who
@@ -3260,7 +3247,7 @@ window.onload = function () {
         highchartsReset.addEventListener('click', function () {
             if (confirm('Are you sure you want to clear the chart?')) {
                 Highcharts.ajax({
-                    url: 'http://localhost/market/public/market/stockJSON/20MICRONS' ,
+                    url: 'http://localhost/market/public/market/stockJSON/'+sname ,
                     dataType: 'text',
                     success: function (data) {
                         var chart = Highcharts.getChartById('container-inner');
@@ -3317,7 +3304,7 @@ window.onload = function () {
         );
     } else {
         Highcharts.ajax({
-            url: 'http://localhost/market/public/market/stockJSON/20MICRONS',
+            url: 'http://localhost/market/public/market/stockJSON/'+sname,
             dataType: 'text',
             success: function (data) {
                 data = data.replace(/\/\*.*\*\//g, '');
@@ -3346,6 +3333,14 @@ window.onload = function () {
         );
     });
 };
+
+ $(function() {
+            $( "#automplete-3" ).autocomplete({
+               minLength:2,   
+               delay:500,   
+               source: cname
+            });
+         });
 
 		</script>
 @stop

@@ -8,9 +8,18 @@ class StockController extends \BaseController {
 	 * @return Response
 	 */
 
-	public function index()
+	public function index($nse)
 	{
-        return View::make('stock.view')->with('sname','Stock Name');
+	  $cname = DB::table('company')->select('symbol')
+			  ->get();
+			   $arr = array();
+        foreach ($cname as $key => $value) {
+            array_push($arr, $value->symbol);
+		}
+		
+			  //echo "<pre>"; print_r($cname); exit();
+			  return View::make('stock.view')->with('sname', $nse)->with('cname', $arr);
+		// return View::make('stock.view')->with('sname', 'Stock Name');
 	}
     public function stock($nse)
 	{
@@ -20,7 +29,15 @@ class StockController extends \BaseController {
         return View::make('stock.view')->with('d', $stock)->with('nse', $nse);
        // return json_encode($stock);
 	}
-
+    //   public function redirect($nse)
+	// {
+	// 	//
+	// 	// echo $nse;
+	// 	$data= DB::table('company')->where('symbol','=', $nse)->take(1)->get();
+	// 	$url = 'http://localhost/market/public/market/stockJSON/'+cname;
+	// 	print_r($url);
+	// 	//return Redirect::to($url);
+	// }
 	/*public function days5()
 	{
 		$lists = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
