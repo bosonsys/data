@@ -659,6 +659,7 @@
             </form>
         </div>
     </div>
+</div>
     		<script type="text/javascript">
             var sname = "{{$sname}}";
             var cname = {{json_encode($cname)}};
@@ -3338,7 +3339,11 @@ window.onload = function () {
             $( "#automplete-3" ).autocomplete({
                minLength:2,   
                delay:500,   
-               source: cname
+               source: cname,
+               select: function( event, ui ) {
+                   console.log(event, ui);
+                   location.href="http://localhost/market/public/stock/" + ui.item.value;
+               }
             });
          });
 

@@ -23,11 +23,11 @@ class StockController extends \BaseController {
 	}
     public function stock($nse)
 	{
-        $stock = DB::table('csvdata')->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t')
+        $stock = DB::table('csvdata')->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t', '')
         ->where('SYMBOL',$nse)
         ->where('SERIES','EQ')->get();
-        return View::make('stock.view')->with('d', $stock)->with('nse', $nse);
-       // return json_encode($stock);
+       return View::make('stock.view')->with('d', $stock)->with('nse', $nse);
+        //return json_encode($stock);
 	}
     //   public function redirect($nse)
 	// {
