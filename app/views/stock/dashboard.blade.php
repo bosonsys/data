@@ -50,6 +50,23 @@
             <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftysmallcap50list')}}">Nifty Smallcap 50</a> </div>
             <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftysmallcap100list')}}">Nifty Smallcap 100</a> </div>
             <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftysmallcap250list')}}">Nifty Smallcap 250</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_Nifty_Midcap_Liquid15')}}">Nifty Midcap Liquid</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_Nifty50_Value20')}}">Nifty50 Value20</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_Nifty100_Liquid15')}}">Nifty100 Liquid15</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_nifty100Quality30list')}}">Nifty100 Quality30</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_Nifty100LowVolatility30list')}}">Nifty100 LowVolatility30</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/nifty_Low_Volatility50_Index')}}">Nifty100 LowVolatility50</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftyconsumptionlist')}}">Nifty Consumption List</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/nifty_High_Beta50_Index')}}">Nifty High Beta</a> </div> 
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftycpselist')}}">Nifty Cpse</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftydivopp50list')}}">Nifty Divopp 50</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftyenergylist')}}">Nifty Energy</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftyinfralist')}}">Nifty Infra</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftymnclist')}}">Nifty MNC</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftysmelist')}}">Nifty SME</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftypselist')}}">Nifty PSE</a> </div>
+            <div class="col-lg-4"><a href="{{url('/updatetable/ind_niftyservicelist')}}">Nifty Service</a> </div>
             <div class="col-lg-4"><a href="{{url('/updatetable/EQUITY_L')}}">All Company</a> </div>
     </div>
+    
 @stop
