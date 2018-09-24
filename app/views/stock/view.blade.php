@@ -409,33 +409,33 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script src="{{ asset('js/highstock.js') }}"></script>
+<script src="../../public/code/highstock.js"></script>
 
-<script src="{{ asset('js/annotations.js') }}"></script>
-<script src="{{ asset('js/drag-panes.js') }}"></script>
-<script src="{{ asset('js/data.js') }}"></script>
+<script src="../../public/code/modules/annotations.js"></script>
+<script src="../../public/code/modules/drag-panes.js"></script>
+<script src="../../public/code/modules/data.js"></script>
 
-<script src="{{ asset('indicators/indicators.js') }}"></script>
+<script src="../../public/code/indicators/indicators.js"></script>
 
-<script src="{{ asset('indicators/accumulation-distribution.js') }}"></script>
-<script src="{{ asset('indicators/atr.js') }}"></script>
+<script src="../../public/code/indicators/accumulation-distribution.js"></script>
+<script src="../../public/code/indicators/atr.js"></script>
 <!--<script src="../../code/indicators/bollinger-bands.js"></script>-->
-<script src="{{ asset('indicators/cci.js') }}"></script>
-<script src="{{ asset('indicators/cmf.js') }}"></script>
-<script src="{{ asset('indicators/ema.js') }}"></script>
-<script src="{{ asset('indicators/ichimoku-kinko-hyo.js') }}"></script>
-<script src="{{ asset('indicators/macd.js') }}"></script>
-<script src="{{ asset('indicators/mfi.js') }}"></script>
-<script src="{{ asset('indicators/momentum.js') }}"></script>
-<script src="{{ asset('indicators/pivot-points.js') }}"></script>
-<script src="{{ asset('indicators/price-envelopes.js') }}"></script>
-<script src="{{ asset('indicators/roc.js') }}"></script>
-<script src="{{ asset('indicators/rsi.js') }}"></script>
-<script src="{{ asset('indicators/stochastic.js') }}"></script>
-<script src="{{ asset('indicators/volume-by-price.js') }}"></script>
-<script src="{{ asset('indicators/wma.js') }}"></script>
-<script src="{{ asset('indicators/vwap.js') }}"></script>
-<script src="{{ asset('indicators/zigzag.js') }}"></script>
+<script src="../../public/code/indicators/cci.js"></script>
+<script src="../../public/code/indicators/cmf.js"></script>
+<script src="../../public/code/indicators/ema.js"></script>
+<script src="../../public/code/indicators/ichimoku-kinko-hyo.js"></script>
+<script src="../../public/code/indicators/macd.js"></script>
+<script src="../../public/code/indicators/mfi.js"></script>
+<script src="../../public/code/indicators/momentum.js"></script>
+<script src="../../public/code/indicators/pivot-points.js"></script>
+<script src="../../public/code/indicators/price-envelopes.js"></script>
+<script src="../../public/code/indicators/roc.js"></script>
+<script src="../../public/code/indicators/rsi.js"></script>
+<script src="../../public/code/indicators/stochastic.js"></script>
+<script src="../../public/code/indicators/volume-by-price.js"></script>
+<script src="../../public/code/indicators/wma.js"></script>
+<script src="../../public/code/indicators/vwap.js"></script>
+<script src="../../public/code/indicators/zigzag.js"></script>
 
  <div id="demo">
         <div id="menu-side">
