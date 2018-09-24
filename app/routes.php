@@ -20,7 +20,7 @@ Route::get('/', 'HomeController@dashboard');
 Route::get('/movezip', 'HomeController@download');
 Route::get('/upload', 'HomeController@upload');
 Route::get('/market/{filter}', 'MarketController@index');
-Route::get('/updatetable/{date}/{day}', 'MarketController@storeTable');
+// Route::get('/updatetable/{date}/{day}', 'MarketController@storeTable');
 Route::get('/market/stockJSON/{nse}', 'MarketController@stockJSON');
 Route::get('/market/stock/{nse}', 'MarketController@stock');
 Route::get('/updatefrtable/{table}', 'MarketController@updateFrTable');

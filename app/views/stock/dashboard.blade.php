@@ -66,6 +66,9 @@
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/ind_niftyenergylist')}}">Nifty Energy</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/ind_niftyinfralist')}}">Nifty Infra</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/ind_niftyservicelist')}}">Nifty Service</a></li></ul> </div>
+            <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/EQUITY_L/18')}}">2018 Company</a></li></ul> </div>
+            <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/EQUITY_L')}}">Penny Company</a></li></ul> </div>
+            <div class="col-lg-4" ><ul><li><a href="{{url('/updatefrtable/intraday_edel')}}">Intraday Company</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/EQUITY_L')}}">All Company</a></li></ul> </div>
     </div>
     
