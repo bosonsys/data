@@ -312,6 +312,72 @@ class MarketController extends \BaseController {
         }
 		return Redirect::to('/')->with('message', 'Data updated Successfully');
     }
+    public function prevday()
+    {
+        $dates = DB::table('csvdata')->distinct('TIMESTAMP')->take(5)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+        $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
+        $l = iterator_to_array($it, false);
+
+       $company = DB::table('csvdata')
+       ->where('SERIES', 'EQ')
+       ->where('TIMESTAMP', $l[0])
+       ->get();
+       //echo "<pre>"; print_r($company); exit();
+        DB::table('eqdata')->truncate();
+        $j = 1;
+        foreach($company as $row) {
+            $last = $row->LAST;
+            if ($last > 50) {
+                continue;
+            }
+            $opentotal  = 0;
+            $closetotal = 0;
+            echo $j.") ".$row->SYMBOL;
+            //echo "<pre>"; print_r($last); exit();
+            $stock = DB::table('csvdata')
+                ->where('SYMBOL',$row->SYMBOL)
+                ->where('series','EQ')
+                ->whereIn('timestamp', $l)
+                ->orderBy('TIMESTAMP', 'asc')
+                ->take(5)
+                ->get(array('symbol','close','timestamp','openp','closep'));
+            $i = 1;
+            foreach($stock as $r) {
+                $tmpdate[$i]    = $r->timestamp;
+                $tmpcp[$i]      = $r->openp;
+                $tmppv[$i]      = $r->closep;
+                $price      = $r->close;
+                $opentotal+=$r->openp;
+                $closetotal+=$r->closep;
+                $i++;
+            }
+            if($opentotal) {
+                $openavg = $opentotal / ($i-1);
+                $closeavg = $closetotal / ($i-1);
+        //    print_r($r);
+        //    exit;
+                $q = array('nse' => $row->SYMBOL,
+                    'isin'=>$row->ISIN,
+                    'series'=>$row->SERIES,
+                    'price'=>$price,
+                    'date1' => $tmpdate[1],'date2' => $tmpdate[2],'date3' => $tmpdate[3],'date4' => $tmpdate[4],'date5' => $tmpdate[5],
+                    'closediff1' => $tmppv[1],'closediff2' => $tmppv[2],'closediff3' => $tmppv[3],'closediff4' => $tmppv[4],'closediff5' => $tmppv[5],
+                    'opendiff1' => $tmpcp[1],'opendiff2' => $tmpcp[2],'opendiff3' => $tmpcp[3],'opendiff4' => $tmpcp[4],'opendiff5' => $tmpcp[5],
+                    'opentotal' => $opentotal,
+                    'closetotal' => $closetotal,
+                    'openavg' => $openavg,
+                    'closeavg' => $closeavg
+                );
+            DB::table('eqdata')->insert($q);
+            echo " - Done</br>";
+            }
+            flush();
+            ob_flush();
+            $j++;
+            // exit;
+        }
+		return Redirect::to('/')->with('message', 'Data updated Successfully');   
+    }
 // public function newTable($script, $year = NULL)
 //     {
 //         $data = fopen("C:\\xampp\\htdocs\\market\\public\\data\\".$script.".csv", "r");

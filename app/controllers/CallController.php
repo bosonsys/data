@@ -147,7 +147,8 @@ $table['rows'] = array();
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
 				$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
 				$update['state'] = $state;
-				$count = $this->screenCall($v['TradingSymbol'], $update);
+				$count = 0; // not active
+				$this->screenCall($v['TradingSymbol'], $update);
                 $update['count'] = $count;
                 $update['LTQty'] = $v['LTQty'];
                 $update['Vol'] = $v['Vol'];
@@ -334,10 +335,16 @@ public function updateSinglePosition()
 
 	public function screenCall($script, $data)
 	{
-		// $update['diff']
+		// Logic 1 - Countinues +/-
+		// counLogic($script, $data);
+		// Logic 2 - Immediate High
+
+	}
+	public function counLogic($script, $data)
+	{
 		$sData = Session::get($script);
-		$target = 0.8;
-		$stop = -0.8;
+		$target = 1;
+		$stop = -1;
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		// $callExist = $calls[0];
 		if (isset($calls[0])) {
