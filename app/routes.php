@@ -24,6 +24,7 @@ Route::get('/updatetable/{date}/{day}', 'MarketController@storeTable');
 Route::get('/market/stockJSON/{nse}', 'MarketController@stockJSON');
 Route::get('/market/stock/{nse}', 'MarketController@stock');
 Route::get('/updatetable/{script}', 'MarketController@updateTable');
+Route::get('/updatefrtable/{table}', 'MarketController@updateFrTable');
 Route::get('/marketwatch', 'MarketwatchController@index');
 Route::get('/marketwatch1', 'MarketwatchController@v2');
 Route::get('/marketwatch/nsedata', 'MarketwatchController@getNSDdata');
