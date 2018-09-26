@@ -1,6 +1,4 @@
 @extends('layout.index')
-{{ HTML::script('js/d3.min.js') }}
-{{ HTML::script('js/nv.d3.js') }}
 @section('title')
     Watch List
 @stop
@@ -28,7 +26,7 @@
     var today = dd+'-'+mm+'-'+yyyy;
 
     // Load the Visualization API and the piechart package.
-    google.charts.load('current', {'packages':['corechart', 'line']});
+    google.charts.load('current', {'packages':['line']});
       
     // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
@@ -52,12 +50,15 @@ var options = {
           axis: 'horizontal',
             keepInBounds: true
           },
-        colors: ['#a52714', '#097138', '#FF7138', '#0F7F38', '#F071FF', '#007138', '#FFFF38', '#000038']
       };
       // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.LineChart(document.getElementById('chart'));
+      // var chart = new google.visualization.LineChart(document.getElementById('chart'));
       //chart.draw(data, {width: 400, height: 240});
-	  chart.draw(data, options);
+	  // chart.draw(data, options);
+          var chart = new google.charts.Line(document.getElementById('chart'));
+
+      chart.draw(data, google.charts.Line.convertOptions(options));
+
     }
 
     function drawGainerChart() {
