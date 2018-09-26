@@ -106,7 +106,7 @@ class CallController extends \BaseController {
 	if (!file_exists($json)) {
 		$table['cols'] = array(array(
 		'label' => 'Date Time', 
-		'type' => 'string'
+		'type' => 'datetime'
 		));
 		foreach ($input['data'] as $key => $value) {
 			$t = array('label' => $value['TradingSymbol'], 'type' => 'number');
@@ -136,9 +136,9 @@ $table['rows'] = array();
 				if (isset($tempArray->rows)) {
 					$tempRow = $tempArray->rows;
 				}
-
+					$date = new DateTime();
 					$sub_array[] =  array(
-						"v" => date('Y-m-d H:i:s')
+						"v" => 'Date('.$date->getTimestamp().'000)'////////date('Y-m-d H:i:s')
 						);
 			    foreach ($input['data'] as $k => $v) {
 				$update['TradingSymbol'] = $v['TradingSymbol'];
