@@ -23,8 +23,6 @@ class BreakoutController extends \BaseController {
         foreach ($lists as $key => $list) {
             array_push($arr,$list->TIMESTAMP);
         }
-	//echo "<pre>"; print_r($arr); exit();
-		//$stock = csvdata::whereIn('TIMESTAMP')->get();
 		$stock = DB::table('csvdata')
 		// ->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t')
 		->select(DB::raw('SYMBOL, max(HIGH) as maxHIGH' ))
@@ -41,31 +39,38 @@ class BreakoutController extends \BaseController {
 
 	
 public function last5days($nse)
-	{
-		$cname = DB::table('company')->select('symbol')
-			  ->get();
-			   $a = array();
-        foreach ($cname as $key => $value) {
-            array_push($a, $value->symbol);
-		}
+	{   //$array= array_merge($day, $stock);
 		
-			  //echo "<pre>"; print_r($cname); exit();
-			//   return View::make('stock.view')->with('sname', $nse)->with('cname', $arr);
+		$day = DB::table('csvdata')
+		->select('TIMESTAMP','SYMBOL','OPEN','HIGH','LOW','CLOSE')
+		->where('SERIES','EQ')
+		->where('SYMBOL',$nse)
+		->take(1)->orderby('TIMESTAMP','DESC')->get();
+		echo "<pre>"; print_r($day);
+		$d = $day[0];
+		$per = (($d->HIGH - $d->OPEN)/$d->OPEN)*100;
+		$percent = (($d->LOW - $d->OPEN)/$d->OPEN)*100;
+		$p = $per;
+		$c = $percent;
+		echo $p."<br>";
+		echo $c;
 		$lists = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
 		->take(5)->orderby('TIMESTAMP','DESC')->get();
         $arr = array();
         foreach ($lists as $key => $list) {
             array_push($arr,$list->TIMESTAMP);
-        }
-		$stock = DB::table('csvdata')
-		->select(DB::raw('SYMBOL, HIGH, LOW' ))
-		->where('SERIES','EQ') 
+		}
+		
+		$stock = DB::table('csvdata')//->select('SYMBOL','HIGH','LOW')
+		->select(DB::raw('SYMBOL, max(HIGH) as maxHIGH, min(LOW) as minLOW'))
+		->where('SERIES','EQ')
+		->where('SYMBOL',$nse)
 		->whereIn('TIMESTAMP',$arr)
-		->groupBy('SYMBOL')
+		->orderBy('SYMBOL')
 		->take(5)
         ->get();
         echo "<pre>"; print_r($stock); exit();
-        return View::make('breakout.last5days')->with('lists', $arr)->with('cname',$a);
+        return View::make('breakout.last5days')->with('lists', $arr)->with('nse', $nse);
          //return json_encode($stock);
 	}
 
