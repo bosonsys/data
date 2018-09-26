@@ -430,7 +430,10 @@ public function updateSinglePosition()
 		$i['call'] = $call;
 		$i['strategy'] = $str;
 		$EdelCode = DB::table('intraday_edel')->where('company','=', $script)->take(1)->get();
-		$i['edel'] = $EdelCode[0]->symbol;
+		if(isset($EdelCode[0]))
+			$i['edel'] = $EdelCode[0]->symbol;
+		else
+			$i['edel'] = 'NF';
 		DB::table('intra_call')->insert($i);
 	}
 
