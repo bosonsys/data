@@ -1,4 +1,6 @@
 bootstrap/compiled.php
 app/storage
+app/storage/logs/
 app/storage/views/
 public/json/
+app/controllers/HomeController.php
