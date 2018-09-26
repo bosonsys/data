@@ -336,9 +336,48 @@ public function updateSinglePosition()
 	public function screenCall($script, $data)
 	{
 		// Logic 1 - Countinues +/-
-		// counLogic($script, $data);
+		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-
+		$this->logic1($script,$data);
+	}
+	public function logic1($script, $data)
+	{
+		//echo $script;
+		$sData = Session::get($script);
+		$target = 2;
+		$stop = -2;
+		$threshold = 2;
+		$ldate = date('Y-m-d');
+		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
+		$his = DB::table('marketwatch')
+			->where('TradingSymbol','=', $script)
+			->where('updatedTime', '>',  $ldate.' 09:30:00')
+			->orderBy('id', 'DESC')
+			->take(8)->get();
+		$sum = 0;
+		foreach($his as $key => $values) {
+			$sum += $values->diff;
+		}
+		if (isset($calls[0])) {
+			$diff = $data['per'] - $calls[0]->per;
+			echo $calls[0]->nse."=> Entry: ".$calls[0]->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+			if ($diff >= $target) {
+				DB::table('intra_call')
+					->where('id', $calls[0]->id)
+					->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+			} else if ($diff <= $stop) {
+				DB::table('intra_call')
+					->where('id', $calls[0]->id)
+					->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+			}
+			return 0;
+		} else {
+			if ($sum >= $threshold) {
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8P2');
+			}else if ($sum <= -$threshold) {
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8P2');
+			}
+		}
 	}
 	public function counLogic($script, $data)
 	{
@@ -374,24 +413,27 @@ public function updateSinglePosition()
 				Session::put($script, $sData);
 			}
 			if ($count == 5) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 5');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
 			}
 			if ($count == 4) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'Continues - 4');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 4');
 			}
 			return $count;
 		}
 	}
 
-	public function insIntraCall($script, $price, $per, $str)
+	public function insIntraCall($script, $price, $per, $call, $str)
 	{
 		$i['nse'] = $script;
         $i['price'] = $price;
         $i['per'] = $per;
-		$i['call'] = 1;
+		$i['call'] = $call;
 		$i['strategy'] = $str;
 		$EdelCode = DB::table('intraday_edel')->where('company','=', $script)->take(1)->get();
-		$i['edel'] = $EdelCode[0]->symbol;
+		if(isset($EdelCode[0]))
+			$i['edel'] = $EdelCode[0]->symbol;
+		else
+			$i['edel'] = 'NF';
 		DB::table('intra_call')->insert($i);
 	}
 
