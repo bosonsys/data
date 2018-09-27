@@ -344,8 +344,8 @@ public function updateSinglePosition()
 	{
 		//echo $script;
 		$sData = Session::get($script);
-		$target = 2;
-		$stop = -2;
+		$target = 1;
+		$stop = -1;
 		$threshold = 2;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
@@ -373,9 +373,9 @@ public function updateSinglePosition()
 			return 0;
 		} else {
 			if ($sum >= $threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8P2');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8P1');
 			}else if ($sum <= -$threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8P2');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8P1');
 			}
 		}
 	}
