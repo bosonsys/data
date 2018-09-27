@@ -79,7 +79,50 @@ class MarketwatchController extends \BaseController {
         // $this->getAllSector();
         // $this->gainerLoser();
     }
+    public function marketJSON()
+    {
+        $rows = array();
+        $table = array();
+        $ldate = date('Y-m-d');
 
+        $table['cols'] = array(array(
+            'label' => 'Date Time', 
+            'type' => 'datetime'
+        ));
+        $dt = DB::table('marketwatch')
+        ->select('updatedTime')
+        ->where('updatedTime', '>',  $ldate.' 09:00:00')
+        ->groupBy('updatedTime')
+        ->get();
+        echo "<pre>";
+        foreach ($dt as $key => $datetime) {
+            $data = DB::table('marketwatch')->select('per', 'TradingSymbol', 'updatedTime')
+            ->where('updatedTime',$datetime->updatedTime)->get();
+        }
+        exit;
+
+            $date = new DateTime();
+            $sub_array[] =  array(
+				"v" => 'Date('.$date->getTimestamp().'000)'
+            );
+            $c = array();
+            echo "<pre>"; print_r($d); exit();
+            foreach ($d as $k => $v) {
+
+                $new = array($v->updatedTime, $v->per);
+                array_push($c, $new);
+                $sub_array[] =  array(
+                    "v" => $v->per
+                );
+                $rows[] =  array(
+                    "c" => $sub_array
+                );
+            }
+            $table['rows'] = $rows;
+            //return Response::json($table);
+            echo '<pre>'; print_r($table); exit();
+            //return View::make('watch.marketJSON');
+    }
     public function gainerLoser()
     {
         // Gainer

@@ -109,8 +109,10 @@ class CallController extends \BaseController {
 		'type' => 'datetime'
 		));
 		foreach ($input['data'] as $key => $value) {
-			$t = array('label' => $value['TradingSymbol'], 'type' => 'number');
-			array_push($table['cols'] , $t);
+			$t1 = array('label' => $value['TradingSymbol'], 'type' => 'number');
+			array_push($table['cols'] , $t1);
+			$t2 = array('role' => 'annotation', 'type' => 'string');
+			array_push($table['cols'] , $t2);
 		}
 		$fh = fopen($json, 'w');
   		fwrite($fh, json_encode($table));
@@ -159,14 +161,10 @@ $table['rows'] = array();
                 $update['LastTraded'] = $v['Last Traded Date'];
 				DB::table('marketwatch')->insert($update);
 				$lastRecArray->$v['TradingSymbol'] = $v['%'];
-					$sub_array[] =  array(
-						"v" => $v['%']
-						// "v" => $v['LTPrice']
-						);
-					}
-					$tempRow[] =  array(
-						"c" => $sub_array
-						);
+				$sub_array[] =  array("v" => $v['%']);
+				$sub_array[] =  array("v" => null);
+			}
+			$tempRow[] =  array("c" => $sub_array);
 
 				// $tempRow[] = $rows;
 				file_put_contents($lastRec, json_encode($lastRecArray));  
@@ -346,7 +344,7 @@ public function updateSinglePosition()
 		$sData = Session::get($script);
 		$target = 1;
 		$stop = -1;
-		$threshold = 2;
+		$threshold = 1;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
@@ -373,9 +371,9 @@ public function updateSinglePosition()
 			return 0;
 		} else {
 			if ($sum >= $threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8T1P1');
 			}else if ($sum <= -$threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8T1P1');
 			}
 		}
 	}

@@ -28,6 +28,7 @@ Route::get('/updatetable/{script}/{year?}', 'MarketController@updateTable');
 Route::get('/pennystock', 'MarketController@prevday');
 //Route::get('/newtable/{script}/{year?}', 'MarketController@newTable');
 Route::get('/marketwatch', 'MarketwatchController@index');
+Route::get('/marketJSON', 'MarketwatchController@marketJSON');
 Route::get('/marketwatch1', 'MarketwatchController@v2');
 Route::get('/marketwatch/nsedata', 'MarketwatchController@getNSDdata');
 Route::get('/marketwatch/nse50', 'MarketwatchController@nse50');
