@@ -46,6 +46,7 @@ Route::get('/call/json/portfolio', 'CallController@getPortfolio');
 Route::post('/call/update/portfolio', 'CallController@updatePortfolio');
 Route::post('/call/update/marketwatch', 'CallController@updateMarketwatch');
 Route::post('/call/update/position', 'CallController@updateSinglePosition');
+Route::post('/call/insert/intradayData', 'CallController@insertIntraTableDB');
 Route::get('/call/edel/{nse}', 'CallController@redirect');
 Route::get('/call/json/marketwatch', 'MarketwatchController@getData');
 Route::get('/store/nsedata', 'MarketwatchController@getAllData');
