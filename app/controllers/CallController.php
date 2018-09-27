@@ -173,10 +173,20 @@ $table['rows'] = array();
 				
                 $tempArray->rows=$tempRow;
                 $jsonData = json_encode($tempArray);
-            	file_put_contents($json, $jsonData);
-
+				file_put_contents($json, $jsonData);
+				$this->insertNifty($input['nifty']);
 		return json_encode('Success'.date('Y-m-d H:i:s'));
 	}
+public function insertNifty($nifty)
+{
+	$pCpoint = Session::get('nifty');
+	$update['cpoint'] = $nifty;
+	$update['diff'] = ($nifty - $pCpoint);
+	// $state = $this->getState('NIFTY', $update['LTPrice']);
+	// $update['state'] = $state;
+	Session::put('nifty', $nifty);
+	DB::table('nifty')->insert($update);
+}
 public function getState($name, $c)
 {
 	// Session::flush();
