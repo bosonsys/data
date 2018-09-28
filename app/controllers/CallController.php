@@ -177,12 +177,15 @@ $table['rows'] = array();
 	}
 public function insertNifty($nifty)
 {
-	$pCpoint = Session::get('nifty');
-	$update['cpoint'] = $nifty;
-	$update['diff'] = ($nifty - $pCpoint);
-	// $state = $this->getState('NIFTY', $update['LTPrice']);
-	// $update['state'] = $state;
-	Session::put('nifty', $nifty);
+	// echo '<pre>'; print_r($nifty); exit();
+	if (Session::get('nifty')) {
+		$pCpoint = Session::get('nifty');
+		$update['diff'] = ($nifty[3] - $pCpoint);
+	}
+	$update['point'] = $nifty[2];
+	$update['cpoint'] = $nifty[3];
+	$update['per'] = number_format(($nifty[3] /  ($nifty[2] + $nifty[3]))*100, 2);
+	Session::put('nifty', $nifty[3]);
 	DB::table('nifty')->insert($update);
 }
 public function getState($name, $c)
@@ -305,6 +308,21 @@ public function updateSinglePosition()
 		return json_encode($lastRec);
 	}
 
+public function insertIntraTableDB()
+	{
+		$input = Input::all();
+		
+		// DB::table('intraday_edel')->truncate();
+		foreach ($input['data'] as $k => $v) {
+			$d['company'] = $v['Edel Code'];
+			$d['symbol'] = $v['NSE Symbol'];
+			$d['isin'] = $v['ISIN'];
+			$d['series'] = 'EQ';
+			$d['Margin'] = $v['Intraday Margin'];
+			DB::table('intraday_edel')->insert($d);
+		}
+		return json_encode('Inserted Successfully');
+	}
 
 	/**
 	 * Show the form for editing the specified resource.
