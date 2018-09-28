@@ -111,7 +111,7 @@ class CallController extends \BaseController {
 		foreach ($input['data'] as $key => $value) {
 			$t1 = array('label' => $value['TradingSymbol'], 'type' => 'number');
 			array_push($table['cols'] , $t1);
-			$t2 = array('role' => 'annotation', 'type' => 'string');
+			$t2 = array('role' => 'style', 'type' => 'string');
 			array_push($table['cols'] , $t2);
 		}
 		$fh = fopen($json, 'w');
@@ -162,7 +162,7 @@ $table['rows'] = array();
 				DB::table('marketwatch')->insert($update);
 				$lastRecArray->$v['TradingSymbol'] = $v['%'];
 				$sub_array[] =  array("v" => $v['%']);
-				$sub_array[] =  array("v" => null);
+				$sub_array[] =  array("v" => 'point { size: 18; shape-type: star; fill-color: #a52714; }');
 			}
 			$tempRow[] =  array("c" => $sub_array);
 
@@ -361,7 +361,7 @@ public function updateSinglePosition()
 			->where('TradingSymbol','=', $script)
 			->where('updatedTime', '>',  $ldate.' 09:30:00')
 			->orderBy('id', 'DESC')
-			->take(8)->get();
+			->take(2)->get();
 		$sum = 0;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
@@ -381,9 +381,9 @@ public function updateSinglePosition()
 			return 0;
 		} else {
 			if ($sum >= $threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8T1P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R4T1P1');
 			}else if ($sum <= -$threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8T1P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R4T1P1');
 			}
 		}
 	}
