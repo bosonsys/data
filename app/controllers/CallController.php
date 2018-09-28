@@ -473,6 +473,10 @@ public function insertIntraTableDB()
 	{
 		//
 	}
+public function report()
+{
 
+	return View::make('report.report');
+}
 
 }
