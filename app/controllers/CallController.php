@@ -475,8 +475,19 @@ public function insertIntraTableDB()
 	}
 public function report()
 {
+	$buy = DB::table('intra_call')
+		->select(DB::raw('count("call") as value, status, strategy'))
+		->where('call',1)
+		->groupBy('status')
+		->get();
 
-	return View::make('report.report');
+	$sell = DB::table('intra_call')
+	    ->select(DB::raw('count("call") as total, status, strategy'))
+		->where('call',2)
+		->groupBy('status')
+		->get();
+		//echo "<pre>"; print_r($call); exit();
+	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell));
 }
 
 }
