@@ -379,7 +379,7 @@ public function insertIntraTableDB()
 			->where('TradingSymbol','=', $script)
 			->where('updatedTime', '>',  $ldate.' 09:30:00')
 			->orderBy('id', 'DESC')
-			->take(8)->get();
+			->take(4)->get();
 		$sum = 0;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
@@ -399,9 +399,9 @@ public function insertIntraTableDB()
 			return 0;
 		} else {
 			if ($sum >= $threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R8T1P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R4T1P1');
 			}else if ($sum <= -$threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R8T1P1');
+				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R4T1P1');
 			}
 		}
 	}
