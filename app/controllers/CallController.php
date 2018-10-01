@@ -111,7 +111,7 @@ class CallController extends \BaseController {
 		foreach ($input['data'] as $key => $value) {
 			$t1 = array('label' => $value['TradingSymbol'], 'type' => 'number');
 			array_push($table['cols'] , $t1);
-			$t2 = array('role' => 'annotation', 'type' => 'string');
+			$t2 = array('role' => 'style', 'type' => 'string');
 			array_push($table['cols'] , $t2);
 		}
 		$fh = fopen($json, 'w');
@@ -162,7 +162,7 @@ $table['rows'] = array();
 				DB::table('marketwatch')->insert($update);
 				$lastRecArray->$v['TradingSymbol'] = $v['%'];
 				$sub_array[] =  array("v" => $v['%']);
-				$sub_array[] =  array("v" => null);
+				$sub_array[] =  array("v" => 'point { size: 18; shape-type: star; fill-color: #a52714; }');
 			}
 			$tempRow[] =  array("c" => $sub_array);
 
@@ -473,6 +473,21 @@ public function insertIntraTableDB()
 	{
 		//
 	}
+public function report()
+{
+	$buy = DB::table('intra_call')
+		->select(DB::raw('count("call") as value, status, strategy'))
+		->where('call',1)
+		->groupBy('status')
+		->get();
 
+	$sell = DB::table('intra_call')
+	    ->select(DB::raw('count("call") as total, status, strategy'))
+		->where('call',2)
+		->groupBy('status')
+		->get();
+		//echo "<pre>"; print_r($call); exit();
+	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell));
+}
 
 }
