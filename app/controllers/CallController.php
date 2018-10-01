@@ -475,15 +475,18 @@ public function insertIntraTableDB()
 	}
 public function report()
 {
+	$ldate = date('Y-m-d');
 	$buy = DB::table('intra_call')
 		->select(DB::raw('count("call") as value, status, strategy'))
 		->where('call',1)
+		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->groupBy('status')
 		->get();
 
 	$sell = DB::table('intra_call')
 	    ->select(DB::raw('count("call") as total, status, strategy'))
 		->where('call',2)
+		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->groupBy('status')
 		->get();
 		//echo "<pre>"; print_r($call); exit();
