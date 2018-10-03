@@ -377,7 +377,7 @@ public function insertIntraTableDB()
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
 			->where('TradingSymbol','=', $script)
-			->where('updatedTime', '>',  $ldate.' 09:30:00')
+			->where('updatedTime', '>',  $ldate.' 09:15:00')
 			->orderBy('id', 'DESC')
 			->take(4)->get();
 		$sum = 0;
