@@ -31,35 +31,36 @@
             $buy_notex = $v->value;
     }
     ?>
-    <h1>Buy Call</h1>
-<table class="table table-striped table-hover">
-        <tr>
+    <h1 style="text-align:center">Buy Call</h1>
+<!--<table class="table table-striped table-hover">-->
+<table class="table table-bordered" style="width:70%" align="center">
+        <tr style="background-color:#e0e0e0">
             <!-- <th>Strategy</th> -->
-            <th>Success</th>
-            <th>Fail</th>
-            <th>Not Complet</th>
+            <th style="text-align:center">Success</th>
+            <th style="text-align:center">Fail</th>
+            <th style="text-align:center">Not Complet</th>
             
         </tr>
         <tr>
-            <td>{{$buy_success}}</td>
-            <td>{{$buy_fail}}</td>
-            <td>{{$buy_notex}}</td>
+            <td style="text-align:center">{{$buy_success}}</td>
+            <td style="text-align:center">{{$buy_fail}}</td>
+            <td style="text-align:center">{{$buy_notex}}</td>
         </tr>
     </table>    
-    <h1>Sell Call</h1>
+    <h1 style="text-align:center">Sell Call</h1>
 
-<table class="table table-striped table-hover">
-        <tr>
+<table class="table table-bordered" style="width:70%" align="center">
+        <tr style="background-color:#e0e0e0">
             <!-- <th>Strategy</th> -->
-            <th>Success</th>
-            <th>Fail</th>
-            <th>Not Complet</th>
+            <th style="text-align:center">Success</th>
+            <th style="text-align:center">Fail</th>
+            <th style="text-align:center">Not Complet</th>
             
         </tr>
         <tr>
-            <td>{{$sell_success}}</td>
-            <td>{{$sell_fail}}</td>
-            <td>{{$sell_notex}}</td>
+            <td style="text-align:center">{{$sell_success}}</td>
+            <td style="text-align:center">{{$sell_fail}}</td>
+            <td style="text-align:center">{{$sell_notex}}</td>
         </tr>
     </table>    
 
