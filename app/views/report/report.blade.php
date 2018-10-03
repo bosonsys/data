@@ -23,9 +23,9 @@
     }
 
     foreach ($buy as $key => $v) {
-        if($v->status == '-1')
-            $buy_success = $v->value;
         if($v->status == '1')
+            $buy_success = $v->value;
+        if($v->status == '-1')
             $buy_fail = $v->value;
         if($v->status == '0')
             $buy_notex = $v->value;

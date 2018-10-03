@@ -370,39 +370,74 @@ public function insertIntraTableDB()
 	{
 		//echo $script;
 		$sData = Session::get($script);
-		$target = 1;
-		$stop = -1;
 		$threshold = 1;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
 			->where('TradingSymbol','=', $script)
 			->where('updatedTime', '>',  $ldate.' 09:15:00')
+			->where('updatedTime', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
+		    // ->where(DB::raw('updatedTime >= DATE_SUB(NOW(), INTERVAL 1 HOUR)')) 
 			->orderBy('id', 'DESC')
-			->take(4)->get();
+			->take(4)
+			->get();
+			//echo "<pre>"; print_r($his); exit();
 		$sum = 0;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
 		}
 		if (isset($calls[0])) {
-			$diff = $data['per'] - $calls[0]->per;
-			echo $calls[0]->nse."=> Entry: ".$calls[0]->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
-			if ($diff >= $target) {
-				DB::table('intra_call')
-					->where('id', $calls[0]->id)
-					->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
-			} else if ($diff <= $stop) {
-				DB::table('intra_call')
-					->where('id', $calls[0]->id)
-					->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+			if ($calls[0]->call == 1) {
+				$this->buyCallWatch($calls[0],$data);
+			} else if ($calls[0]->call == 2) {
+				$this->sellCallWatch($calls[0],$data);
 			}
 			return 0;
-		} else {
+		}
+		else {
 			if ($sum >= $threshold) {
 				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R4T1P1');
 			}else if ($sum <= -$threshold) {
 				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R4T1P1');
 			}
+		}
+	}
+	public function buyCallWatch($callData, $data)
+	{
+		$target = 1;
+		$stop = -1;
+		$diff = $data['per'] - $callData->per;
+		echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		if ($diff >= $target) {
+			if($data['diff'] < 0)
+			{
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+			}
+		} else if ($diff <= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+		}
+	}
+	public function sellCallWatch($callData, $data)
+	{
+		$target = -1;
+		$stop = 1;
+		$diff = $data['per'] - $callData->per;
+		echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		if ($diff <= $target) {
+			if($data['diff'] < 0)
+			{
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+			}
+		} else if ($diff >= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
 		}
 	}
 	public function counLogic($script, $data)
