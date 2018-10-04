@@ -529,12 +529,12 @@ public function report()
 		->get();
 		//echo "<pre>"; print_r($sell); exit();
 		$calldetail = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
-		->select('id','nse','price','cPrice','per','cPer','call','status')
+		// ->select('id','nse','price','cPrice','per','cPer','call','status')
 		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->orderBy('id', 'DESC')
 		// ->take(5)
 		->get();
-	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell))->with(array('calldetail'=>$calldetail));
+	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
 // public function calldetails()
 // {

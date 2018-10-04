@@ -72,13 +72,13 @@
         <tr style="background-color:#e0e0e0">
             <!-- <th>Strategy</th> -->
             <th style="text-align:center">S.No.</th> 
+            <th style="text-align:center">Time</th>
             <th style="text-align:center">Company Name</th>
             <th style="text-align:center">Call</th>
-            <th style="text-align:center">Price</th>
-            <th style="text-align:center">Success/Fail</th>
-            <!-- <th style="text-align:center">Fail</th> -->
-            <th style="text-align:center">Profit/Loss</th>
-            
+            <th style="text-align:center">Entry Price</th>
+            <th style="text-align:center">Exit Price</th>
+            <th style="text-align:center">Profit/Loss (%)</th>
+            <th style="text-align:center">Success/Fail</th>            
         </tr>
     <?php
     
@@ -89,17 +89,24 @@
     ?>
         <tr>
             <td style="text-align:center">{{$k->id}}</td>
+            <td style="text-align:center">{{$k->inserted_on}}</td>
             <td style="text-align:center">{{$k->nse}}</td>
             <td style="text-align:center">
             <?php
-             if($k->call == '1')
-                echo "Buy";
+             if($k->call == '1'){
+                 echo "Buy";
+                 $pl = $k->cPer - $k->per;
+             }
              if($k->call == '2')
+             {
                 echo "Sell";
+                $pl = $k->per - $k->cPer;
+             }
             ?></td>
-            <!-- <td style="text-align:center">{{$k->price-$k->cPrice}}</td> -->
-           <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td>
-       
+            <td style="text-align:center">{{$k->price}}</td>
+            <td style="text-align:center">{{$k->cPrice}}</td>
+           <!-- <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td> -->
+           <td style="text-align:center">{{$pl}}</td>   
             <td style="text-align:center">
             <?php  
                  if($k->status == '1')
@@ -110,7 +117,6 @@
                     echo "Not Yet Completed";   
             ?>
             </td>
-            <td style="text-align:center">{{$k->per-$k->cPer}}</td>
         </tr>
         
     <?php
