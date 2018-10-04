@@ -150,7 +150,7 @@ $table['rows'] = array();
 				$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
 				$update['state'] = $state;
 				$count = 0; // not active
-				$this->screenCall($v['TradingSymbol'], $update);
+				$sc = $this->screenCall($v['TradingSymbol'], $update);
                 $update['count'] = $count;
                 $update['LTQty'] = $v['LTQty'];
                 $update['Vol'] = $v['Vol'];
@@ -173,7 +173,7 @@ $table['rows'] = array();
                 $jsonData = json_encode($tempArray);
 				file_put_contents($json, $jsonData);
 				$this->insertNifty($input['nifty']);
-		return json_encode('Success'.date('Y-m-d H:i:s'));
+		return json_encode($sc);
 	}
 public function insertNifty($nifty)
 {
@@ -364,13 +364,14 @@ public function insertIntraTableDB()
 		// Logic 1 - Countinues +/-
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-		$this->logic1($script,$data);
+		return $this->logic1($script,$data);
 	}
 	public function logic1($script, $data)
 	{
+		$r = null;
 		//echo $script;
 		$sData = Session::get($script);
-		$threshold = 1;
+		$threshold = 0;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
@@ -392,22 +393,23 @@ public function insertIntraTableDB()
 			} else if ($calls[0]->call == 2) {
 				$this->sellCallWatch($calls[0],$data);
 			}
-			return 0;
+			return $r;
 		}
 		else {
 			if ($sum >= $threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R4T1P1');
+				$r = $this->insIntraCall($script, $data['LTPrice'], $data['per'],'1','IMH-R4T1P1');
 			}else if ($sum <= -$threshold) {
-				$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R4T1P1');
+				$r = $this->insIntraCall($script, $data['LTPrice'], $data['per'],'2','IMH-R4T1P1');
 			}
 		}
+		return $r;
 	}
 	public function buyCallWatch($callData, $data)
 	{
 		$target = 1;
 		$stop = -1;
 		$diff = $data['per'] - $callData->per;
-		echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		// echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff >= $target) {
 			if($data['diff'] < 0)
 			{
@@ -496,6 +498,7 @@ public function insertIntraTableDB()
 		else
 			$i['edel'] = 'NF';
 		DB::table('intra_call')->insert($i);
+		return $i;
 	}
 
 	/**
