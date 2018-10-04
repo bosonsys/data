@@ -428,7 +428,7 @@ public function insertIntraTableDB()
 		$target = -1;
 		$stop = 1;
 		$diff = $data['per'] - $callData->per;
-		echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		// echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff <= $target) {
 			if($data['diff'] < 0)
 			{
