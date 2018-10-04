@@ -381,7 +381,7 @@ public function insertIntraTableDB()
 			->orderBy('id', 'DESC')
 			->take(4)
 			->get();
-			//echo "<pre>"; print_r($his); exit();
+			// echo "<pre>"; print_r($his); exit();
 		$sum = 0;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
@@ -524,8 +524,24 @@ public function report()
 		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->groupBy('status')
 		->get();
-		//echo "<pre>"; print_r($call); exit();
-	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell));
+		//echo "<pre>"; print_r($sell); exit();
+		$calldetail = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
+		->select('id','nse','price','cPrice','per','cPer','call','status')
+		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->orderBy('id', 'DESC')
+		// ->take(5)
+		->get();
+	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell))->with(array('calldetail'=>$calldetail));
 }
+// public function calldetails()
+// {
+		
+// 	$s = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
+// 		->select('edel','price','cPrice','per','cPer','call')
+//         ->get();
+        
+// 	//echo "<pre>"; print_r($s); exit();
+// 	return View::make('report.calldetails')->with('s',$s);
+// }
 
 }
