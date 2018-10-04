@@ -1,6 +1,7 @@
 @extends('layout.index')
 @section('content')
  <?php
+//print_r($call);
 // print_r($buy);
 // print_r($sell);
 //$count = DB::table('intra_call')->where('status','=','-1')->count();
@@ -13,6 +14,7 @@
          $buy_success = 0;
          $buy_fail = 0;
          $buy_notex = 0;
+
     foreach ($sell as $key => $v) {
         if($v->status == '1')
             $sell_success = $v->total;
@@ -31,14 +33,15 @@
             $buy_notex = $v->value;
     }
     ?>
-    <h1 style="text-align:center">Buy Call</h1>
+    <!-- <h1 style="text-align:center">Buy Call</h1> -->
 <!--<table class="table table-striped table-hover">-->
-<table class="table table-bordered" style="width:70%" align="center">
-        <tr style="background-color:#e0e0e0">
+<div>
+<table class="table table-bordered" style="width:20%;margin-right:50px;" align="left">
+        <tr style="background-color:#2ee80c">
             <!-- <th>Strategy</th> -->
             <th style="text-align:center">Success</th>
             <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Complet</th>
+            <th style="text-align:center">Not Complete Yet</th>
             
         </tr>
         <tr>
@@ -46,15 +49,15 @@
             <td style="text-align:center">{{$buy_fail}}</td>
             <td style="text-align:center">{{$buy_notex}}</td>
         </tr>
-    </table>    
-    <h1 style="text-align:center">Sell Call</h1>
+    </table>  
+    <!-- <h1 style="text-align:center">Sell Call</h1> -->
 
-<table class="table table-bordered" style="width:70%" align="center">
-        <tr style="background-color:#e0e0e0">
+<table class="table table-bordered" style="width:20%" align="left">
+        <tr style="background-color:#f90505">
             <!-- <th>Strategy</th> -->
             <th style="text-align:center">Success</th>
             <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Complet</th>
+            <th style="text-align:center">Not Complete Yet</th>
             
         </tr>
         <tr>
@@ -62,6 +65,57 @@
             <td style="text-align:center">{{$sell_fail}}</td>
             <td style="text-align:center">{{$sell_notex}}</td>
         </tr>
-    </table>    
+    </table>
+    </div>    
+
+<br><br><br><br><table class="table table-bordered" style="width:100%;" align="center">
+        <tr style="background-color:#e0e0e0">
+            <!-- <th>Strategy</th> -->
+            <th style="text-align:center">S.No.</th> 
+            <th style="text-align:center">Company Name</th>
+            <th style="text-align:center">Call</th>
+            <th style="text-align:center">Price</th>
+            <th style="text-align:center">Success/Fail</th>
+            <!-- <th style="text-align:center">Fail</th> -->
+            <th style="text-align:center">Profit/Loss</th>
+            
+        </tr>
+    <?php
+    
+    foreach ($calldetail as $key => $k)
+    { 
+        
+        
+    ?>
+        <tr>
+            <td style="text-align:center">{{$k->id}}</td>
+            <td style="text-align:center">{{$k->nse}}</td>
+            <td style="text-align:center">
+            <?php
+             if($k->call == '1')
+                echo "Buy";
+             if($k->call == '2')
+                echo "Sell";
+            ?></td>
+            <!-- <td style="text-align:center">{{$k->price-$k->cPrice}}</td> -->
+           <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td>
+       
+            <td style="text-align:center">
+            <?php  
+                 if($k->status == '1')
+                    echo "Success";
+                 if($k->status == '-1')
+                    echo "Fail";
+                 if($k->status == '0')
+                    echo "Not Yet Completed";   
+            ?>
+            </td>
+            <td style="text-align:center">{{$k->per-$k->cPer}}</td>
+        </tr>
+        
+    <?php
+        }
+    ?>
+    </table>
 
 @stop
