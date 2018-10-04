@@ -413,12 +413,12 @@ public function insertIntraTableDB()
 			{
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 			}
 		} else if ($diff <= $stop) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 		}
 	}
 	public function sellCallWatch($callData, $data)
@@ -432,12 +432,12 @@ public function insertIntraTableDB()
 			{
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 			}
 		} else if ($diff >= $stop) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 		}
 	}
 	public function counLogic($script, $data)
@@ -453,11 +453,11 @@ public function insertIntraTableDB()
 			if ($diff >= $target) {
 				DB::table('intra_call')
 					->where('id', $calls[0]->id)
-					->update(array('status' => 1, 'cPrice' => $data['LTPrice']));
+					->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 			} else if ($diff <= $stop) {
 				DB::table('intra_call')
 					->where('id', $calls[0]->id)
-					->update(array('status' => -1, 'cPrice' => $data['LTPrice']));
+					->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 			}
 			return 0;
 		} else {
