@@ -14,9 +14,9 @@
          $buy_fail = 0;
          $buy_notex = 0;
     foreach ($sell as $key => $v) {
-        if($v->status == '-1')
-            $sell_success = $v->total;
         if($v->status == '1')
+            $sell_success = $v->total;
+        if($v->status == '-1')
             $sell_fail = $v->total;
         if($v->status == '0')
             $sell_notex = $v->total;
