@@ -426,8 +426,8 @@ public function insertIntraTableDB()
 	}
 	public function sellCallWatch($callData, $data)
 	{
-		$target = -1;
-		$stop = 1;
+		$target = 1;
+		$stop = -1;
 		$diff = $data['per'] - $callData->per;
 		// echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff <= $target) {
@@ -535,6 +535,13 @@ public function report()
 		->orderBy('id', 'DESC')
 		// ->take(5)
 		->get();
+		foreach($calldetail as $call) {
+          $dt = $call->inserted_on;
+            $dt = strtotime(str_replace('|', '', $dt));
+            // $d = date('Y-m-d',$dt);
+            $t = date('h:i',$dt);
+		}
+		//echo "<pre>"; print_r($t); exit();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
 

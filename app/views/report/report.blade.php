@@ -97,12 +97,23 @@
     
     foreach ($calldetail as $key => $k)
     { 
+          $dt = $k->inserted_on;
+            $dt = strtotime(str_replace('|', '', $dt));
+            // $d = date('Y-m-d',$dt);
+            $t = date('H:i',$dt);
         
-        
+            $time = $k->updated_on;
+            $time = strtotime(str_replace('|', '', $time));
+            // $d = date('Y-m-d',$dt);
+            $a = date('H:i',$time);
+        //echo "<pre>"; print_r($t); exit();
     ?>
         <tr>
             <td style="text-align:center">{{$k->id}}</td>
-            <td style="text-align:center">{{$k->inserted_on}}</td>
+            <td style="text-align:center">
+                <?php
+                echo $t."-". $a;
+                ?></td>
             <td style="text-align:center">{{$k->nse}}</td>
             <td style="text-align:center">
             <?php
@@ -119,7 +130,7 @@
             <td style="text-align:center">{{$k->price}}</td>
             <td style="text-align:center">{{$k->cPrice}}</td>
            <!-- <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td> -->
-            <td style="text-align:center">{{$pl}}</td>   
+            <td style="text-align:center">{{$pl}}%</td>   
             <td style="text-align:center">
             <?php  
                  if($k->status == '1')
