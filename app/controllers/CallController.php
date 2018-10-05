@@ -172,7 +172,9 @@ $table['rows'] = array();
                 $tempArray->rows=$tempRow;
                 $jsonData = json_encode($tempArray);
 				file_put_contents($json, $jsonData);
-				$this->insertNifty($input['nifty']);
+				// echo $input['nifty'];
+				if($input['nifty'])
+					$this->insertNifty($input['nifty']);
 		return json_encode($sc);
 	}
 public function insertNifty($nifty)
