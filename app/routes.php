@@ -61,5 +61,5 @@ Route::get('/strategy/upDown', 'StrategyController@upDown');
 Route::get('/breakout/5days', 'BreakoutController@days5');
 Route::get('/last5days/{nse}', 'BreakoutController@last5days');
 Route::get('/stock/{nse}', 'StockController@index');
-Route::get('/report', 'CallController@report');
+Route::get('/callreport', 'CallController@report');
 //Route::get('/report', 'CallController@calldetails');

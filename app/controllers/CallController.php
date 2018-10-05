@@ -371,14 +371,13 @@ public function insertIntraTableDB()
 		$r = null;
 		//echo $script;
 		$sData = Session::get($script);
-		$threshold = 0;
+		$threshold = 1.5;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
 			->where('TradingSymbol','=', $script)
 			->where('updatedTime', '>',  $ldate.' 09:15:00')
 			->where('updatedTime', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
-		    // ->where(DB::raw('updatedTime >= DATE_SUB(NOW(), INTERVAL 1 HOUR)')) 
 			->orderBy('id', 'DESC')
 			->take(4)
 			->get();
@@ -536,15 +535,6 @@ public function report()
 		->get();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
-// public function calldetails()
-// {
-		
-// 	$s = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
-// 		->select('edel','price','cPrice','per','cPer','call')
-//         ->get();
-        
-// 	//echo "<pre>"; print_r($s); exit();
-// 	return View::make('report.calldetails')->with('s',$s);
-// }
+
 
 }

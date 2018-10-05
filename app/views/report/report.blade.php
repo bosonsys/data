@@ -1,5 +1,11 @@
 @extends('layout.index')
 @section('content')
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.x-git.min.js"></script> 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+
  <?php
 //print_r($call);
 // print_r($buy);
@@ -33,45 +39,50 @@
             $buy_notex = $v->value;
     }
     ?>
-    <!-- <h1 style="text-align:center">Buy Call</h1> -->
-<!--<table class="table table-striped table-hover">-->
-<div>
-<table class="table table-bordered" style="width:20%;margin-right:50px;" align="left">
+
+    <table class="table table-bordered" style="width:40%;margin-right:50px;" align="left">
         <tr style="background-color:#2ee80c">
             <!-- <th>Strategy</th> -->
-            <th style="text-align:center">Success</th>
+            <!-- <th style="text-align:center">Success</th>
             <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Complete Yet</th>
+            <th style="text-align:center">Not Yet Completed</th> -->
             
+            <td style="text-align:center">Success = {{$buy_success}}</td>
+            <td style="text-align:center">Fail = {{$buy_fail}}</td>
+            <td style="text-align:center">Not Yet Completed = {{$buy_notex}}</td>
+        
         </tr>
-        <tr>
+        <!-- <tr>
             <td style="text-align:center">{{$buy_success}}</td>
             <td style="text-align:center">{{$buy_fail}}</td>
             <td style="text-align:center">{{$buy_notex}}</td>
-        </tr>
+        </tr> -->
     </table>  
-    <!-- <h1 style="text-align:center">Sell Call</h1> -->
+    
 
-<table class="table table-bordered" style="width:20%" align="left">
+    <table class="table table-bordered" style="width:40%" align="left">
         <tr style="background-color:#f90505">
             <!-- <th>Strategy</th> -->
-            <th style="text-align:center">Success</th>
+            <!-- <th style="text-align:center">Success</th>
             <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Complete Yet</th>
-            
+            <th style="text-align:center">Not Yet Completed</th> -->
+            <td style="text-align:center">Success = {{$sell_success}}</td>
+            <td style="text-align:center">Fail = {{$sell_fail}}</td>
+            <td style="text-align:center">Not Yet Completed = {{$sell_notex}}</td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td style="text-align:center">{{$sell_success}}</td>
             <td style="text-align:center">{{$sell_fail}}</td>
             <td style="text-align:center">{{$sell_notex}}</td>
-        </tr>
+        </tr> -->
     </table>
-    </div>    
 
-<br><br><br><br><table class="table table-bordered" style="width:100%;" align="center">
-        <tr style="background-color:#e0e0e0">
-            <!-- <th>Strategy</th> -->
-            <th style="text-align:center">S.No.</th> 
+
+<!-- <br><br><br><br><table class="table table-bordered" style="width:100%;" align="center"> -->
+    <table id="sort" class="table table-bordered">
+        <thead>
+        <tr style="background-color:#c1c5c5">
+            <th style="text-align:center">S.No.</th>
             <th style="text-align:center">Time</th>
             <th style="text-align:center">Company Name</th>
             <th style="text-align:center">Call</th>
@@ -80,6 +91,8 @@
             <th style="text-align:center">Profit/Loss (%)</th>
             <th style="text-align:center">Success/Fail</th>            
         </tr>
+        </thead>
+        <tbody>
     <?php
     
     foreach ($calldetail as $key => $k)
@@ -106,7 +119,7 @@
             <td style="text-align:center">{{$k->price}}</td>
             <td style="text-align:center">{{$k->cPrice}}</td>
            <!-- <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td> -->
-           <td style="text-align:center">{{$pl}}</td>   
+            <td style="text-align:center">{{$pl}}</td>   
             <td style="text-align:center">
             <?php  
                  if($k->status == '1')
@@ -122,6 +135,13 @@
     <?php
         }
     ?>
+    </tbody>
     </table>
-
+    <script>
+        $(document).ready(function() {
+            $('#sort').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
+        } );
+    </script>
 @stop
