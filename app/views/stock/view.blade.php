@@ -2907,7 +2907,7 @@ window.onload = function () {
                 }]
             },
             yAxis: [{
-                height: '50%',
+                height: '80%',
                 resize: {
                     enabled: true,
                     controlledAxis: {
@@ -2916,8 +2916,8 @@ window.onload = function () {
                     lineWidth: 4
                 }
             }, {
-                top: '50%',
-                height: '50%',
+                top: '80%',
+                height: '20%',
                 id: 'rsi'
             }],
             navigator: {

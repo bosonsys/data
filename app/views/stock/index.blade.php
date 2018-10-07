@@ -32,9 +32,10 @@ exit;
         <td>
             <a href='https://mmb.moneycontrol.com$stock->mmbURL' target='_blank'>MMB</a>
             <a href='https://in.tradingview.com/symbols/NSE-$stock->nse/technicals/' target='_blank'>TV</a>
-            <a href='https://in.tradingview.com/chart/?symbol=NSE%3A$stock->nse' target='_blank'>Chat</a>
+            <a href='https://in.tradingview.com/chart/?symbol=NSE%3A$stock->nse' target='_blank'>Chart</a>
+            <a href='https://www.screener.in/company/$stock->nse/consolidated/' target='_blank'>Screener</a>
         </td>
-        <td><a href='".url('market/stock/'.$stock->nse)."' target='_blank'>$stock->nse</a></td>
+        <td><a href='".url('stock/'.$stock->nse)."' target='_blank'>$stock->nse</a></td>
         <td><a href='http://www.moneycontrol.com/stocks/cptmarket/compsearchnew.php?search_data=&cid=&mbsearch_str=&topsearch_type=1&search_str=".$stock->isin."' target='_blank'>".round($stock->price,2)."</a></td>
         <td>".number_format((float)$stock->closediff1, 2, '.', '')."</td>
         <td>".number_format((float)$stock->closediff2, 2, '.', '')."</td>
