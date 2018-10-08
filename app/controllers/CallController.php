@@ -367,13 +367,14 @@ public function insertIntraTableDB()
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
 		return $this->logic1($script,$data);
+		return $this->sma($script,$data);
 	}
 	public function logic1($script, $data)
 	{
 		$r = null;
 		//echo $script;
 		$sData = Session::get($script);
-		$threshold = 1.5;
+		$threshold = 1;
 		$ldate = date('Y-m-d');
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		$his = DB::table('marketwatch')
@@ -383,10 +384,15 @@ public function insertIntraTableDB()
 			->orderBy('id', 'DESC')
 			->take(4)
 			->get();
-			// echo "<pre>"; print_r($his); exit();
+			echo "<pre>"; print_r($his); exit();
 		$sum = 0;
+		$i = 1;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
+			if ($i == 9) {
+				$sma9 = $sum;
+			}
+		$i++;
 		}
 		if (isset($calls[0])) {
 			if ($calls[0]->call == 1) {
@@ -502,6 +508,15 @@ public function insertIntraTableDB()
 		return $i;
 	}
 
+	public function sma()
+	{
+	  $s = DB::table('marketwatch')
+		->where('inserted_on', '>',$ldate.' 09:14:00')
+		->take(21)
+		->get();
+		//echo "<pre>"; print_r($s); exit();
+
+	}
 	/**
 	 * Remove the specified resource from storage.
 	 *
@@ -532,16 +547,9 @@ public function report()
 		$calldetail = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
 		// ->select('id','nse','price','cPrice','per','cPer','call','status')
 		->where('inserted_on', '>',$ldate.' 09:00:00')
-		->orderBy('id', 'DESC')
+		->orderBy('id')
 		// ->take(5)
 		->get();
-		foreach($calldetail as $call) {
-          $dt = $call->inserted_on;
-            $dt = strtotime(str_replace('|', '', $dt));
-            // $d = date('Y-m-d',$dt);
-            $t = date('h:i',$dt);
-		}
-		//echo "<pre>"; print_r($t); exit();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
 

@@ -26,40 +26,81 @@
     var today = dd+'-'+mm+'-'+yyyy;
 
     // Load the Visualization API and the piechart package.
-    google.charts.load('current', {'packages':['line','corechart']});
+//     google.charts.load('current', {'packages':['line','corechart']});
       
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
-    setInterval(drawChart, (20 * 1000));
+//     // Set a callback to run when the Google Visualization API is loaded.
+//     google.charts.setOnLoadCallback(drawChart);
+//     setInterval(drawChart, (20 * 1000));
     
-    // google.charts.setOnLoadCallback(drawGainerChart);
-    // setInterval(drawGainerChart, (20 * 1000));
+//     // google.charts.setOnLoadCallback(drawGainerChart);
+//     // setInterval(drawGainerChart, (20 * 1000));
 
-    function drawChart() {
-      var jsonData = $.ajax({
-          url: "http://localhost/market/public/json/results_"+today+".json",
-          // url: "http://localhost/market/public/call/json/gainers",
-          dataType: "json",
-          async: false
-          }).responseText;
+//     function drawChart() {
+//       var jsonData = $.ajax({
+//           url: "http://localhost/market/public/json/results_"+today+".json",
+//           // url: "http://localhost/market/public/call/json/gainers",
+//           dataType: "json",
+//           async: false
+//           }).responseText;
           
-      // Create our data table out of JSON data loaded from server.
-      var data = new google.visualization.DataTable(jsonData);
-var options = {
+//       // Create our data table out of JSON data loaded from server.
+//       var data = new google.visualization.DataTable(jsonData);
+// var options = {
+//         explorer: {
+//           axis: 'horizontal',
+//             keepInBounds: true
+//           },
+//       };
+//       // Instantiate and draw our chart, passing in some options.
+//       // var chart = new google.visualization.LineChart(document.getElementById('chart'));
+//       //chart.draw(data, {width: 400, height: 240});
+// 	  // chart.draw(data, options);
+//           var chart = new google.charts.Line(document.getElementById('chart'));
+
+//       chart.draw(data, google.charts.Line.convertOptions(options));
+
+//     }
+   
+
+   google.charts.load('current', {
+  callback: function () {
+    var chart = null;
+
+    var options = {
         explorer: {
           axis: 'horizontal',
             keepInBounds: true
           },
       };
-      // Instantiate and draw our chart, passing in some options.
-      // var chart = new google.visualization.LineChart(document.getElementById('chart'));
-      //chart.draw(data, {width: 400, height: 240});
-	  // chart.draw(data, options);
-          var chart = new google.charts.Line(document.getElementById('chart'));
 
-      chart.draw(data, google.charts.Line.convertOptions(options));
+    google.charts.setOnLoadCallback(drawChart);
+    setInterval(drawChart, (20 * 1000));
 
+    function drawChart() {
+      $.ajax({
+        url: "http://localhost/market/public/json/results_"+today+".json",
+        dataType:"json",
+         async: false
+      }).done(function (jsonData) {
+
+        var data = new google.visualization.DataTable(jsonData);
+
+        if (chart==null)
+           chart = new google.charts.Line(document.getElementById('chart'));
+
+        chart.draw(data, options);
+
+      }).fail(function (jq, text) {
+        console.log(text);
+      });
     }
+  },
+  packages: ['line','corechart']
+});
+
+
+
+
 
     function drawGainerChart() {
       var jsonData = $.ajax({

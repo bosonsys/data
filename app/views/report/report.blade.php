@@ -7,6 +7,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
 
  <?php
+
 //print_r($call);
 // print_r($buy);
 // print_r($sell);
@@ -94,9 +95,10 @@
         </thead>
         <tbody>
     <?php
-    
+    $i=0;
     foreach ($calldetail as $key => $k)
     { 
+        $i++;
           $dt = $k->inserted_on;
             $dt = strtotime(str_replace('|', '', $dt));
             // $d = date('Y-m-d',$dt);
@@ -109,7 +111,11 @@
         //echo "<pre>"; print_r($t); exit();
     ?>
         <tr>
-            <td style="text-align:center">{{$k->id}}</td>
+            <td style="text-align:center">
+            <?php
+            echo $i;
+            ?>
+            </td>
             <td style="text-align:center">
                 <?php
                 echo $t."-". $a;
