@@ -35,10 +35,10 @@ class DashboardController extends \BaseController {
 		->whereIn('TIMESTAMP',$arr)
 		->groupBy('SYMBOL')
 		->orderby('CLOSEP','DESC')
-		// ->take(20)
+		->take(10)
         ->get();
     //echo "<pre>"; print_r($stock); exit();
-        return View::make('dashboard.lastday')->with('lists', $arr);
+        return View::make('dashboard.lastday')->with('lists', $arr)->with('stock',$stock);
          //return json_encode($stock);
 	}
     

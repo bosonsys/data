@@ -158,7 +158,8 @@ $table['rows'] = array();
                 $update['High'] = $v['High'];
                 $update['Low'] = $v['Low'];
                 $update['Close'] = $v['Close'];
-                $update['LastTraded'] = $v['Last Traded Date'];
+				$update['LastTraded'] = $v['Last Traded Date'];
+				// Insert Into Table
 				DB::table('marketwatch')->insert($update);
 				$lastRecArray->$v['TradingSymbol'] = $v['%'];
 				$sub_array[] =  array("v" => $v['%']);
@@ -366,10 +367,10 @@ public function insertIntraTableDB()
 		// Logic 1 - Countinues +/-
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-		return $this->logic1($script,$data);
+		//return $this->immediatehigh($script,$data);
 		return $this->sma($script,$data);
 	}
-	public function logic1($script, $data)
+	public function immediatehigh($script, $data)
 	{
 		$r = null;
 		//echo $script;
@@ -384,15 +385,15 @@ public function insertIntraTableDB()
 			->orderBy('id', 'DESC')
 			->take(4)
 			->get();
-			echo "<pre>"; print_r($his); exit();
+			// echo "<pre>"; print_r($his); exit();
 		$sum = 0;
-		$i = 1;
+		// $i = 1;
 		foreach($his as $key => $values) {
 			$sum += $values->diff;
-			if ($i == 9) {
-				$sma9 = $sum;
-			}
-		$i++;
+		// 	if ($i == 9) {
+		// 		$sma9 = $sum;
+		// 	}
+		// $i++;
 		}
 		if (isset($calls[0])) {
 			if ($calls[0]->call == 1) {
@@ -508,13 +509,45 @@ public function insertIntraTableDB()
 		return $i;
 	}
 
-	public function sma()
+	public function sma($script, $data)
 	{
-	  $s = DB::table('marketwatch')
-		->where('inserted_on', '>',$ldate.' 09:14:00')
-		->take(21)
-		->get();
-		//echo "<pre>"; print_r($s); exit();
+	  
+	  $ldate = date('Y-m-d');
+	  $sum = 0;
+	  $i = 1;
+	  $sma1 = 21;
+	  $sma2 = 9;
+	  $smaAvg2 = $smaAvg1 = null;
+	  $his = DB::table('marketwatch')
+			->where('TradingSymbol','=', $script)
+			->where('updatedTime', '>',  $ldate.' 09:14:00')
+			// ->where('updatedTime', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
+			->orderBy('id', 'DESC')
+			->take($sma1)
+			->get();
+		
+		foreach($his as $key => $values) {
+			$sum += $values->LTPrice;
+			if ($i == $sma2) {
+				$smaSum = $sum;
+				$smaAvg2 = $sum / $sma2;
+			}
+			if ($i == $sma1) {
+				$smaAvg1 = $sum / $sma1;
+			}
+		$i++;
+		}	
+		
+			$s = number_format($smaAvg2, 4, '.', ',');
+			echo "<pre>"; print_r($s);
+		//echo "$script => $crossover";
+	 if($smaAvg1 < $smaAvg2)
+	 {
+		echo "$script => $smaAvg1 | $s | ";
+		echo $trend = "uptrend <br>";
+	 } elseif ($smaAvg1 > $smaAvg2) {
+		  echo $trend = "downtrend";
+	 }
 
 	}
 	/**
