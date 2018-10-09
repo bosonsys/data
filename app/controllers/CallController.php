@@ -367,8 +367,8 @@ public function insertIntraTableDB()
 		// Logic 1 - Countinues +/-
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-		//return $this->immediatehigh($script,$data);
-		return $this->sma($script,$data);
+		return $this->immediatehigh($script,$data);
+		// return $this->sma($script,$data);
 	}
 	public function immediatehigh($script, $data)
 	{
@@ -517,7 +517,10 @@ public function insertIntraTableDB()
 	  $i = 1;
 	  $sma1 = 21;
 	  $sma2 = 9;
-	  $smaAvg2 = $smaAvg1 = null;
+	  $smaAvg2 = $smaAvg1 = $sTrend = null;
+	  if (Session::get('trend')) {
+		$sTrend = Session::get('trend');
+	  }
 	  $his = DB::table('marketwatch')
 			->where('TradingSymbol','=', $script)
 			->where('updatedTime', '>',  $ldate.' 09:14:00')
@@ -530,25 +533,26 @@ public function insertIntraTableDB()
 			$sum += $values->LTPrice;
 			if ($i == $sma2) {
 				$smaSum = $sum;
-				$smaAvg2 = $sum / $sma2;
+				$smaAvg2 = round(($sum / $sma2), 2);
 			}
 			if ($i == $sma1) {
-				$smaAvg1 = $sum / $sma1;
+				$smaAvg1 = round(($sum / $sma1), 2);
 			}
 		$i++;
 		}	
-		
-			$s = number_format($smaAvg2, 4, '.', ',');
-			echo "<pre>"; print_r($s);
-		//echo "$script => $crossover";
-	 if($smaAvg1 < $smaAvg2)
-	 {
-		echo "$script => $smaAvg1 | $s | ";
-		echo $trend = "uptrend <br>";
-	 } elseif ($smaAvg1 > $smaAvg2) {
-		  echo $trend = "downtrend";
-	 }
-
+		echo "<br> $script => $smaAvg1 | $smaAvg2 | ";
+		if ($sTrend == "uptrend") {
+			if ($smaAvg1 > $smaAvg2) {
+				$trend = "downtrend";
+				Session::put('trend', $trend);
+			}
+		}
+		if ($sTrend == "downtrend") {
+			if ($smaAvg1 < $smaAvg2) {
+				$trend = "uptrend";
+				Session::put('trend', $trend);
+			}
+		}
 	}
 	/**
 	 * Remove the specified resource from storage.
