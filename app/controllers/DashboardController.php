@@ -29,16 +29,26 @@ class DashboardController extends \BaseController {
         foreach ($lists as $key => $list) {
             array_push($arr,$list->TIMESTAMP);
         }
-		$stock = DB::table('csvdata')
-		->select('SYMBOL as n', 'CLOSEP as c', 'TIMESTAMP as t', 'SERIES as s')
-        ->whereIn('SERIES', ['EQ', 'BE'])
-		->whereIn('TIMESTAMP',$arr)
-		->groupBy('SYMBOL')
-		->orderby('CLOSEP','DESC')
-		->take(10)
-        ->get();
-    //echo "<pre>"; print_r($stock); exit();
-        return View::make('dashboard.lastday')->with('lists', $arr)->with('stock',$stock);
+		$pos = DB::table('csvdata')
+				->select('SYMBOL as n', 'CLOSEP as c', 'TIMESTAMP as t', 'SERIES as s')
+				->whereIn('SERIES', ['EQ', 'BE'])
+				->whereIn('TIMESTAMP',$arr)
+				//->where('CLOSEP','>','0')
+				->groupBy('SYMBOL')
+				->orderby('CLOSEP','DESC')
+				->take(10)
+				->get();
+		$neg = DB::table('csvdata')
+				->select('SYMBOL as s', 'CLOSEP as p', 'TIMESTAMP as d', 'SERIES as e')
+				->whereIn('SERIES', ['EQ', 'BE'])
+				->whereIn('TIMESTAMP',$arr)
+				//->where('CLOSEP','<','0')
+				->groupBy('SYMBOL')
+				->orderby('CLOSEP','ASC')
+				->take(10)
+				->get();
+    //echo "<pre>"; print_r($neg); exit();
+        return View::make('dashboard.lastday')->with('lists',$arr)->with('pos',$pos)->with('neg',$neg);
          //return json_encode($stock);
 	}
     

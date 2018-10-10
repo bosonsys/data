@@ -41,7 +41,7 @@
     }
     ?>
 
-    <table class="table table-bordered" style="width:40%;margin-right:50px;" align="left">
+    <table class="table table-bordered" style="width:30%;margin-right:50px;" align="left">
         <tr style="background-color:#2ee80c">
             <!-- <th>Strategy</th> -->
             <!-- <th style="text-align:center">Success</th>
@@ -60,8 +60,8 @@
         </tr> -->
     </table>  
     
-
-    <table class="table table-bordered" style="width:40%" align="left">
+<?php $total = 0; ?>
+    <table class="table table-bordered" style="width:30%;margin-right:50px;" align="left">
         <tr style="background-color:#f90505">
             <!-- <th>Strategy</th> -->
             <!-- <th style="text-align:center">Success</th>
@@ -71,11 +71,11 @@
             <td style="text-align:center">Fail = {{$sell_fail}}</td>
             <td style="text-align:center">Not Yet Completed = {{$sell_notex}}</td>
         </tr>
-        <!-- <tr>
-            <td style="text-align:center">{{$sell_success}}</td>
-            <td style="text-align:center">{{$sell_fail}}</td>
-            <td style="text-align:center">{{$sell_notex}}</td>
-        </tr> -->
+    </table>
+    <table class="table table-bordered" style="width:20%" align="left">
+    <tr style="background-color:#e0e0e0">
+    <td style="text-align:center">Overall Percentage</td>
+    <td style="text-align:center">Overall Percentage</td>
     </table>
 
 
@@ -102,12 +102,12 @@
           $dt = $k->inserted_on;
             $dt = strtotime(str_replace('|', '', $dt));
             // $d = date('Y-m-d',$dt);
-            $t = date('H:i',$dt);
+            $t = date('H:i:s',$dt);
         
             $time = $k->updated_on;
             $time = strtotime(str_replace('|', '', $time));
             // $d = date('Y-m-d',$dt);
-            $a = date('H:i',$time);
+            $a = date('H:i:s',$time);
         //echo "<pre>"; print_r($t); exit();
     ?>
         <tr>
@@ -132,11 +132,13 @@
                 echo "Sell";
                 $pl = $k->per - $k->cPer;
              }
+             $total += $pl;
             ?></td>
             <td style="text-align:center">{{$k->price}}</td>
             <td style="text-align:center">{{$k->cPrice}}</td>
            <!-- <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td> -->
-            <td style="text-align:center">{{$pl}}%</td>   
+            <td style="text-align:center">{{number_format(($pl), 2)}}%</td>   
+            <!-- <td style="text-align:center">{{$pl}}%</td> -->
             <td style="text-align:center">
             <?php  
                  if($k->status == '1')
@@ -154,6 +156,7 @@
     ?>
     </tbody>
     </table>
+    <?php     echo $total; ?>
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({
