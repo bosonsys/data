@@ -74,7 +74,7 @@
       };
 
     google.charts.setOnLoadCallback(drawChart);
-    setInterval(drawChart, (20 * 1000));
+    setInterval(drawChart, (5 * 1000));
 
     function drawChart() {
       $.ajax({
