@@ -74,8 +74,8 @@
     </table>
     <table class="table table-bordered" style="width:20%" align="left">
     <tr style="background-color:#e0e0e0">
-    <td style="text-align:center">Overall Percentage</td>
-    <td style="text-align:center">Overall Percentage</td>
+    <!-- <td style="text-align:center">Overall Percentage</td> -->
+    <!-- <td style="text-align:center">Overall Percentage</td> -->
     </table>
 
 
@@ -156,7 +156,10 @@
     ?>
     </tbody>
     </table>
-    <?php     echo $total; ?>
+    <div align="center" style="border:1px solid #ccc;width:250px;margin:0 auto;padding:7px;background-color:#ccc;">Overall Percentage
+    <?php 
+    echo $total; 
+    ?></div>
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({

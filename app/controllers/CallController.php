@@ -147,11 +147,16 @@ $table['rows'] = array();
                 $update['LTPrice'] = str_replace(',', '', $v['LTPrice']);
                 $update['per'] = $v['%'];
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
-				$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
-				$update['state'] = $state;
-				$count = 0; // not active
+				//$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
 				$sc = $this->screenCall($v['TradingSymbol'], $update);
-                $update['count'] = $count;
+				if ($sc[0]) {
+					$count = $sc[0]; // not active
+					$state = $sc[1];
+				} else {
+					$state = $count = 0;
+				}
+				echo $update['state'] = $state;
+				echo $update['count'] = $count;
                 $update['LTQty'] = $v['LTQty'];
                 $update['Vol'] = $v['Vol'];
                 $update['Open'] = $v['Open'];
@@ -552,7 +557,7 @@ public function insertIntraTableDB()
 			} else if ($calls[0]->call == 2) {
 				$this->sellCallWatch($calls[0],$data);
 			}
-			return 0;
+			// return 0;
 		} else 
 		{
 			if ($sTrend == "uptrend" || !isset($sTrend)) {
@@ -572,6 +577,7 @@ public function insertIntraTableDB()
 				}
 			}
 		}
+		return array($smaAvg1, $smaAvg2);
 	}
 	
 

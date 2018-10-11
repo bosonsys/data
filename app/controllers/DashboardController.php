@@ -33,7 +33,6 @@ class DashboardController extends \BaseController {
 				->select('SYMBOL as n', 'CLOSEP as c', 'TIMESTAMP as t', 'SERIES as s')
 				->whereIn('SERIES', ['EQ', 'BE'])
 				->whereIn('TIMESTAMP',$arr)
-				//->where('CLOSEP','>','0')
 				->groupBy('SYMBOL')
 				->orderby('CLOSEP','DESC')
 				->take(10)
@@ -42,15 +41,29 @@ class DashboardController extends \BaseController {
 				->select('SYMBOL as s', 'CLOSEP as p', 'TIMESTAMP as d', 'SERIES as e')
 				->whereIn('SERIES', ['EQ', 'BE'])
 				->whereIn('TIMESTAMP',$arr)
-				//->where('CLOSEP','<','0')
 				->groupBy('SYMBOL')
 				->orderby('CLOSEP','ASC')
 				->take(10)
 				->get();
-    //echo "<pre>"; print_r($neg); exit();
-        return View::make('dashboard.lastday')->with('lists',$arr)->with('pos',$pos)->with('neg',$neg);
+
+		$last5 = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
+		->take(5)->orderby('TIMESTAMP','DESC')->get();
+        $ar = array();
+        foreach ($last5 as $key => $last) {
+            array_push($ar,$last->TIMESTAMP);
+		}
+		//echo "<pre>"; print_r($last5); exit();
+		$pos5 = DB::table('csvdata')
+				->select('SYMBOL', 'CLOSEP', 'TIMESTAMP', 'SERIES')
+				->whereIn('SERIES', ['EQ', 'BE'])
+				->whereIn('TIMESTAMP',$ar)
+				->groupBy('SYMBOL')
+				//->orderby('CLOSEP','DESC')
+				->take(10)
+				->get();
+		echo "<pre>"; print_r($pos5); exit();		
+
+		return View::make('dashboard.dashboard')->with('lists',$arr)->with('lists',$ar)->with('pos',$pos)->with('neg',$neg);
          //return json_encode($stock);
 	}
-    
-
 }

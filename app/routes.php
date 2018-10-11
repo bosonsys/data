@@ -64,3 +64,4 @@ Route::get('/stock/{nse}', 'StockController@index');
 Route::get('/callreport', 'CallController@report');
 //Route::get('/report', 'CallController@calldetails');
 Route::get('/dashboard/lastday', 'DashboardController@lastday');
+//Route::get('/dashboard/last5days', 'DashboardController@last5days');
