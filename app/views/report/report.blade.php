@@ -1,4 +1,7 @@
 @extends('layout.index')
+@section('title')
+    Report
+@stop
 @section('content')
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
@@ -89,6 +92,7 @@
             <th style="text-align:center">Call</th>
             <th style="text-align:center">Entry Price</th>
             <th style="text-align:center">Exit Price</th>
+            <th style="text-align:center">Strategy</th>
             <th style="text-align:center">Profit/Loss (%)</th>
             <th style="text-align:center">Success/Fail</th>            
         </tr>
@@ -125,17 +129,20 @@
             <?php
              if($k->call == '1'){
                  echo "Buy";
-                 $pl = $k->cPer - $k->per;
+                if($k->status != '0')
+                    $pl = $k->cPer - $k->per;
              }
              if($k->call == '2')
              {
                 echo "Sell";
-                $pl = $k->per - $k->cPer;
+                if($k->status != '0')
+                    $pl = $k->per - $k->cPer;
              }
              $total += $pl;
             ?></td>
             <td style="text-align:center">{{$k->price}}</td>
             <td style="text-align:center">{{$k->cPrice}}</td>
+            <td style="text-align:center">{{$k->strategy}}</td>
            <!-- <td style="text-align:center">{{number_format(($k->price - $k->cPrice), 2)}}</td> -->
             <td style="text-align:center">{{number_format(($pl), 2)}}%</td>   
             <!-- <td style="text-align:center">{{$pl}}%</td> -->

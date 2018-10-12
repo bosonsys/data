@@ -46,24 +46,16 @@ class DashboardController extends \BaseController {
 				->take(10)
 				->get();
 
-		$last5 = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
-		->take(5)->orderby('TIMESTAMP','DESC')->get();
-        $ar = array();
-        foreach ($last5 as $key => $last) {
-            array_push($ar,$last->TIMESTAMP);
-		}
-		//echo "<pre>"; print_r($last5); exit();
-		$pos5 = DB::table('csvdata')
-				->select('SYMBOL', 'CLOSEP', 'TIMESTAMP', 'SERIES')
-				->whereIn('SERIES', ['EQ', 'BE'])
-				->whereIn('TIMESTAMP',$ar)
-				->groupBy('SYMBOL')
-				//->orderby('CLOSEP','DESC')
-				->take(10)
-				->get();
-		echo "<pre>"; print_r($pos5); exit();		
-
-		return View::make('dashboard.dashboard')->with('lists',$arr)->with('lists',$ar)->with('pos',$pos)->with('neg',$neg);
+		$date = date('Y-m-d');	
+		$today = DB::table('csvdata')
+		    ->select('SYMBOL', 'CLOSEP', 'TIMESTAMP', 'SERIES')
+		    ->whereIn('SERIES', ['EQ', 'BE'])
+			->where('TIMESTAMP',$date)
+			->orderby('CLOSEP','DESC')
+			->take(10)
+			->get();
+		echo "<pre>"; print_r($today);exit();		
+		return View::make('dashboard.dashboard')->with('lists',$arr)->with('pos',$pos)->with('neg',$neg)->with('today',$today);
          //return json_encode($stock);
 	}
 }

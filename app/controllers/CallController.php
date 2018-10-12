@@ -372,7 +372,7 @@ public function insertIntraTableDB()
 		// Logic 1 - Countinues +/-
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-		// $this->immediatehigh($script,$data);
+		//return $this->immediatehigh($script,$data);
 		return $this->sma($script,$data);
 	}
 	public function immediatehigh($script, $data)
@@ -422,9 +422,9 @@ public function insertIntraTableDB()
 	{
 		$target = 1;
 		$stop = -1;
-		$diff = $data['per'] - $callData->per;
+		$diff =  (float)$data['per'] -  (float)$callData->per;
 		//echo $callData->nse;
-		// echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff >= $target) {
 			if($data['diff'] < 0)
 			{
@@ -442,8 +442,8 @@ public function insertIntraTableDB()
 	{
 		$target = 1;
 		$stop = -1;
-		$diff = $data['per'] - $callData->per;
-		// echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		$diff =  (float)$data['per'] -  (float)$callData->per;
+		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff <= $target) {
 			if($data['diff'] < 0)
 			{
@@ -527,8 +527,9 @@ public function insertIntraTableDB()
 	  $target = 1;
 	  $stop = -1;
 	  $smaAvg2 = $smaAvg1 = $sTrend = null;
-	  if (Session::get('trend')) {
-		$sTrend = Session::get('trend');
+	  $sdata = Session::get($script);
+	  if ($sdata['trend']) {
+		$sTrend = $sdata['trend'];
 	  }
 	  $his = DB::table('marketwatch')
 			->where('TradingSymbol','=', $script)
@@ -550,7 +551,7 @@ public function insertIntraTableDB()
 			}
 		$i++;
 		}	
-		echo "<br> $script => $smaAvg1 | $smaAvg2 | $sTrend ";
+		// echo "<br> $script => $smaAvg1 | $smaAvg2 | $sTrend ";
 		if (isset($calls[0])) {
 			if ($calls[0]->call == 1) {
 				$this->buyCallWatch($calls[0],$data);
@@ -562,18 +563,19 @@ public function insertIntraTableDB()
 		{
 			if ($sTrend == "uptrend" || !isset($sTrend)) {
 				if ($smaAvg1 > $smaAvg2) {
-					$trend = "downtrend";
-					Session::put('trend', $trend);
+					$sdata['trend'] = $sTrend = "downtrend";
+					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
-					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2', $sTrend);
+					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1',$sTrend);
 				}
 			}
 			if ($sTrend == "downtrend"  || !isset($sTrend)) {
 				if ($smaAvg1 < $smaAvg2) {
-					$trend = "uptrend";
-					Session::put('trend', $trend);
+					$sTrend = "uptrend";
+					$sdata['trend'] = $sTrend;
+					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
-					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', $sTrend);
+					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2',$sTrend);
 				}
 			}
 		}

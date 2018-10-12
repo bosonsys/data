@@ -1,5 +1,7 @@
 @extends('layout.index')
-
+@section('title')
+    Dashboard View
+@stop
 @section('content')
     <table class="table table-striped table-hover" border="1">
         <tr>
@@ -56,13 +58,13 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($pos as $key => $p)
+    foreach ($pos5 as $key => $p)
     { 
         
     ?>
         <tr>
-        <td></td>
-        <td></td>
+        <td>{{$p->SYMBOL}}</td>
+        <td>{{$p->CLOSEP}}</td>
         </tr>
         <?php
     }
@@ -76,13 +78,13 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($neg as $key => $n)
+    foreach ($neg5 as $key => $n)
     { 
         
     ?>
         <tr>
-        <td></td>
-        <td></td>
+        <td>{{$n->SYMBOL}}</td>
+        <td>{{$n->CLOSEP}}</td>
         </tr>
         <?php
     }
