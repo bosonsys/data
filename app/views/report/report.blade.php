@@ -44,43 +44,10 @@
     }
     ?>
 
-    <table class="table table-bordered" style="width:30%;margin-right:50px;" align="left">
-        <tr style="background-color:#2ee80c">
-            <!-- <th>Strategy</th> -->
-            <!-- <th style="text-align:center">Success</th>
-            <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Yet Completed</th> -->
-            
-            <td style="text-align:center">Success = {{$buy_success}}</td>
-            <td style="text-align:center">Fail = {{$buy_fail}}</td>
-            <td style="text-align:center">Not Yet Completed = {{$buy_notex}}</td>
-        
-        </tr>
-        <!-- <tr>
-            <td style="text-align:center">{{$buy_success}}</td>
-            <td style="text-align:center">{{$buy_fail}}</td>
-            <td style="text-align:center">{{$buy_notex}}</td>
-        </tr> -->
-    </table>  
+    
     
 <?php $total = 0; ?>
-    <table class="table table-bordered" style="width:30%;margin-right:50px;" align="left">
-        <tr style="background-color:#f90505">
-            <!-- <th>Strategy</th> -->
-            <!-- <th style="text-align:center">Success</th>
-            <th style="text-align:center">Fail</th>
-            <th style="text-align:center">Not Yet Completed</th> -->
-            <td style="text-align:center">Success = {{$sell_success}}</td>
-            <td style="text-align:center">Fail = {{$sell_fail}}</td>
-            <td style="text-align:center">Not Yet Completed = {{$sell_notex}}</td>
-        </tr>
-    </table>
-    <table class="table table-bordered" style="width:20%" align="left">
-    <tr style="background-color:#e0e0e0">
-    <!-- <td style="text-align:center">Overall Percentage</td> -->
-    <!-- <td style="text-align:center">Overall Percentage</td> -->
-    </table>
-
+    
 
 <!-- <br><br><br><br><table class="table table-bordered" style="width:100%;" align="center"> -->
     <table id="sort" class="table table-bordered">
@@ -128,6 +95,7 @@
             <td style="text-align:center">
             <?php
             $pl = 0;
+            
              if($k->call == '1'){
                  echo "Buy";
                 if($k->status != '0')
@@ -139,7 +107,6 @@
                 if($k->status != '0')
                     $pl = $k->per - $k->cPer;
              }
-            
              $total += $pl;
             ?></td>
             <td style="text-align:center">{{$k->price}}</td>
@@ -150,12 +117,16 @@
             <!-- <td style="text-align:center">{{$pl}}%</td> -->
             <td style="text-align:center">
             <?php  
-                 if($k->status == '1')
+                 if($k->status == '1'){
                     echo "Success";
-                 if($k->status == '-1')
+                    $i++;
+                 }
+                 if($k->status == '-1') {
                     echo "Fail";
+                    $i++;
+                 }
                  if($k->status == '0')
-                    echo "Not Yet Completed";   
+                    echo "Not Yet Completed";  
             ?>
             </td>
         </tr>
@@ -165,11 +136,44 @@
     ?>
     </tbody>
     </table>
-    <div align="center" style="border:1px solid #ccc;width:250px;margin:0 auto;padding:7px;background-color:#ccc;">Overall Percentage
-    <?php 
-    echo $total; 
-    ?></div>
     
+    <!-- <div align="center" style="border:1px solid #ccc;width:250px;margin:0 auto;padding:7px;background-color:#ccc;">Overall Percentage
+    <?php 
+    //echo $total; 
+    ?></div> -->
+    <table class="table table-bordered" style="width:25%;margin-right:10px;" align="left">
+        <tr style="background-color:#2ee80c">
+            <td style="text-align:center">Success = {{$buy_success}}</td>
+            <td style="text-align:center">Fail = {{$buy_fail}}</td>
+            <td style="text-align:center">Not Yet Completed = {{$buy_notex}}</td>
+        </tr>
+    </table>  
+    <table class="table table-bordered" style="width:25%;margin-right:10px;" align="left">
+        <tr style="background-color:#f90505">
+            <td style="text-align:center">Success = {{$sell_success}}</td>
+            <td style="text-align:center">Fail = {{$sell_fail}}</td>
+            <td style="text-align:center">Not Yet Completed = {{$sell_notex}}</td>
+        </tr>
+    </table>
+    <table class="table table-bordered" style="width:20%;margin-right:10px;" align="left">
+        <tr style="background-color:#e0e0e0">
+            <td style="text-align:center">Overall Percentage
+            <?php 
+            echo $total; 
+            ?>
+            </td>
+        </tr>
+    </table>
+    <table class="table table-bordered" style="width:20%;margin-right:10px;" align="left">
+        <tr style="background-color:#e0e0e0">
+            <td style="text-align:center">Overall Average
+            <?php
+            $average = $total / $i;
+            echo round(($average), 2);
+            ?>
+            </td>
+        </tr>
+    </table>
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({

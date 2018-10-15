@@ -69,9 +69,9 @@ class DashboardController extends \BaseController {
 		}
         array_multisort($data_per, SORT_DESC, $pos);
 	    echo "<pre>";
-		$top = array_slice($pos, 0, 10);
+		$top = array_slice($pos, 0, 5);
 		array_multisort($data_per, SORT_ASC, $pos);
-		$last = array_slice($pos, 0, 10);
+		$last = array_slice($pos, 0, 5);
 		print_r($top); 
 		print_r($last); 
 		// arsort($pos);

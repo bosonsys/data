@@ -438,45 +438,6 @@ public function insertIntraTableDB()
 				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 		}
 	}
-	public function buyCallWatch($callData, $data)
-	{
-		$target = 1;
-		$stop = -1;
-		$diff =  (float)$data['per'] -  (float)$callData->per;
-		//echo $callData->nse;
-		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
-		if ($diff >= $target) {
-			if($data['diff'] < 0)
-			{
-			DB::table('intra_call')
-				->where('id', $callData->id)
-				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
-			}
-		} else if ($diff <= $stop) {
-			DB::table('intra_call')
-				->where('id', $callData->id)
-				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
-		}
-	}
-	public function sellCallWatch($callData, $data)
-	{
-		$target = 1;
-		$stop = -1;
-		$diff = (float)$callData->per -  (float)$data['per'];
-		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
-		if ($diff >= $target) {
-			if($data['diff'] < 0)
-			{
-			DB::table('intra_call')
-				->where('id', $callData->id)
-				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
-			}
-		} else if ($diff <= $stop) {
-			DB::table('intra_call')
-				->where('id', $callData->id)
-				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
-		}
-	}
 	public function counLogic($script, $data)
 	{
 		$sData = Session::get($script);
@@ -486,7 +447,7 @@ public function insertIntraTableDB()
 		// $callExist = $calls[0];
 		if (isset($calls[0])) {
 			$diff = $data['per'] - $calls[0]->per;
-			echo $calls[0]->nse."=> Entry: ".$calls[0]->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+			//echo $calls[0]->nse."=> Entry: ".$calls[0]->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 			if ($diff >= $target) {
 				DB::table('intra_call')
 					->where('id', $calls[0]->id)
