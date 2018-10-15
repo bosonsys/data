@@ -127,6 +127,7 @@
             <td style="text-align:center">{{$k->nse}}</td>
             <td style="text-align:center">
             <?php
+            $pl = 0;
              if($k->call == '1'){
                  echo "Buy";
                 if($k->status != '0')
@@ -138,6 +139,7 @@
                 if($k->status != '0')
                     $pl = $k->per - $k->cPer;
              }
+            
              $total += $pl;
             ?></td>
             <td style="text-align:center">{{$k->price}}</td>
@@ -167,6 +169,7 @@
     <?php 
     echo $total; 
     ?></div>
+    
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({

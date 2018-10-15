@@ -32,7 +32,7 @@ class DashboardController extends \BaseController {
 				->whereIn('SERIES', ['EQ', 'BE'])
 				->where('TIMESTAMP',$lastDate)
 				->orderby('CLOSE','DESC')
-				->take(15)
+				// ->take(15)
 				->get();
 		$neg = DB::table('csvdata')
 				->select('SYMBOL as s', 'CLOSE as p', 'TIMESTAMP as d')
@@ -40,7 +40,7 @@ class DashboardController extends \BaseController {
 				->where('TIMESTAMP',$lastDate)
 				->groupBy('SYMBOL')
 				->orderby('CLOSE','ASC')
-				->take(10)
+				// ->take(10)
 				->get();
 
     $pWeek = date( 'Y-m-d', strtotime( $lastDate . ' -1 week' ) );
@@ -51,7 +51,6 @@ class DashboardController extends \BaseController {
 						->where('TIMESTAMP', $pWeek)
 						->orderBy('TIMESTAMP', 'DESC')
 						->orderby('CLOSE','DESC')
-						->take(15)
 						->get();
 		// echo "<pre>"; print_r($last5days); exit();
 		foreach($pos as $key => $v)
@@ -69,16 +68,16 @@ class DashboardController extends \BaseController {
 			//   echo "<pre>"; print($per); exit();
 		}
         array_multisort($data_per, SORT_DESC, $pos);
-		echo "<pre>";
-		$top = array_slice($pos, 0, 5);
+	    echo "<pre>";
+		$top = array_slice($pos, 0, 10);
 		array_multisort($data_per, SORT_ASC, $pos);
-		$last = array_slice($pos, 0, 5);
+		$last = array_slice($pos, 0, 10);
 		print_r($top); 
 		print_r($last); 
 		// arsort($pos);
 		// print_r($pos); 
 		exit;
-		return View::make('dashboard.dashboard')->with('lastDate',$lastDate)->with('pos',$pos)->with('neg',$neg);
+		return View::make('dashboard.dashboard')->with('lastDate',$lastDate)->with('pos',$pos)->with('neg',$neg)->with('top',$top)->with('last',$last);
 		 //return json_encode($stock);
 	}
 

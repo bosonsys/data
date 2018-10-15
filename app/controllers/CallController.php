@@ -402,11 +402,7 @@ public function insertIntraTableDB()
 		// $i++;
 		}
 		if (isset($calls[0])) {
-			if ($calls[0]->call == 1) {
-				$this->buyCallWatch($calls[0],$data);
-			} else if ($calls[0]->call == 2) {
-				$this->sellCallWatch($calls[0],$data);
-			}
+			$this->callWatch($calls[0], $data);
 			return $r;
 		}
 		else {
@@ -417,6 +413,30 @@ public function insertIntraTableDB()
 			}
 		}
 		return $r;
+	}
+	public function callWatch($callData, $data)
+	{
+		$target = 1;
+		$stop = -1;
+		if ($callData->call == 1) {
+			$diff =  (float)$data['per'] -  (float)$callData->per;
+		} else if ($callData->call == 2) {
+			$diff = (float)$callData->per -  (float)$data['per'];
+		}
+		//echo $callData->nse;
+		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		if ($diff >= $target) {
+			if($data['diff'] < 0)
+			{
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
+			}
+		} else if ($diff <= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
+		}
 	}
 	public function buyCallWatch($callData, $data)
 	{
@@ -442,16 +462,16 @@ public function insertIntraTableDB()
 	{
 		$target = 1;
 		$stop = -1;
-		$diff =  (float)$data['per'] -  (float)$callData->per;
+		$diff = (float)$callData->per -  (float)$data['per'];
 		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
-		if ($diff <= $target) {
+		if ($diff >= $target) {
 			if($data['diff'] < 0)
 			{
 			DB::table('intra_call')
 				->where('id', $callData->id)
 				->update(array('status' => 1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
 			}
-		} else if ($diff >= $stop) {
+		} else if ($diff <= $stop) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
 				->update(array('status' => -1, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
@@ -553,12 +573,7 @@ public function insertIntraTableDB()
 		}	
 		// echo "<br> $script => $smaAvg1 | $smaAvg2 | $sTrend ";
 		if (isset($calls[0])) {
-			if ($calls[0]->call == 1) {
-				$this->buyCallWatch($calls[0],$data);
-			} else if ($calls[0]->call == 2) {
-				$this->sellCallWatch($calls[0],$data);
-			}
-			// return 0;
+			$this->callWatch($calls[0], $data);
 		} else 
 		{
 			if ($sTrend == "uptrend" || !isset($sTrend)) {
@@ -566,7 +581,7 @@ public function insertIntraTableDB()
 					$sdata['trend'] = $sTrend = "downtrend";
 					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
-					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1',$sTrend);
+					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2',$sTrend);
 				}
 			}
 			if ($sTrend == "downtrend"  || !isset($sTrend)) {
@@ -575,7 +590,7 @@ public function insertIntraTableDB()
 					$sdata['trend'] = $sTrend;
 					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
-					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2',$sTrend);
+					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1',$sTrend);
 				}
 			}
 		}

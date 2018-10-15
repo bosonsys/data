@@ -58,13 +58,13 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($pos5 as $key => $p)
+    foreach ($top as $key => $p)
     { 
         
     ?>
         <tr>
-        <td>{{$p->SYMBOL}}</td>
-        <td>{{$p->CLOSEP}}</td>
+        <td>{{$p->n}}</td>
+        <td>{{$p->per}}</td>
         </tr>
         <?php
     }
@@ -78,13 +78,13 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($neg5 as $key => $n)
+    foreach ($last as $key => $n)
     { 
         
     ?>
         <tr>
-        <td>{{$n->SYMBOL}}</td>
-        <td>{{$n->CLOSEP}}</td>
+        <td>{{$n->n}}</td>
+        <td>{{$n->per}}</td>
         </tr>
         <?php
     }
