@@ -86,6 +86,7 @@ class MarketController extends \BaseController {
         $stock = DB::table('csvdata')->select('Timestamp','High', 'Low', 'Open', 'Close','Tottrdval')
        // ->where('updatedTime', '>',  $ldate.' 09:30:00')
         ->where('Symbol',$nse)
+        ->orderBy('TIMESTAMP')
         ->get();
         $arr = array();
         foreach ($stock as $key => $value) {
