@@ -424,7 +424,7 @@ public function insertIntraTableDB()
 			$diff = (float)$callData->per -  (float)$data['per'];
 		}
 		//echo $callData->nse;
-		//echo $callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
+		//echo  $callData->id."=>id".$callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['per']."=> Diff: $diff<br>";
 		if ($diff >= $target) {
 			if($data['diff'] < 0)
 			{
@@ -497,6 +497,22 @@ public function insertIntraTableDB()
 		return $i;
 	}
 
+	public function closeCall($callData, $data)
+	{
+		if ($callData->call == 1) {
+			$diff =  (float)$data['per'] -  (float)$callData->per;
+		} else if ($callData->call == 2) {
+			$diff = (float)$callData->per -  (float)$data['per'];
+		}
+		if ($diff > 0) {
+			$status = 1;
+		} else {
+			$status = -1;
+		}
+		DB::table('intra_call')
+			->where('id', $callData->id)
+			->update(array('status' => $status, 'cPrice' => $data['LTPrice'], 'cPer' => $data['per']));
+	}
 	public function sma($script, $data)
 	{
 	  
@@ -532,16 +548,15 @@ public function insertIntraTableDB()
 			}
 		$i++;
 		}	
-		// echo "<br> $script => $smaAvg1 | $smaAvg2 | $sTrend ";
-		if (isset($calls[0])) {
-			$this->callWatch($calls[0], $data);
-		} else 
-		{
+		
 			if ($sTrend == "uptrend" || !isset($sTrend)) {
 				if ($smaAvg1 > $smaAvg2) {
 					$sdata['trend'] = $sTrend = "downtrend";
 					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
+					if(isset($calls[0])) {
+						$this->closeCall($calls[0], $data);
+					}
 					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2',$sTrend);
 				}
 			}
@@ -551,10 +566,13 @@ public function insertIntraTableDB()
 					$sdata['trend'] = $sTrend;
 					Session::put($script, $sdata);
 					//$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1', 'Continues - 5');
+					if(isset($calls[0])) {
+						$this->closeCall($calls[0], $data);
+					}
 					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1',$sTrend);
 				}
 			}
-		}
+		//}
 		return array($smaAvg1, $smaAvg2);
 	}
 	

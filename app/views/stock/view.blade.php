@@ -406,6 +406,11 @@
     cursor: crosshair;
 }
 .ui-autocomplete { max-height: 200px; overflow-y: scroll; overflow-x: hidden;}
+
+.ui-tab { 
+    position: absolute;
+    right: -85px;
+}
 </style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -567,6 +572,23 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+            </div>
+            <div class = "ui-tab">
+                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <label><span>ED</span></label>
+                </div>
+                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <label><span>MC</span></label>
+                </div>
+                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <label><span>TA</span></label>
+                </div>
+                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <label><span>TV</span></label>
+                </div>
+                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <label><span>Screen</span></label>
                 </div>
             </div>
         </div>
