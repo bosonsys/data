@@ -10,7 +10,7 @@ class StockController extends \BaseController {
 
 	public function index($nse)
 	{
-	  $cname = DB::table('company')->select('symbol')
+	  $cname = DB::table('company')->select('id','symbol','mmbURL')
 			  ->get();
 			   $arr = array();
         foreach ($cname as $key => $value) {

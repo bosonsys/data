@@ -576,10 +576,14 @@
             </div>
             <div class = "ui-tab">
                 <div style="border:1px solid;padding 0 5px;height:25px;">
-                <label><span>ED</span></label>
+                <label>
+                <a href='https://www.edelweiss.in/URL/id' target='_blank'>ED</a></label>
                 </div>
                 <div style="border:1px solid;padding 0 5px;height:25px;">
-                <label><span>MC</span></label>
+                <label>
+                <!-- <a href='https://mmb.moneycontrol.com/mmbURL' target='_blank'>MMB</a> -->
+                <a href='https://mmb.moneycontrol.com/forum-topics/mmbURL' target='_blank'>MMB</a>
+                </label>
                 </div>
                 <div style="border:1px solid;padding 0 5px;height:25px;">
                 <label><span>TA</span></label>

@@ -69,7 +69,7 @@
     $i=0;
     foreach ($calldetail as $key => $k)
     { 
-        $i++;
+        // $i++;
           $dt = $k->inserted_on;
             $dt = strtotime(str_replace('|', '', $dt));
             // $d = date('Y-m-d',$dt);

@@ -519,8 +519,8 @@ public function insertIntraTableDB()
 	  $ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 21;
-	  $sma2 = 9;
+	  $sma1 = 25;
+	  $sma2 = 11;
 	  $target = 1;
 	  $stop = -1;
 	  $smaAvg2 = $smaAvg1 = $sTrend = null;
@@ -573,9 +573,15 @@ public function insertIntraTableDB()
 				}
 			}
 		//}
-		return array($smaAvg1, $smaAvg2);
+		//return array($smaAvg1, $smaAvg2);
+		$t=trader_rsi( [2,2,3,2,3],4);
+        print_r($t);
 	}
-	
+	// function calculateRSI() 
+	// {
+	//      $this->
+         
+    // }
 
 	/**
 	 * Remove the specified resource from storage.
