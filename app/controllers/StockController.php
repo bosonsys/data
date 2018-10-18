@@ -10,15 +10,20 @@ class StockController extends \BaseController {
 
 	public function index($nse)
 	{
-	  $cname = DB::table('company')->select('id','symbol','mmbURL')
+	  $cname = DB::table('company')->select('id','URL','symbol','mmbURL')
 			  ->get();
 			   $arr = array();
         foreach ($cname as $key => $value) {
-            array_push($arr, $value->symbol);
+			array_push($arr, $value->symbol);
+			if ($value->symbol == $nse) {
+				$cCompany['mmbURL'] = $value->mmbURL; 
+				$cCompany['edelURL'] = $value->URL; 
+				$cCompany['name'] = $value->symbol; 
+			}
 		}
 		
 			  //echo "<pre>"; print_r($cname); exit();
-			  return View::make('stock.view')->with('sname', $nse)->with('cname', $arr);
+		return View::make('stock.view')->with(array('cCompany' => $cCompany, 'cname' => $arr));
 		// return View::make('stock.view')->with('sname', 'Stock Name');
 	}
     public function stock($nse)

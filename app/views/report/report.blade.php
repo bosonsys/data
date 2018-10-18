@@ -66,10 +66,10 @@
         </thead>
         <tbody>
     <?php
-    $i=0;
+    $j=0;
     foreach ($calldetail as $key => $k)
     { 
-        // $i++;
+        $j++;
           $dt = $k->inserted_on;
             $dt = strtotime(str_replace('|', '', $dt));
             // $d = date('Y-m-d',$dt);
@@ -84,7 +84,7 @@
         <tr>
             <td style="text-align:center">
             <?php
-            echo $i;
+            echo $j;
             ?>
             </td>
             <td style="text-align:center">
@@ -168,8 +168,8 @@
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Average
             <?php
-            $average = $total / $i;
-            echo round(($average), 2);
+            // $average = $total / $i;
+            // echo round(($average), 2);
             ?>
             </td>
         </tr>

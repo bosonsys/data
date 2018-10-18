@@ -409,7 +409,7 @@
 
 .ui-tab { 
     position: absolute;
-    right: -85px;
+    right: -109px;
 }
 </style>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -575,24 +575,29 @@
                 </div>
             </div>
             <div class = "ui-tab">
-                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <div>
                 <label>
-                <a href='https://www.edelweiss.in/URL/id' target='_blank'>ED</a></label>
+                <a href='https://www.edelweiss.in{{$cCompany["edelURL"]}}' target='_blank'>ED</a></label>
                 </div>
-                <div style="border:1px solid;padding 0 5px;height:25px;">
+                <div>
                 <label>
-                <!-- <a href='https://mmb.moneycontrol.com/mmbURL' target='_blank'>MMB</a> -->
-                <a href='https://mmb.moneycontrol.com/forum-topics/mmbURL' target='_blank'>MMB</a>
+                <a href='https://mmb.moneycontrol.com{{$cCompany["mmbURL"]}}' target='_blank'>MMB</a>
                 </label>
                 </div>
-                <div style="border:1px solid;padding 0 5px;height:25px;">
-                <label><span>TA</span></label>
+                <div>
+                <label>
+                    <a href='https://in.tradingview.com/symbols/NSE-{{$cCompany["name"]}}/technicals/' target='_blank'>TV</a>
+                </label>
                 </div>
-                <div style="border:1px solid;padding 0 5px;height:25px;">
-                <label><span>TV</span></label>
+                <div>
+                <label>
+                <a href='https://in.tradingview.com/chart/?symbol=NSE%3A{{$cCompany["name"]}}' target='_blank'>Chart</a>
+                </label>
                 </div>
-                <div style="border:1px solid;padding 0 5px;height:25px;">
-                <label><span>Screen</span></label>
+                <div>
+                <label>
+                    <a href='https://www.screener.in/company/{{$cCompany["name"]}}/consolidated/' target='_blank'>Screener</a>
+                </label>
                 </div>
             </div>
         </div>
@@ -687,7 +692,7 @@
     </div>
 </div>
     		<script type="text/javascript">
-            var sname = "{{$sname}}";
+            var sname = "{{$cCompany['name']}}";
             var cname = {{json_encode($cname)}};
 /**
  * This is a complex demo to demonstrate how Highstock can be set up to

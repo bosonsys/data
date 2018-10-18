@@ -372,8 +372,16 @@ public function insertIntraTableDB()
 		// Logic 1 - Countinues +/-
 		//$this->counLogic($script, $data);
 		// Logic 2 - Immediate High
-		//return $this->immediatehigh($script,$data);
-		return $this->sma($script,$data);
+		// $ldate = date('Y-m-d');
+		// $data = DB::table('marketwatch')->where('updatedTime', '>',  $ldate.' 09:10:00')->get();
+		// echo "<pre>"; print_r($data); exit;
+		$CURRENTTIME = new DateTime();
+    	$cutOff  = new DateTime('09:30:00');
+		if ($CURRENTTIME  > $cutOff) {
+			return $this->sma($script,$data);
+		}  else {
+			return $this->immediatehigh($script,$data);
+		}
 	}
 	public function immediatehigh($script, $data)
 	{
@@ -557,7 +565,9 @@ public function insertIntraTableDB()
 					if(isset($calls[0])) {
 						$this->closeCall($calls[0], $data);
 					}
+					else {
 					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'2',$sTrend);
+					}
 				}
 			}
 			if ($sTrend == "downtrend"  || !isset($sTrend)) {
@@ -569,13 +579,15 @@ public function insertIntraTableDB()
 					if(isset($calls[0])) {
 						$this->closeCall($calls[0], $data);
 					}
+					else {
 					$this->insIntraCall($script, $data['LTPrice'], $data['per'],'1',$sTrend);
+					}
 				}
 			}
 		//}
-		//return array($smaAvg1, $smaAvg2);
-		$t=trader_rsi( [2,2,3,2,3],4);
-        print_r($t);
+		return array($smaAvg1, $smaAvg2);
+		// $t=trader_rsi( [2,2,3,2,3],4);
+        // print_r($t);
 	}
 	// function calculateRSI() 
 	// {
