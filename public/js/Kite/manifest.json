@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+
+  "name": "Kite Trade",
+  "description": "Trading Auto",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+    "background": {
+    "scripts": ["vendor/jquery.js"],
+    "persistent": false
+  },
+  
+  "content_scripts": [
+    {
+		"matches": ["https://kite.zerodha.com/apps"],
+		"js": ["vendor/dexie.js","vendor/alasql.js","db.js", "export.js"],
+		"run_at": "document_end",
+		"all_frames": true
+    }, 
+    {
+    "matches": ["https://kite.zerodha.com/*"],
+    "js": ["vendor/dexie.js","vendor/polyfill.min.js","vendor/browser.js","lib.js","db.js","log.js"],
+    "run_at": "document_end",
+    "all_frames": true
+    }
+],
+  
+  "permissions": ["<all_urls>", "tabs", "activeTab", "storage"]
+}

@@ -66,7 +66,7 @@
         </thead>
         <tbody>
     <?php
-    $j=0;
+    $i = $j=0;
     foreach ($calldetail as $key => $k)
     { 
         $j++;
@@ -168,8 +168,8 @@
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Average
             <?php
-            // $average = $total / $i;
-            // echo round(($average), 2);
+            $average = $total / $i;
+            echo round(($average), 2);
             ?>
             </td>
         </tr>
