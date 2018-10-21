@@ -331,9 +331,9 @@ public function insertIntraTableDB()
 		}
 		else {
 			if ($sum >= $threshold) {
-				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','IMH-Kite');
+				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','Kite');
 			}else if ($sum <= -$threshold) {
-				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','IMH-Kite');
+				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','Kite');
 			}
 		}
 		return $r;
@@ -437,7 +437,7 @@ public function insertIntraTableDB()
 						$this->closeCall($calls[0], $data);
 					}
 					else {
-					    $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','Kite_up');
+					    $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','Kite');
 					}
 				}
 			}
@@ -451,7 +451,7 @@ public function insertIntraTableDB()
 						$this->closeCall($calls[0], $data);
 					}
 					else {
-					    $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','Kite_down');
+					    $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','Kite');
 					}
 				}
 			}
@@ -499,6 +499,5 @@ public function report()
 		->get();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
-
 
 }
