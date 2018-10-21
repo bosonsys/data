@@ -17,8 +17,10 @@ setInterval(function () {
     let sd = parseSData(JSON.parse(sData), watchList);
     // let wc = getWatchComp(sd);
     insertWatch(sd);
+    // insetinto MySQL
+    updateMarketWatch(sd, null);
         // console.log(sd);
-}, 10 * 1000);
+}, 5 * 1000);
 
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {

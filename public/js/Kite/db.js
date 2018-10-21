@@ -23,7 +23,7 @@ function insertWatch(data) {
 	timestamp = now.getTime();
 	data.forEach(function(e) {
 		let r = getRec(e.tradingsymbol).then(function(d) {
-		console.log(d);
+		// console.log(d);
 		const ltpArr = d.map(d1 => d1.lastPrice);
 		var sma1 = sma({period : 9, values: ltpArr});
 		var sma2 = sma({period : 25, values: ltpArr});
@@ -68,4 +68,28 @@ function getRec(s) {
 	        // console.log (JSON.stringify(results));
 	        return results;
 	    });
+}
+
+// update on MySQL
+function updateMarketWatch(d, n) {
+  // console.log(d);
+ $.ajax({
+            type: "POST",
+            url: "http://localhost/market/public/update/marketwatch",
+            // The key needs to match your method's input parameter (case-sensitive).
+            data: JSON.stringify({data:d, nifty:n}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(res){
+              if (res != null) {
+                console.log(res);
+                // let index = d.findIndex(x => x.TradingSymbol==res.nse);
+                // 	enterCall(index,res);
+                 // portfolioCall();
+             }
+            },
+            failure: function(errMsg) {
+                alert(errMsg);
+            }
+        });
 }

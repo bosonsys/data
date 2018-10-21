@@ -22,7 +22,7 @@
     }, 
     {
     "matches": ["https://kite.zerodha.com/*"],
-    "js": ["vendor/dexie.js","vendor/polyfill.min.js","vendor/browser.js","lib.js","db.js","log.js"],
+    "js": ["vendor/jquery.js", "vendor/dexie.js","vendor/polyfill.min.js","vendor/browser.js","lib.js","db.js","log.js"],
     "run_at": "document_end",
     "all_frames": true
     }
