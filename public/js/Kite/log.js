@@ -16,6 +16,7 @@ setInterval(function () {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
     let sd = parseSData(JSON.parse(sData), watchList);
     // let wc = getWatchComp(sd);
+    // storeData(sd);
     insertWatch(sd);
     // insetinto MySQL
     updateMarketWatch(sd, null);

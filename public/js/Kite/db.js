@@ -52,11 +52,7 @@ function insertWatch(data) {
 		// console.log(r);
 	});
 	// console.log(data);
-/*	db.watch.bulkAdd(data).then(function(lastKey) {
-	  console.log("Inserted - "+lastKey);
-	}).catch(function(error) {
-	 	console.log("Ooops: " + error);
-	});*/
+	return data;
 }
 
 function getRec(s) {
