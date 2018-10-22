@@ -14,35 +14,6 @@ class KiteController extends \BaseController {
             ->with('calls', $calls);
     }
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create($nse,$bs=1)
-	{
-		//
-        $d = DB::table('edelid')
-            ->join('nse_list', 'edelid.code', '=', 'nse_list.EdelCode')
-            ->where('nse_list.NSECode','=', $nse)
-            ->get();
-//        print_r($d);
-//        exit;
-        $i['nseCode'] = $d[0]->NSECode;
-        $i['edelCode'] = $d[0]->EdelCode;
-        $i['edelID'] = $d[0]->eid;
-        if(date('G')>=12)
-            echo $date = date("Y")."-".date("m")."-".(date("d")+1);
-        else
-            echo $date = date('Y-m-d');
-        $i['day'] = $date;
-        $i['bs'] = 1;
-        DB::table('calls')->insert($i);
-        return Redirect::to('/call');
-	}
-
-
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -56,37 +27,6 @@ class KiteController extends \BaseController {
        // print_r($rCall);
         return json_encode($rCall);
     }
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function getPortfolio()
-	{
-        $rCall = DB::table('portfolio')
-        ->where('status','=', 1)
-        ->get();
-       // print_r($rCall);
-        return json_encode($rCall);
-    }
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function updatePortfolio()
-	{
-		// print_r($id);
-		$input = Input::all();
-		// echo '<pre>'; print_r($input['id']); exit();
-		// echo $input->id; exit;
-		return json_encode(DB::update('update portfolio set status = 2 where id = '.$input['id']));
-	}
 
 	/**
 	 * Display the specified resource.
@@ -188,71 +128,6 @@ public function getPLow($name, $c, $sdata)
 	}
  return $state;
 }
-
-public function updatePosition()
-	{
-		// print_r($id);
-		date_default_timezone_set('Asia/Kolkata');
-
-		$input = Input::all();
-		// echo '<pre>'; print_r($input); exit();
-		$json = 'C:\xampp\htdocs\market\public\json\position_'.date("d-m-Y").'.json';
-		$lastRec = 'C:\xampp\htdocs\market\public\json\position'.date("d-m-Y").'.json';
-		
-		// //open or read json data
-		if (!file_exists($lastRec)) {
-			foreach ($input['data'] as $key => $value) {
-				$t[$value['Stock Code']] =  $value['LTP'];
-			}
-			$fh = fopen($lastRec, 'w');
-			fwrite($fh, json_encode($t));
-			fclose($fh);
-		}
-		$lastRec_results = file_get_contents($lastRec);
-		$lastRecArray = json_decode($lastRec_results);
-		// echo '<pre>'; print_r($lastRecArray); exit();
-		// //append additional json to json file
-
-		foreach ($input['data'] as $k => $v) {
-			$update['code'] = $v['Stock Code'];
-			$update['BuyQty'] = str_replace(',', '', $v['Buy Qty']);
-			$update['BuyPrice'] =  str_replace(',', '', $v['Avg. Buy Price']);
-			$update['SellQty'] =  str_replace(',', '', $v['Sell Qty']);
-			$update['SellPrice'] = str_replace(',', '', $v['Avg. Sell Price']);
-			$update['NetQty'] =  str_replace(',', '', $v['Net Qty']);
-			$update['LTP'] = str_replace(',', '', $v['LTP']);
-			$update['diff'] = str_replace(',', '', $v['LTP']) - $lastRecArray->$v['Stock Code'];
-			DB::table('position')->insert($update);
-			$lastRecArray->$v['Stock Code'] = $v['LTP'];
-		}
-		file_put_contents($lastRec, json_encode($lastRecArray));
-		return json_encode('Success'.date('Y-m-d H:i:s'));
-	}
-
-public function updateSinglePosition()
-	{
-		// print_r($id);
-		date_default_timezone_set('Asia/Kolkata');
-
-		$input = Input::all();
-
-		$update['stock'] = $input['stock'];
-		$update['per'] = $input['per'];
-		 $lastRec = DB::table('singlePosition')
-		->where('stock','=', $input['stock'])
-		->take(10)
-		->orderBy('id','DESC')
-        ->get();
-		if (isset($lastRec[0]->stock)) {
-			$update['diff'] = $input['per'] - $lastRec[0]->per;
-		} else {
-			$update['diff'] = 0;
-		}
-		// $update['diff'] = $input['per'] - $lastRec[0]->per;
-		DB::table('singlePosition')->insert($update);
-		return json_encode($lastRec);
-	}
-
 public function insertIntraTableDB()
 	{
 		$input = Input::all();
@@ -291,7 +166,7 @@ public function insertIntraTableDB()
 	public function screenCall($script, $data)
 	{
 		$CURRENTTIME = new DateTime();
-    	$cutOff  = new DateTime('09:30:00');
+    	$cutOff  = new DateTime('09:20:00');
 		if ($CURRENTTIME  > $cutOff) {
 			return $this->sma($script,$data);
 		}  else {
@@ -395,8 +270,8 @@ public function insertIntraTableDB()
 	  $ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 25;
-	  $sma2 = 11;
+	  $sma1 = 80;
+	  $sma2 = 20;
 	  $target = 1;
 	  $stop = -1;
 	  $smaAvg2 = $smaAvg1 = $sTrend = null;

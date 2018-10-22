@@ -148,7 +148,8 @@ $table['rows'] = array();
                 $update['per'] = $v['%'];
 				$update['diff'] = $v['%'] - $lastRecArray->$v['TradingSymbol'];
 				//$state = $this->getState($v['TradingSymbol'], $update['LTPrice']);
-				$sc = $this->screenCall($v['TradingSymbol'], $update);
+				// $sc = $this->screenCall($v['TradingSymbol'], $update);
+				$sc = 0;
 				if ($sc[0]) {
 					$count = $sc[0]; // not active
 					$state = $sc[1];
