@@ -168,8 +168,10 @@
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Average
             <?php
+            if($total != 0){
             $average = $total / $i;
             echo round(($average), 2);
+            }
             ?>
             </td>
         </tr>

@@ -53,6 +53,7 @@ class DashboardController extends \BaseController {
 						->orderby('CLOSE','DESC')
 						->get();
 		// echo "<pre>"; print_r($last5days); exit();
+		$compList = array();
 		foreach($pos as $key => $v)
 		{
 			$comp = $v->n;
@@ -62,18 +63,21 @@ class DashboardController extends \BaseController {
 					$v->cvalue = $cv->CLOSE;
 					$v->per = $this->getPercentageChange($v->cvalue, $v->c);
 					$data_per[$key] = $v->per;
+					array_push($compList, $v);
 				}
 			}
 			//   echo number_format(($per), 2);
 			//   echo "<pre>"; print($per); exit();
 		}
-        array_multisort($data_per, SORT_DESC, $pos);
+		//echo $data_per;
 	    echo "<pre>";
 		$top = array_slice($pos, 0, 5);
-		array_multisort($data_per, SORT_ASC, $pos);
-		$last = array_slice($pos, 0, 5);
+        array_multisort($data_per, SORT_DESC, $compList);
+		//rsort($top);
+		//array_multisort($data_per, SORT_ASC, $pos);
+		$last = array_slice($compList, 0, 5);
 		print_r($top); 
-		print_r($last); 
+		//print_r($last); 
 		// arsort($pos);
 		// print_r($pos); 
 		exit;
