@@ -182,9 +182,7 @@ class KiteController extends \BaseController {
 	  $i = 1;
 	  $sma1 = 80;
 	  $sma2 = 20;
-	  $target = 1;
-	  $stop = -1;
-	  $smaAvg2 = $smaAvg1 = $sTrend = null;
+	  $smaAvg2 = $smaAvg1 = null;
 	  $his = DB::table('kite_watch')
 			->where('tradingsymbol','=', $script)
 			->where('insert_on', '>',  $ldate.' 09:14:00')
@@ -205,7 +203,6 @@ class KiteController extends \BaseController {
 			}
 		$i++;
 		}	
-		//}
 		return array($smaAvg1, $smaAvg2);
 	}
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
