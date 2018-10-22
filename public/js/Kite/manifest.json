@@ -25,6 +25,12 @@
     "js": ["vendor/jquery.js", "vendor/dexie.js","vendor/polyfill.min.js","vendor/browser.js","lib.js","db.js","storage.js","log.js"],
     "run_at": "document_end",
     "all_frames": true
+    }, 
+    {
+    "matches": ["https://zerodha.com/margin-calculator/Equity/"],
+    "js": ["vendor/jquery.js", "vendor/tabletojson.min.js","importIntra.js"],
+    "run_at": "document_end",
+    "all_frames": true
     }
 ],
   

@@ -39,7 +39,8 @@ class KiteController extends \BaseController {
 		// print_r($id);
 		date_default_timezone_set('Asia/Kolkata');
 
-        $input = Input::all();
+		$input = Input::all();
+		$c = array();
         foreach ($input['data'] as $k => $v) {
             unset($v['mode']);
             unset($v['token']);
@@ -49,7 +50,7 @@ class KiteController extends \BaseController {
 			$sc = $this->sma($v['tradingsymbol'],$v);
 			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			if($trend)
-				$this->screenCall($v['tradingsymbol'], $v);
+				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             if ($sc[0]) {
                 $v['sma1'] = $sc[0];
                 $v['sma2'] = $sc[1];
@@ -59,7 +60,7 @@ class KiteController extends \BaseController {
 		}
 		if($input['nifty'])
 			$this->insertNifty($input['nifty']);
-        return json_encode('Inserted');
+        return json_encode('Inserted',$c);
 	}
 	public function insertNifty($nifty)
 	{
@@ -76,9 +77,10 @@ class KiteController extends \BaseController {
 	} 
 	public function screenCall($script, $data)
 	{
+		$r = null;
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		if (isset($calls[0])) {
-			$this->closeCall($calls[0], $data);
+			$r = $this->closeCall($calls[0], $data);
 		}
 		else {
 			$breakout = $this->breakout($script, $data);
@@ -98,6 +100,7 @@ class KiteController extends \BaseController {
 				}
 			}
 		}
+		return $r;
     }
 	
 	public function breakout($callData, $data)
@@ -174,6 +177,7 @@ class KiteController extends \BaseController {
 		DB::table('intra_call')
 			->where('id', $callData->id)
 			->update(array('status' => $status, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+		return $callData;
 	}
 	public function sma($script, $data)
 	{
@@ -227,5 +231,18 @@ class KiteController extends \BaseController {
 			}
 		}
 		return false;
+	}
+	public function insertIntraKite()
+	{
+		$input = Input::all();
+		DB::table('kite_margin')->truncate();
+		foreach ($input['data'] as $k => $v) {
+			$script = explode(":",$v['Scrip']);
+			$mis = rtrim($v['MIS Multiplier'],'x');
+			$d['Multiplier'] = $mis;
+			$d['Scrip'] = $script[0];
+			DB::table('kite_margin')->insert($d);
+		}
+		return json_encode('Inserted Successfully');
 	}
 }
