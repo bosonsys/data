@@ -105,6 +105,7 @@ class KiteController extends \BaseController {
 	
 	public function breakout($callData, $data)
 	{
+		$ldate = date('Y-m-d');
 		$lastRec = DB::table('kite_watch')
 					->select('lastPrice')
 					->where('insert_on', '>',  $ldate.' 09:14:00')
