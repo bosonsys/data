@@ -60,7 +60,7 @@ class KiteController extends \BaseController {
 		}
 		if($input['nifty'])
 			$this->insertNifty($input['nifty']);
-        return json_encode('Inserted',$c);
+        return json_encode($c);
 	}
 	public function insertNifty($nifty)
 	{
@@ -211,6 +211,7 @@ class KiteController extends \BaseController {
 	}
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
 	{
+		$sTrend = null;
 		$sdata = Session::get($script);
 		if ($sdata['trend']) {
 			$sTrend = $sdata['trend'];
