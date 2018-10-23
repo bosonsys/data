@@ -118,7 +118,7 @@ class KiteController extends \BaseController {
 		// echo "<pre>"; print_r($lastRec); 
 		// echo "<pre>"; print_r($max);
 		// echo "<pre>"; print_r($min);
-		// echo $max->lastPrice;
+		//echo $max->lastPrice;
 		// exit;
 		if($data['lastPrice'] < $min->lastPrice)
 		{
@@ -188,8 +188,8 @@ class KiteController extends \BaseController {
 	  $ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 80;
-	  $sma2 = 20;
+	  $sma1 = 21;
+	  $sma2 = 9;
 	  $smaAvg2 = $smaAvg1 = null;
 	  $his = DB::table('kite_watch')
 			->where('tradingsymbol','=', $script)

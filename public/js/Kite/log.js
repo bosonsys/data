@@ -21,7 +21,7 @@ setInterval(function () {
     // insetinto MySQL
     updateMarketWatch(sd, null);
         // console.log(sd);
-}, 5 * 1000);
+}, 60 * 1000);
 
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {

@@ -16,7 +16,7 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($pos as $key => $p)
+    foreach ($positive as $key => $p)
     { 
         
     ?>
@@ -36,13 +36,13 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($neg as $key => $n)
+    foreach ($negative as $key => $n)
     { 
         
     ?>
         <tr>
-        <td>{{$n->s}}</td>
-        <td>{{$n->p}}</td>
+        <td>{{$n->n}}</td>
+        <td>{{$n->c}}</td>
         </tr>
         <?php
     }
@@ -64,7 +64,10 @@
     ?>
         <tr>
         <td>{{$p->n}}</td>
-        <td>{{$p->per}}</td>
+        <td>
+        <?php
+        echo round(($p->per), 2)
+        ?></td>
         </tr>
         <?php
     }
@@ -84,7 +87,11 @@
     ?>
         <tr>
         <td>{{$n->n}}</td>
-        <td>{{$n->per}}</td>
+        <td>
+        <?php
+        echo round(($n->per), 2)
+        ?>
+        </td>
         </tr>
         <?php
     }
@@ -100,13 +107,16 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($pos as $key => $p)
+    foreach ($tMonth as $key => $p)
     { 
         
     ?>
         <tr>
-        <td></td>
-        <td></td>
+        <td>{{$p->n}}</td>
+        <td>
+        <?php
+        echo round(($p->per), 2)
+        ?></td>
         </tr>
         <?php
     }
@@ -120,13 +130,16 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($neg as $key => $n)
+    foreach ($lMonth as $key => $n)
     { 
         
     ?>
         <tr>
-        <td></td>
-        <td></td>
+        <td>{{$n->n}}</td>
+        <td>
+        <?php
+        echo round(($n->per), 2)
+        ?></td>
         </tr>
         <?php
     }
