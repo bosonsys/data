@@ -83,7 +83,7 @@ class KiteController extends \BaseController {
 			$r = $this->closeCall($calls[0], $data);
 		}
 		else {
-			$breakout = $this->breakout($script, $data);
+			echo $breakout = $this->breakout($script, $data);
 			$sdata = Session::get($script);
 			$sTrend = null;
 			if ($sdata['trend']) {
@@ -109,6 +109,7 @@ class KiteController extends \BaseController {
 		$lastRec = DB::table('kite_watch')
 					->select('lastPrice')
 					->where('insert_on', '>',  $ldate.' 09:14:00')
+					->where('tradingsymbol', $data['tradingsymbol'])
 					->orderBy('id', 'DESC')
 					->take(10)
 					->get();
@@ -117,6 +118,7 @@ class KiteController extends \BaseController {
 		// echo "<pre>"; print_r($lastRec); 
 		// echo "<pre>"; print_r($max);
 		// echo "<pre>"; print_r($min);
+		// echo $max->lastPrice;
 		// exit;
 		if($data['lastPrice'] < $min->lastPrice)
 		{
