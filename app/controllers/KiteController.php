@@ -91,12 +91,12 @@ class KiteController extends \BaseController {
 			}
 			if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
-					$r = $this->insIntraCall($script, $data['lastprice'], $data['change'],'1','breakout10');
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','breakout10');
 				}
 			}
 			else if($breakout == 'Down') {
 				if ($sTrend == "downtrend") {
-					$r = $this->insIntraCall($script, $data['lastprice'], $data['change'],'2','breakout10');
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','breakout10');
 				}
 			}
 		}
@@ -117,10 +117,11 @@ class KiteController extends \BaseController {
 		// echo "<pre>"; print_r($lastRec); 
 		// echo "<pre>"; print_r($max);
 		// echo "<pre>"; print_r($min);
-		if($data['lastPrice'] < $min)
+		// exit;
+		if($data['lastPrice'] < $min->lastPrice)
 		{
 			return "Down";
-		} else if($data['lastPrice'] > $max)
+		} else if($data['lastPrice'] > $max->lastPrice)
 		{
 			return "Up";
 		}
