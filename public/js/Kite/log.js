@@ -4,31 +4,33 @@ var token = getCookie("public_token");
 let watchList = getWatchList(4);
 // console.log(watchList);
 
-setInterval(function () {
-	let d = marketWatch(watchList);
-	insertWatch(d, 'watch1');
-}, 10 * 1000);
+// setInterval(function () {
+// 	let d = marketWatch(watchList);
+// 	insertWatch(d, 'watch1');
+// }, 10 * 1000);
 
-setInterval(function () {
-	let d = marketWatch(watchList);
-	insertWatch(d, 'watch5');
-}, (30 * 1000));
+// setInterval(function () {
+// 	let d = marketWatch(watchList);
+// 	insertWatch(d, 'watch5');
+// }, (30 * 1000));
 
 
 // setTimeout(function(){
 //     placeOrder(token);
 // }, 2000);
 
-// setInterval(function () {
-// 	// getPositions(token);
-//     // console.log("Print Data");
-//     // let wc = getWatchComp(sd);
-//     // storeData(sd);
-//     insertWatch(sd);
-//     // insetinto MySQL
-//     updateMarketWatch(sd, null);
-//         // console.log(sd);
-// }, 5 * 1000);
+setInterval(function () {
+	// getPositions(token);
+    // console.log("Print Data");
+    let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
+    let sd = parseSData(JSON.parse(sData), watchList);
+    // let wc = getWatchComp(sd);
+    // storeData(sd);
+    insertWatch(sd);
+    // insetinto MySQL
+    updateMarketWatch(sd, null);
+        // console.log(sd);
+}, 60 * 1000);
 
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {
