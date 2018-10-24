@@ -168,19 +168,39 @@ class KiteController extends \BaseController {
 
 	public function closeCall($callData, $data)
 	{
+		$target = 1;
+		$stop = -1;
 		if ($callData->call == 1) {
 			$diff =  (float)$data['change'] -  (float)$callData->per;
 		} else if ($callData->call == 2) {
 			$diff = (float)$callData->per -  (float)$data['change'];
 		}
-		if ($diff > 0) {
-			$status = 1;
-		} else {
-			$status = -1;
+		if ($diff >= $target) {
+			if($data['diff'] < 0)
+			{
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+			}
+		} else if ($diff <= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
 		}
-		DB::table('intra_call')
-			->where('id', $callData->id)
-			->update(array('status' => $status, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+
+		// if ($callData->call == 1) {
+		// 	$diff =  (float)$data['change'] -  (float)$callData->per;
+		// } else if ($callData->call == 2) {
+		// 	$diff = (float)$callData->per -  (float)$data['change'];
+		// }
+		// if ($diff > 0) {
+		// 	$status = 1;
+		// } else {
+		// 	$status = -1;
+		// }
+		// DB::table('intra_call')
+		// 	->where('id', $callData->id)
+		// 	->update(array('status' => $status, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
 		return $callData;
 	}
 	public function sma($script, $data)
