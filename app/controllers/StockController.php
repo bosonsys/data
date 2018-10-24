@@ -28,7 +28,7 @@ class StockController extends \BaseController {
 	}
     public function stock($nse)
 	{
-        $stock = DB::table('csvdata')->select('OPEN as o', 'CLOSE as c', 'HIGH as h', 'LOW as l', 'TIMESTAMP as t')
+        $stock = DB::table('csvdata')->select('OPEN as o',  'HIGH as h', 'CLOSE as c', 'LOW as l', 'TIMESTAMP as t')
         ->where('SYMBOL',$nse)
 		->where('SERIES','EQ')
 		->orderBy('TIMESTAMP')
@@ -36,6 +36,17 @@ class StockController extends \BaseController {
        return View::make('stock.view')->with('d', $stock)->with('nse', $nse);
         //return json_encode($stock);
 	}
-    
+	public function lastday()
+	{
+		$lastDate = date('Y-m-d');
+		//$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		
+		$lasttop = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
+				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
+				->where('TIMESTAMP',$lastDate)
+				->take(10)
+				->get();
+		echo "<pre>"; print_r($lasttop); exit;
+	}
 
 }

@@ -26,8 +26,7 @@ class DashboardController extends \BaseController {
 		$lastDate = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
 		->take(1)->orderby('TIMESTAMP','DESC')->get();
 		$lastDate = $lastDate[0]->TIMESTAMP;
-		
-		// $first = array();
+
 		$cDate = DB::table('csvdata')
 				->select('SYMBOL as n', 'CLOSEP as c', 'CLOSE as cl', 'TIMESTAMP as t')
 				->whereIn('SERIES', ['EQ', 'BE'])
@@ -46,10 +45,12 @@ class DashboardController extends \BaseController {
 		$negative = array_slice($neg, 0, 10);
 
 	$pWeek = date( 'Y-m-d', strtotime( $lastDate . ' -1 week' ) );
-	// $tomorrow = date( 'Y-m-d', strtotime( $lastDate . ' +2 day' ) );
-	echo $tomorrow = '2018-09-25'; 
+	$tomorrow = date( 'Y-m-d', strtotime( $lastDate . ' +2 day' ) );
+	$pMonth = date( 'Y-m-d', strtotime( $tomorrow . ' -1 month' ) );
+	//echo $pMonth; exit;
+	//$tomorrow = '2018-09-25'; 
 		$arr1 = $this->getTopList($cDate, $pWeek);
-		$arr2 = $this->getTopList($cDate, $tomorrow);
+		$arr2 = $this->getTopList($cDate, $pMonth);
 
 		return View::make('dashboard.dashboard')->with('lastDate',$lastDate)->with('positive',$positive)->with('negative',$negative)->with('pos',$cDate)->with('neg',$neg)
 		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);

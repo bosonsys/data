@@ -67,3 +67,4 @@ Route::get('/callreport', 'CallController@report');
 Route::get('/dashboard/lastday', 'DashboardController@lastday');
 //Route::get('/dashboard/last5days', 'DashboardController@last5days');
 Route::post('/update/marketwatch', 'KiteController@updateMarketwatch');
+Route::get('/stock', 'StockController@lastday');

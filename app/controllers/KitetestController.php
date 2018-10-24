@@ -1,6 +1,6 @@
 <?php
 
-class KiteController extends \BaseController {
+class KitetestController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,9 +9,10 @@ class KiteController extends \BaseController {
 	 */
 	public function index()
 	{
-        $calls = DB::table('calls')->get();
-        return View::make('stock.calllist')
-            ->with('calls', $calls);
+        // $calls = DB::table('calls')->get();
+        // return View::make('stock.calllist')
+        //     ->with('calls', $calls);
+        $collection = collect(DB::table('kite_watch')->get());
     }
 
 	/**
@@ -56,7 +57,7 @@ class KiteController extends \BaseController {
                 $v['sma2'] = $sc[1];
             }
             // Insert Into Table
-            DB::table('kite_watch')->insert($v);
+            DB::table('back_test')->insert($v);
 		}
 		if($input['nifty'])
 			$this->insertNifty($input['nifty']);
@@ -208,7 +209,7 @@ class KiteController extends \BaseController {
 	  $sma1 = 21;
 	  $sma2 = 9;
 	  $smaAvg2 = $smaAvg1 = null;
-	  $his = DB::table('kite_watch')
+	  $his = DB::table('back_test')
 			->where('tradingsymbol','=', $script)
 			->where('insert_on', '>',  $ldate.' 09:14:00')
 			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
