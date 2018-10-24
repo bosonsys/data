@@ -1,3 +1,33 @@
+
+function isTrendChange(sma1, sma2, trend)
+  {
+    if (trend == "uptrend" || !trend) {
+      if (sma1 > sma2) {
+        trend = "downtrend";
+        isChange = true;
+      }
+    }
+    if (trend == "downtrend"  || !trend) {
+      if (sma1 < sma2) {
+        trend = "uptrend";
+        isChange = true;
+      }
+    }
+    return Array(trend, isChange);
+  }
+
+function marketWatch(watchList) {
+    let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
+    let sd = parseSData(JSON.parse(sData), watchList);
+    return sd;
+}
+
+function getWatchList(n = 4) {
+  let marketwatch = localStorage.getItem('__storejs_kite_marketwatch/marketwatch');
+  let watchList = JSON.parse(marketwatch)[n].items;
+  return watchList;
+}
+
 function parseSData(sd, watchList) {
         let cName = [];
         let sdKey = Object.keys(sd)

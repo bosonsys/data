@@ -7,9 +7,12 @@ function createDB() {
 	db.version(1).stores({
 	  position: 'name, ltp, datetime',
 	  order: 'orderId, name, type, entry, exit, datetime',
-	  watch: `++, absoluteChange, averagePrice, closePrice, highPrice, lastPrice,lastQuantity, 
+	  watch1: `++, absoluteChange, averagePrice, closePrice, highPrice, lastPrice,lastQuantity, 
 	  	lowPrice, openPrice, tickChange,totalBuyQuantity, totalSellQuantity, tradingsymbol, volume, 
-	  	sma1, sma2, rsi, created_on`
+	  	sma1, sma2, rsi, trend, created_on`,
+	  watch5: `++, absoluteChange, averagePrice, closePrice, highPrice, lastPrice,lastQuantity, 
+	  	lowPrice, openPrice, tickChange,totalBuyQuantity, totalSellQuantity, tradingsymbol, volume, 
+	  	sma1, sma2, rsi, trend, created_on`
 	});
 	return db;
 }
@@ -17,16 +20,17 @@ function createDB() {
 //
 // Put some data into it
 //
-function insertWatch(data) {
+function insertWatch(data, t) {
 	// console.log(data);
+	var table = db.table(t);
 	const now = new Date();
 	timestamp = now.getTime();
 	data.forEach(function(e) {
-		let r = getRec(e.tradingsymbol).then(function(d) {
+		let r = getRec(e.tradingsymbol, table).then(function(d) {
 		// console.log(d);
 		const ltpArr = d.map(d1 => d1.lastPrice);
 		var sma1 = sma({period : 9, values: ltpArr});
-		var sma2 = sma({period : 25, values: ltpArr});
+		var sma2 = sma({period : 21, values: ltpArr});
 		var inputRSI = {
 		  values : ltpArr,
 		  period : 14
@@ -43,7 +47,7 @@ function insertWatch(data) {
 			e.sma1 = sma1Val;
 			e.sma2 = sma2Val;
 			e.rsi = rsiVal;
-			db.watch.add(e).then(function(lastKey) {
+			table.add(e).then(function(lastKey) {
 			  console.log("Inserted - "+lastKey);
 			}).catch(function(error) {
 			 	console.log("Ooops: " + error);
@@ -55,10 +59,10 @@ function insertWatch(data) {
 	return data;
 }
 
-function getRec(s) {
-	return db.watch.where({tradingsymbol: s})
+function getRec(s, table) {
+	return table.where({tradingsymbol: s})
 	    .reverse()
-	    .limit(25)
+	    .limit(21)
 	    .toArray()
 	    .then(function (results) {
 	        // console.log (JSON.stringify(results));
