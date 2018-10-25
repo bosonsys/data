@@ -42,21 +42,17 @@ class KiteController extends \BaseController {
 		$input = Input::all();
 		$c = array();
         foreach ($input['data'] as $k => $v) {
-            unset($v['mode']);
-            unset($v['token']);
-            unset($v['isTradeable']);
-            unset($v['closePrice']);
-            unset($v['tickChange']);
+			$insert[''] = $v[''];
 			$sc = $this->sma($v['tradingsymbol'],$v);
 			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			if($trend)
 				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             if ($sc[0]) {
-                $v['sma1'] = $sc[0];
-                $v['sma2'] = $sc[1];
+                $insert['sma1'] = $sc[0];
+                $insert['sma2'] = $sc[1];
             }
             // Insert Into Table
-            DB::table('kite_watch')->insert($v);
+            DB::table('kite_watch')->insert($insert);
 		}
 		if($input['nifty'])
 			$this->insertNifty($input['nifty']);

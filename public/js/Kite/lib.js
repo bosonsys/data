@@ -76,29 +76,31 @@ function getCookie(cname) {
 
 
 
-function placeOrder(token) {
-    console.log("placeOrder");   
+function placeOrder(s, q, t, p) {
+    console.log("placeOrder");
+    console.log(s, q, t, p);
     $.ajax({
       url: "https://kite.zerodha.com/api/orders/regular",
       method: "POST",
-      // data: {   exchange: "NSE",
-      //           tradingsymbol: "INFY",
-      //           transaction_type: "BUY",
-      //           order_type: "LIMIT",
-      //           quantity: 10,
-      //           price: 698,
-      //           product: "MIS",
-      //           validity: "DAY",
-      //           disclosed_quantity: 0,
-      //           trigger_price: 0,
-      //           squareoff: 0,
-      //           stoploss: 0,
-      //           trailing_stoploss: 0,
-      //           variety: "regular",
-      //           user_id: "DF7292"
-      //       },
+      data: {   exchange: "NSE",
+                tradingsymbol: s,
+                transaction_type: t,
+                order_type: "MARKET",
+                quantity: Math.abs(q),
+                price: 0,
+                product: p,
+                validity: "DAY",
+                disclosed_quantity: 0,
+                trigger_price: 0,
+                squareoff: 0,
+                stoploss: 0,
+                trailing_stoploss: 0,
+                variety: "regular",
+                user_id: "DF7292"
+            },
       headers: {"x-csrftoken": token},
     }).done(function(result) {
         console.log(result);
+        getPositions();
     });
 }
