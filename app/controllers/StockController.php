@@ -39,14 +39,40 @@ class StockController extends \BaseController {
 	public function lastday()
 	{
 		$lastDate = date('Y-m-d');
-		//$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
 		
 		$lasttop = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
 				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
-				->where('TIMESTAMP',$lastDate)
-				->take(10)
+				->where('TIMESTAMP',$lastday)
+				 ->where('csvdata.series','EQ')
 				->get();
-		echo "<pre>"; print_r($lasttop); exit;
+				
+				$lastval = array();
+				foreach($lasttop as $key => $v)
+				{
+					
+					$high = $v->HIGH;
+					$low = $v->LOW;
+				$v->per = $this->getPercentageChange($high, $low);
+				$data_per[$key] = $v->per;
+				array_push($lastval, $v);
+				//echo "<pre>"; print_r($lastval); exit;
+			}
+
+		array_multisort($data_per, SORT_DESC, $lastval);
+		$top = array_slice($lastval, 0, 10);
+
+		array_multisort($data_per, SORT_ASC, $lastval);
+		$last = array_slice($lastval, 0, 10);
+		//return array('top' => $top , 'last' => $last );
+		// echo "<pre>";
+		// print_r($top);
+		// print_r($last); exit;
+		return View::make('stock.intra-suggest')->with(array('top'=>$top, 'last'=>$last));
 	}
 
+	function getPercentageChange($oldNumber, $newNumber){
+		$decreaseValue = $oldNumber - $newNumber;
+		return ($decreaseValue / $oldNumber) * 100;
+	}
 }

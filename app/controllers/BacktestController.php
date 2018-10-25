@@ -1,475 +1,283 @@
 <?php
 
-class BacktestController extends \BaseController {
+class KitetestController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-
 	public function index()
 	{
-        // return View::make('watch.gainers');
-        return View::make('watch.watch');
+        // $calls = DB::table('calls')->get();
+        // return View::make('stock.calllist')
+        //     ->with('calls', $calls);
+        $collection = collect(DB::table('kite_watch')->get());
     }
-    public function v2()
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function getRunningCall()
 	{
-        $ldate = date('Y-m-d');
-        $names = DB::table('back_test')
-            ->select('TradingSymbol', 'per', 'updatedTime')
-            ->where('updatedTime', '>',  $ldate.' 09:30:00')
-            // ->groupBy('TradingSymbol')
-            ->get();
-        $arr = array();
-        echo '<pre>'; print_r($names); exit();
-        foreach ($names as $key => $name) {
-            array_push($arr,$name->TradingSymbol);
-        }
-        $datas = DB::table('back_test')
-               ->select('updatedTime')
-               ->where('updatedTime', '>',  $ldate.' 09:30:00')
-               ->groupBy('updatedTime')
-               ->get();
-        $a = array();
-        foreach ($datas as $key => $data){
-            array_push($a,$data->updatedTime);
-        }
-
-//  for($i=0; $i<=$datas; $i++){
-//  echo "<pre>"; print_r($datas); exit();
-//  }
-        // return View::make('watch.watchv2')->with('name', $stocks);
-        return View::make('watch.watchv2')->with('names',$arr)->with('datas',$a);
-	}
-	public function nse50()
-	{
-        return View::make('watch.nse50');
-	}
-	public function ETGainersData()
-	{
-        $url = "https://etmarketsapis.indiatimes.com/ET_Stats/gainers?pagesize=25&pid=0&pageno=1&sort=intraday&sortby=percentchange&sortorder=desc&duration=1d&callback=ajaxResponse&totalpages=7&index=2371";
-        $ET_data = $this->getCURL($url);
-       // echo '<pre>'; print_r($ET_data); exit();
-        // return View::make('watch.nse50');
-        $this->insertETG($ET_data);
-	}
-	public function getNSDdata()
-	{
-        return View::make('watch.nsedata');
-    }
-    public function getAllData()
-    {
-        // NSE 50
-        $nse50 = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json';
-        $nse50_data = $this->getCURL($nse50);
-        $this->parseData($nse50_data,'NSE50');
-
-
-        // Junior Nifty
-        $junior = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/juniorNiftyStockWatch.json';
-        $junior_data = $this->getCURL($junior);
-        $this->parseData($junior_data,'Junior');
-
-        // Midcap50 Nifty
-        $Midcap50 = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyMidcap50StockWatch.json';
-        $Midcap50_data = $this->getCURL($Midcap50);
-        $this->parseData($Midcap50_data,'Midcap50');
-
-        // $this->getAllSector();
-        // $this->gainerLoser();
-    }
-    public function marketJSON()
-    {
-        $rows = array();
-        $table = array();
-        $ldate = date('Y-m-d');
-
-        $table['cols'] = array(array(
-            'label' => 'Date Time', 
-            'type' => 'datetime'
-        ));
-        $dt = DB::table('back_test')
-        ->select('updatedTime')
-        ->where('updatedTime', '>',  $ldate.' 09:00:00')
-        ->groupBy('updatedTime')
+        $rCall = DB::table('calls')
+        ->where('status','=', 1)
         ->get();
-        echo "<pre>";
-        foreach ($dt as $key => $datetime) {
-            $data = DB::table('back_test')->select('per', 'TradingSymbol', 'updatedTime')
-            ->where('updatedTime',$datetime->updatedTime)->get();
-        }
-        exit;
-
-            $date = new DateTime();
-            $sub_array[] =  array(
-				"v" => 'Date('.$date->getTimestamp().'000)'
-            );
-            $c = array();
-            echo "<pre>"; print_r($d); exit();
-            foreach ($d as $k => $v) {
-
-                $new = array($v->updatedTime, $v->per);
-                array_push($c, $new);
-                $sub_array[] =  array(
-                    "v" => $v->per
-                );
-                $rows[] =  array(
-                    "c" => $sub_array
-                );
-            }
-            $table['rows'] = $rows;
-            //return Response::json($table);
-            echo '<pre>'; print_r($table); exit();
-            //return View::make('watch.marketJSON');
-    }
-    public function gainerLoser()
-    {
-        // Gainer
-        $gainer = 'https://www.nseindia.com/live_market/dynaContent/live_analysis/gainers/niftyGainers1.json';
-        $gainer_data = $this->getCURL($gainer);
-        // echo '<pre>'; print_r($gainer_data); exit();
-        $this->parseData($gainer_data,'Gainer');
-        // Loser
-        $loser = 'https://www.nseindia.com/live_market/dynaContent/live_analysis/losers/niftyLosers1.json';
-        $loser_data = $this->getCURL($loser);
-        $this->parseData($loser_data,'Loser');
-
+       // print_r($rCall);
+        return json_encode($rCall);
     }
 
-    public function getAllSector()
-    {
-        // Auto
-        $Auto = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxAutoStockWatch.json';
-        $Auto_data = $this->getCURL($Auto);
-        $this->parseData($Auto_data,'Auto');
-
-        // Bank
-        $Bank = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/bankNiftyStockWatch.json';
-        $Bank_data = $this->getCURL($Bank);
-        $this->parseData($Bank_data,'Bank');
-
-        // Energy
-        $Energy = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxEnergyStockWatch.json';
-        $Energy_data = $this->getCURL($Energy);
-        $this->parseData($Energy_data,'Energy');
-
-        // Finance
-        $Finance = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxFinanceStockWatch.json';
-        $Finance_data = $this->getCURL($Finance);
-        $this->parseData($Finance_data,'Finance');
-        
-        // FMCG
-        $FMCG = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxFMCGStockWatch.json';
-        $FMCG_data = $this->getCURL($FMCG);
-        $this->parseData($FMCG_data,'FMCG');
-        
-        // IT
-        $IT = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxitStockWatch.json';
-        $IT_data = $this->getCURL($IT);
-        $this->parseData($IT_data,'IT');
-        
-        // Media
-        $Media = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxMediaStockWatch.json';
-        $Media_data = $this->getCURL($Media);
-        $this->parseData($Media_data,'Media');
-        
-        // Metal
-        $Metal = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxMetalStockWatch.json';
-        $Metal_data = $this->getCURL($Metal);
-        $this->parseData($Metal_data,'Metal');
-
-        // Pharma
-        $Pharma = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxPharmaStockWatch.json';
-        $Pharma_data = $this->getCURL($Pharma);
-        $this->parseData($Pharma_data,'Pharma');
-
-        // PSU
-        $PSU = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxPSUStockWatch.json';
-        $PSU_data = $this->getCURL($PSU);
-        $this->parseData($PSU_data,'PSU');
-        
-        // Realty
-        $Realty = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/cnxRealtyStockWatch.json';
-        $Realty_data = $this->getCURL($Realty);
-        $this->parseData($Realty_data,'Realty');
-        
-        // PvtBank
-        $PvtBank = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyPvtBankStockWatch.json';
-        $PvtBank_data = $this->getCURL($PvtBank);
-        $this->parseData($PvtBank_data,'PvtBank');
-    }
-
-    public function parseData($data, $type)
-    {
-        $updateTime = Session::get($type);
-        if (isset($updateTime)) {
-           if ($updateTime == $data->time) {
-                return Response::json('Data Exist: '.$updateTime);
-                exit;
-           }
-        }
-        Session::put($type, $data->time);
-        $this->insertTable($data, $type);
-        return Response::json('Inserted: '.$data->time);
-    }
-    public function insertTable ($data, $type)
-    {
-        // echo '<pre>'; print_r($data); exit();
-        $lastRec = 'C:\xampp\htdocs\market\public\json\nsedata_'.date("d-m-Y").'.json';
-        // //open or read json data
-        if (!file_exists($lastRec)) {
-                $t['TradingSymbol'] =  10;
-            $fh = fopen($lastRec, 'w');
-                fwrite($fh, json_encode($t));
-            fclose($fh);
-        }
-        $lastRec_results = file_get_contents($lastRec);
-        $lastRecArray = json_decode($lastRec_results);
-        		
-        foreach ($data->data as $k => $v) {
-            $update['symbol'] = $v->symbol;
-            $update['ltP'] = str_replace(',', '', isset($v->ltP) ? $v->ltP : $v->ltp);
-            $update['trdVol'] =str_replace(',', '', isset($v->trdVol) ? $v->trdVol : $v->tradedQuantity);
-            $update['per'] =isset($v->per) ? $v->per : $v->netPrice;
-            $update['type'] = $type;
-            $update['nse_time'] = $data->time;
-            if (isset($lastRecArray->$update['symbol'])) {
-                $update['diff'] =  ($update['per'] - $lastRecArray->$update['symbol']);
-            } else {
-                $update['diff'] = 0;
-            }
-            $lastRecArray->$update['symbol'] = $update['per'];
-            // echo '<pre>'; print_r($update); exit();
-            DB::table('intra_data')->insert($update);
-        }
-        file_put_contents($lastRec, json_encode($lastRecArray));
-    }
-
-    public function insertETG($data)
-    {
-        foreach($data->searchresult as $row)
-        {
-            $dt = $row->updatedDateTime;
-            $dt = strtotime(str_replace('|', '', $dt));
-            $d = date('Y-m-d',$dt);
-            $t = date('h:i A',$dt);
-           // echo $d,'<br/>',$t;
-
-            // echo $row->companyShortName."<br>";
-            // print_r($row);
-            $update['companyShortName'] = $row->companyShortName;
-            $update['nseScripCode'] = substr($row->nseScripCode,0,-2);
-            $update['series'] = substr($row->nseScripCode,strlen($update['nseScripCode']));
-            $update['volume'] = $row->volume;
-            $update['current'] = $row->current;
-            $update['high'] = $row->high;
-            $update['low'] = $row->low;
-            $update['percentChange'] = $row->percentChange;
-            $update['sectorName'] = $row->sectorName;
-            $update['t_date'] = $d;
-            $update['t_time'] = $t;
-            DB::table('etg500')->insert($update);
-        }
-        // $data = DB::select($ET_data)->get();
-        //$data = json_decode(json_encode((array)$ET_data), true);
-        // foreach ($data->ET_data as $k => $row) {
-        //     $update['companyShortName'] = $v->DenaBank;
-        //     $update['nseScripCode'] = $v->DENABANKEQ;
-            //     /*$update['ltP'] = str_replace(',', '', $v->ltp);
-            //     $update['trdVol'] =str_replace(',', '', $v->tradedQuantity);
-            //     $update['per'] = $v->netPrice;
-            //     $update['type'] = $type;
-            //     $update['nse_time'] = $data->time;*/
-        //     echo '<pre>'; print_r($update);exit();
-        // DB::table('etg500')->insert($update);
-        //  }
-    }
-	public function getData()
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function updateMarketwatch()
 	{
-        $rows = array();
-        $table = array();
+		// print_r($id);
+		date_default_timezone_set('Asia/Kolkata');
 
-        $table['cols'] = array(array(
-        'label' => 'Date Time', 
-        'type' => 'string'
-        ));
-
-        $data = DB::table('back_test')->where('epoch','!=', '')->groupBy('TradingSymbol')->take(3)->get();
-        foreach ($data as $key => $value) {
-            $t = array('label' => $value->TradingSymbol, 'type' => 'number');
-            array_push($table['cols'] , $t);
-        }
-        $d = DB::table('back_test')->where('epoch','!=', '')->groupBy('updatedTime')->take(3)->get();
-            foreach ($d as $k1 => $v1) {
-                $c = DB::table('back_test')->select('TradingSymbol', 'updatedTime', 'LTPrice')->where('updatedTime','=', $v1->updatedTime)->get();
+		$input = Input::all();
+		$c = array();
+        foreach ($input['data'] as $k => $v) {
+            unset($v['mode']);
+            unset($v['token']);
+            unset($v['isTradeable']);
+            unset($v['closePrice']);
+            unset($v['tickChange']);
+			$sc = $this->sma($v['tradingsymbol'],$v);
+			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
+			if($trend)
+				$c[] = $this->screenCall($v['tradingsymbol'], $v);
+            if ($sc[0]) {
+                $v['sma1'] = $sc[0];
+                $v['sma2'] = $sc[1];
             }
-            echo '<pre>'; print_r($d); exit();
-        foreach ($c as $k => $v) {
-            $new = array((int)$v->updatedTime, $v->LTPrice);
-            array_push($t , $new);
-            $sub_array = array();
-            // $datetime = $v->epoch;
-            // $dt = new DateTime("@$datetime");
-            // $datetime = $dt->format('Y-m-d H:i:s'); 
-            $sub_array[] =  array(
-                "v" => $v->updatedTime
-                );
-            $sub_array[] =  array(
-                "v" => $v->LTPrice
-                );
-            $rows[] =  array(
-                "c" => $sub_array
-                );
-        }
-     $table['rows'] = $rows;
-    return Response::json($table);
+            // Insert Into Table
+            DB::table('back_test')->insert($v);
+		}
+		if($input['nifty'])
+			$this->insertNifty($input['nifty']);
+        return json_encode($c);
+	}
+	public function insertNifty($nifty)
+	{
+		// echo '<pre>'; print_r($nifty); exit();
+		if (Session::get('nifty')) {
+			$pCpoint = Session::get('nifty');
+			$update['diff'] = ($nifty[3] - $pCpoint);
+		}
+		$update['point'] = $nifty[2];
+		$update['cpoint'] = $nifty[3];
+		$update['per'] = number_format(($nifty[3] /  ($nifty[2] + $nifty[3]))*100, 2);
+		Session::put('nifty', $nifty[3]);
+		DB::table('nifty')->insert($update);
+	} 
+	public function screenCall($script, $data)
+	{
+		$r = null;
+		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
+		if (isset($calls[0])) {
+			$r = $this->closeCall($calls[0], $data);
+		}
+		else {
+			//echo $breakout = $this->breakout($script, $data);
+			$sdata = Session::get($script);
+			$sTrend = null;
+			if ($sdata['trend']) {
+				$sTrend = $sdata['trend'];
+			}
+			//if ($breakout == 'Up') {
+				if ($sTrend == "uptrend") {
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','breakout10');
+				}
+			//}
+			//else if($breakout == 'Down') {
+			 else if($sTrend == "downtrend") {
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','breakout10');
+				}
+			//}
+		}
+		return $r;
     }
-    
-     function getGainers()
+	
+	// public function breakout($callData, $data)
+	// {
+	// 	$ldate = date('Y-m-d');
+	// 	$lastRec = DB::table('kite_watch')
+	// 				->select('lastPrice')
+	// 				->where('insert_on', '>',  $ldate.' 09:14:00')
+	// 				->where('tradingsymbol', $data['tradingsymbol'])
+	// 				->orderBy('id', 'DESC')
+	// 				->take(10)
+	// 				->get();
+	// 	$max = max($lastRec);
+	// 	$min = min($lastRec);
+	// 	// echo "<pre>"; print_r($lastRec); 
+	// 	// echo "<pre>"; print_r($max);
+	// 	// echo "<pre>"; print_r($min);
+	// 	//echo $max->lastPrice;
+	// 	// exit;
+	// 	if($data['lastPrice'] < $min->lastPrice)
+	// 	{
+	// 		return "Down";
+	// 	} else if($data['lastPrice'] > $max->lastPrice)
+	// 	{
+	// 		return "Up";
+	// 	}
+	// 	return false;
+    // }
+    public function backtest($script, $data)
     {
-		$url = 'https://www.nseindia.com/live_market/dynaContent/live_analysis/gainers/niftyGainers1.json';
-        $json = 'C:\xampp\htdocs\market\public\json\gainers_'.date("d-m-Y").'.json';
-        $data = $this->getCURL($url);
+        $ldate = date('Y-m-d');
+        $test = DB::table('back_test')
+                    ->where('tradingsymbol','=', $script)
+                    ->where('insert_on', '>',  $ldate.' 09:14:00')
+                    // ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
+                    ->orderBy('id', 'DESC')
+                    ->get();
         
-        $updateTime = Session::get('gainers_time');
-        if (isset($updateTime)) {
-           if ($updateTime == $data->time) {
-                return Response::json('Data Exist'.$updateTime);
-                exit;
-           }
-        }
-        Session::put('gainers_time', $data->time);
-        
-	if (!file_exists($json)) {
-            $table['cols'] = array(array(
-            'label' => 'Date Time', 
-            'type' => 'string'
-            ));
-        // echo '<pre>'; print_r($data); exit();
-		foreach ($data->data as $key => $value) {
-			$t = array('label' => $value->symbol, 'type' => 'number');
-            array_push($table['cols'] , $t);
-        }
-		$fh = fopen($json, 'w');
-  		fwrite($fh, json_encode($table));
-        fclose($fh);
-        }
-
-        $table['rows'] = array();
-            // //open or read json data
-            $data_results = file_get_contents($json);
-            $tempArray = json_decode($data_results);
-            // //append additional json to json file
-            if (isset($tempArray->rows)) {
-                $tempRow = $tempArray->rows;
-            }
-
-                $sub_array[] =  array(
-                    "v" => $data->time
-                    );
-            foreach ($data->data as $k => $v) {
-                $update['symbol'] = $v->symbol;
-                $update['price'] = str_replace(',', '', $v->ltp);
-                $update['per'] = $v->netPrice;
-                DB::table('gainers')->insert($update);
-                $sub_array[] =  array(
-                    "v" => $v->netPrice
-                    // "v" => $v['LTPrice']
-                    );
-                }
-                $tempRow[] =  array(
-                    "c" => $sub_array
-                    );
-
-            // $tempRow[] = $rows;
-            // echo '<pre>'; print_r($tempRow); exit();
-            $tempArray->rows=$tempRow;
-            $jsonData = json_encode($tempArray);
-        file_put_contents($json, $jsonData);  
-    return Response::json($tempArray);
-    }
-     function getNSE50()
-    {
-		$url = 'https://www.nseindia.com/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json';
-        $json = 'C:\xampp\htdocs\market\public\json\nse50_'.date("d-m-Y").'.json';
-        $data = $this->getCURL($url);
-
-        $updateTime = Session::get('nse50_time');
-        if (isset($updateTime)) {
-           if ($updateTime == $data->time) {
-                return Response::json('Data Exist'.$updateTime);
-                exit;
-           }
-        }
-        Session::put('nse50_time', $data->time);
-		
-	if (!file_exists($json)) {
-            $table['cols'] = array(array(
-            'label' => 'Date Time', 
-            'type' => 'string'
-            ));
-        // echo '<pre>'; print_r($data); exit();
-		foreach ($data->data as $key => $value) {
-			$t = array('label' => $value->symbol, 'type' => 'number');
-            array_push($table['cols'] , $t);
-        }
-		$fh = fopen($json, 'w');
-  		fwrite($fh, json_encode($table));
-        fclose($fh);
-        }
-
-        $table['rows'] = array();
-            // //open or read json data
-            $data_results = file_get_contents($json);
-            $tempArray = json_decode($data_results);
-            // //append additional json to json file
-            if (isset($tempArray->rows)) {
-                $tempRow = $tempArray->rows;
-            }
-
-                $sub_array[] =  array(
-                    "v" => $data->time
-                    );
-            foreach ($data->data as $k => $v) {
-                $update['symbol'] = $v->symbol;
-                $update['ltP'] = str_replace(',', '', $v->ltP);
-                $update['trdVol'] = $v->trdVol;
-                $update['per'] = $v->per;
-                DB::table('intra_nse50')->insert($update);
-                $sub_array[] =  array(
-                    "v" => $v->per
-                    // "v" => $v['LTPrice']
-                    );
-                }
-                $tempRow[] =  array(
-                    "c" => $sub_array
-                    );
-
-            // $tempRow[] = $rows;
-            // echo '<pre>'; print_r($tempRow); exit();
-            $tempArray->rows=$tempRow;
-            $jsonData = json_encode($tempArray);
-        file_put_contents($json, $jsonData);  
-    return Response::json($tempArray);
-    }
-    
-    function getCURL($url)
-    {
-        //  Initiate curl
-        $ch = curl_init();
-        // Disable SSL verification
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        // Will return the response, if false it print the response
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Set the url
-        curl_setopt($ch, CURLOPT_URL,$url);
-        // Execute
-        $result=curl_exec($ch);
-        // Closing
-        curl_close($ch);
-
-        return json_decode($result);
     }
 
+	
+	public function callWatch($callData, $data)
+	{
+		$target = 1;
+		$stop = -1;
+		if ($callData->call == 1) {
+			$diff =  (float)$data['change'] -  (float)$callData->per;
+		} else if ($callData->call == 2) {
+			$diff = (float)$callData->per -  (float)$data['change'];
+		}
+		//echo $callData->nse;
+		//echo  $callData->id."=>id".$callData->nse."=> Entry: ".$callData->per."=> CMP: ".$data['change']."=> Diff: $diff<br>";
+		if ($diff >= $target) {
+			if($data['diff'] < 0)
+			{
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+			}
+		} else if ($diff <= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+		}
+	}
+
+    public function insIntraCall($script, $price, $per, $call, $str)
+	{
+		$i['nse'] = $script;
+        $i['price'] = $price;
+        $i['per'] = $per;
+		$i['call'] = $call;
+		$i['strategy'] = $str;
+		DB::table('intra_call')->insert($i);
+		return $i;
+	}
+
+	public function closeCall($callData, $data)
+	{
+		$target = 1;
+		$stop = -1;
+		if ($callData->call == 1) {
+			$diff =  (float)$data['change'] -  (float)$callData->per;
+		} else if ($callData->call == 2) {
+			$diff = (float)$callData->per -  (float)$data['change'];
+		}
+		if ($diff >= $target) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+		} else if ($diff <= $stop) {
+			DB::table('intra_call')
+				->where('id', $callData->id)
+				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+		}
+
+		// if ($callData->call == 1) {
+		// 	$diff =  (float)$data['change'] -  (float)$callData->per;
+		// } else if ($callData->call == 2) {
+		// 	$diff = (float)$callData->per -  (float)$data['change'];
+		// }
+		// if ($diff > 0) {
+		// 	$status = 1;
+		// } else {
+		// 	$status = -1;
+		// }
+		// DB::table('intra_call')
+		// 	->where('id', $callData->id)
+		// 	->update(array('status' => $status, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+		return $callData;
+	}
+	public function sma($script, $data)
+	{
+	  $ldate = date('Y-m-d');
+	  $sum = 0;
+	  $i = 1;
+	  $sma1 = 21;
+	  $sma2 = 9;
+	  $smaAvg2 = $smaAvg1 = null;
+	  $his = DB::table('back_test')
+			->where('tradingsymbol','=', $script)
+			->where('insert_on', '>',  $ldate.' 09:14:00')
+			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
+			->orderBy('id', 'DESC')
+			->take($sma1)
+            ->get();
+            // array_unshift($a,"blue");
+            // array_pop($a);
+		foreach($his as $key => $values) {
+			$sum += $values->lastPrice;
+			if ($i == $sma2) {
+				$smaSum = $sum;
+				$smaAvg2 = round(($sum / $sma2), 2);
+			}
+			if ($i == $sma1) {
+				$smaAvg1 = round(($sum / $sma1), 2);
+			}
+		$i++;
+		}	
+		return array($smaAvg1, $smaAvg2);
+	}
+	public function isTrendChange($smaAvg1, $smaAvg2, $script)
+	{
+		$sTrend = null;
+		$sdata = Session::get($script);
+		if ($sdata['trend']) {
+			$sTrend = $sdata['trend'];
+		}
+		if ($sTrend == "uptrend" || !isset($sTrend)) {
+			if ($smaAvg1 > $smaAvg2) {
+				$sdata['trend'] = $sTrend = "downtrend";
+				Session::put($script, $sdata);
+				return true;
+			}
+		}
+		if ($sTrend == "downtrend"  || !isset($sTrend)) {
+			if ($smaAvg1 < $smaAvg2) {
+				$sTrend = "uptrend";
+				$sdata['trend'] = $sTrend;
+				Session::put($script, $sdata);
+				return true;
+			}
+		}
+		return false;
+	}
+	public function insertIntraKite()
+	{
+		$input = Input::all();
+		DB::table('kite_margin')->truncate();
+		foreach ($input['data'] as $k => $v) {
+			$script = explode(":",$v['Scrip']);
+			$mis = rtrim($v['MIS Multiplier'],'x');
+			$d['Multiplier'] = $mis;
+			$d['Scrip'] = $script[0];
+			DB::table('kite_margin')->insert($d);
+		}
+		return json_encode('Inserted Successfully');
+	}
 }

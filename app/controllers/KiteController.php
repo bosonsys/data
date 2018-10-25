@@ -147,7 +147,7 @@ class KiteController extends \BaseController {
 			DB::table('intra_call')
 				->where('id', $callData->id)
 				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
-			}
+			 }
 		} else if ($diff <= $stop) {
 			DB::table('intra_call')
 				->where('id', $callData->id)

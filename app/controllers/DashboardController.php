@@ -73,7 +73,7 @@ class DashboardController extends \BaseController {
 				array_push($compList, $v);
 				// echo $comp. " = ".$v->cvalue." | $cv->SYMBOL = ".$v->c."<br>";
 								// exit;
-
+//print_r($compList); exit;
 				}
 			}
 		}

@@ -91,7 +91,7 @@ class MarketController extends \BaseController {
         $arr = array();
         foreach ($stock as $key => $value) {
             // echo $key." - ".$value;
-            $rec = array(strtotime($value->Timestamp)*1000 ,$value->Open,$value->High,$value->Low,$value->Close,($value->Tottrdval)*100);
+            $rec = array(strtotime($value->Timestamp)*1000,$value->Open,$value->High,$value->Low,$value->Close,($value->Tottrdval)*100 );
             array_push($arr, $rec);
         }
                     // print_r($arr);
