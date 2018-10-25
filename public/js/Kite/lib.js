@@ -18,6 +18,7 @@ function isTrendChange(sma1, sma2, trend)
 
 function marketWatch(watchList) {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
+    // console.log(sData);
     let sd = parseSData(JSON.parse(sData), watchList);
     return sd;
 }
@@ -29,8 +30,11 @@ function getWatchList(n = 4) {
 }
 
 function parseSData(sd, watchList) {
+  // console.log(sd);
+  // console.log(watchList);
         let cName = [];
         let sdKey = Object.keys(sd)
+        // console.log(sdKey);
         sdKey.forEach(function(a) {
         t = watchList.find(function (e) {
                 return e.instrument_token == a;
@@ -71,14 +75,6 @@ function getCookie(cname) {
 }
 
 
-function getPositions(token) {
-    $.ajax({
-      url: "https://kite.zerodha.com/api/portfolio/positions",
-      headers: {"x-csrftoken": token},
-    }).done(function(result) {
-        console.log(result);
-    });
-}
 
 function placeOrder(token) {
     console.log("placeOrder");   

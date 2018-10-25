@@ -15,10 +15,16 @@
   
   "content_scripts": [
     {
-		"matches": ["https://kite.zerodha.com/apps"],
-		"js": ["vendor/dexie.js","vendor/alasql.js","db.js", "export.js"],
-		"run_at": "document_end",
-		"all_frames": true
+    "matches": ["https://kite.zerodha.com/apps"],
+    "js": ["vendor/dexie.js","vendor/alasql.js","db.js", "export.js"],
+    "run_at": "document_end",
+    "all_frames": true
+    },
+    {
+    "matches": ["https://kite.zerodha.com/positions"],
+    "js": ["vendor/jquery.js", "lib.js", "positions.js"],
+    "run_at": "document_end",
+    "all_frames": true
     }, 
     {
     "matches": ["https://kite.zerodha.com/*"],

@@ -1,13 +1,53 @@
-console.log("Log Started..."); //for debug purpose so i can see it in the console log
+console.log("getPositions Started..."); //for debug purpose so i can see it in the console log
 var token = getCookie("public_token");
 
-let watchList = getWatchList(4);
+// let watchList = getWatchList(4);
 // console.log(watchList);
+getPositions(token);
 
-// setInterval(function () {
-// 	let d = marketWatch(watchList);
-// 	insertWatch(d, 'watch1');
-// }, 10 * 1000);
+
+function getPositions(token) {
+    $.ajax({
+      url: "https://kite.zerodha.com/api/portfolio/positions",
+      headers: {"x-csrftoken": token},
+    }).done(function(result) {
+        // console.log(result);
+        let tokens = getPositionToken(result.data.day);
+        setInterval(function () {
+			let d = positionWatch(tokens[1]);
+			console.log(tokens[0]);
+			console.log(d);
+		}, 10 * 1000);
+    });
+}
+
+function getPositionToken(r) {
+  // console.log(r);
+  let rs = r.filter(function (e) {
+    return e.quantity != 0
+  })
+  let t = rs.map(function(value) {
+    return value['instrument_token']; // Extract the values only
+});
+  return [rs, t];
+}
+
+function positionWatch(watchList) {
+    let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
+    // console.log(sData);
+    let sd = parsePData(JSON.parse(sData), watchList);
+    return sd;
+}
+
+function parsePData(sd, watchList) {
+        let cName = [];
+        watchList.forEach(function(a) {
+        	cName.push(sd[a]);
+       });
+    return cName;
+}
+
+
 
 // setInterval(function () {
 // 	let d = marketWatch(watchList);
@@ -18,47 +58,6 @@ let watchList = getWatchList(4);
 // setTimeout(function(){
 //     placeOrder(token);
 // }, 2000);
-
-setInterval(function () {
-	// getPositions(token);
-    // console.log("Print Data");
-    let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
-    let sd = parseSData(JSON.parse(sData), watchList);
-    // let wc = getWatchComp(sd);
-    // storeData(sd);
-    // insertWatch(sd);
-    // insetinto MySQL
-    // updateMarketWatch(sd, null);
-        // console.log(sd);
-}, 10 * 1000);
-
-
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
-//     for (key in changes) {
-//       var storageChange = changes[key];
-//       console.log('Storage key "%s" in namespace "%s" changed. ' +
-//                   'Old value was "%s", new value is "%s".',
-//                   key,
-//                   namespace,
-//                   storageChange.oldValue,
-//                   storageChange.newValue);
-//     }
-//   });
-
-// chrome.storage.local.set({'key': 'SDAFASDF'}, function() {
-//   console.log('Value is set to ' + value);
-// });
-   
-//   setTimeout(function () {
-// 	chrome.storage.local.get(['tabex_default_master'], function(result) {
-// 	  console.log('Value currently is ' + result.key);
-// 	});
-// }, 2000);   
-
-
-//  chrome.storage.local.get(['key'], function(result) {
-//  	console.log('Value currently is ' + result.key);
-//  });
 
 /*
 https://kite.zerodha.com/api/orders/regular
