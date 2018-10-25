@@ -26,7 +26,7 @@ setInterval(function () {
     let sd = parseSData(JSON.parse(sData), watchList);
     // let wc = getWatchComp(sd);
     // storeData(sd);
-    insertWatch(sd);
+    // insertWatch(sd);
     // insetinto MySQL
     updateMarketWatch(sd, null);
         // console.log(sd);
