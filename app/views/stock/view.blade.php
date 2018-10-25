@@ -2811,6 +2811,10 @@ window.onload = function () {
                 }
             },
             plotOptions: {
+                 candlestick: {
+                        color: '#8B0000',
+                        upColor: 'green'
+                    },
                 series: {
                     marker: {
                         enabled: false

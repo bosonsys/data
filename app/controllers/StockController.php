@@ -13,19 +13,19 @@ class StockController extends \BaseController {
 	  $cname = DB::table('company')->select('id','URL','symbol','mmbURL')
 			  ->get();
 			   $arr = array();
+				$cCompany['mmbURL'] = ''; 
+				$cCompany['edelURL'] = ''; 
+				$cCompany['name'] = $nse; 
         foreach ($cname as $key => $value) {
 			array_push($arr, $value->symbol);
 			if ($value->symbol == $nse) {
 				$cCompany['mmbURL'] = $value->mmbURL; 
 				$cCompany['edelURL'] = $value->URL; 
-				$cCompany['name'] = $value->symbol; 
 			}
-		}
-		
-			  //echo "<pre>"; print_r($cname); exit();
+		}		
 		return View::make('stock.view')->with(array('cCompany' => $cCompany, 'cname' => $arr));
-		// return View::make('stock.view')->with('sname', 'Stock Name');
 	}
+	
     public function stock($nse)
 	{
         $stock = DB::table('csvdata')->select('OPEN as o',  'HIGH as h', 'CLOSE as c', 'LOW as l', 'TIMESTAMP as t')
@@ -38,8 +38,8 @@ class StockController extends \BaseController {
 	}
 	public function lastday()
 	{
-		$lastDate = date('Y-m-d');
-		$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		$lastday = date('Y-m-d');
+		// $lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
 		
 		$lasttop = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
 				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
@@ -59,10 +59,10 @@ class StockController extends \BaseController {
 				//echo "<pre>"; print_r($lastval); exit;
 			}
 
-		array_multisort($data_per, SORT_DESC, $lastval);
+		array_multisort($data_per, SORT_DESC, SORT_NUMERIC, $lastval);
 		$top = array_slice($lastval, 0, 10);
 
-		array_multisort($data_per, SORT_ASC, $lastval);
+		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $lastval);
 		$last = array_slice($lastval, 0, 10);
 		//return array('top' => $top , 'last' => $last );
 		// echo "<pre>";
@@ -72,7 +72,7 @@ class StockController extends \BaseController {
 	}
 
 	function getPercentageChange($oldNumber, $newNumber){
-		$decreaseValue = $oldNumber - $newNumber;
+		$decreaseValue = $newNumber -  $oldNumber;
 		return ($decreaseValue / $oldNumber) * 100;
 	}
 }

@@ -68,7 +68,7 @@
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/ind_niftyservicelist')}}">Nifty Service</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/EQUITY_L/18')}}">2018 Company</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/pennystock')}}">Penny Company</a></li></ul> </div>
-            <div class="col-lg-4" ><ul><li><a href="{{url('/updatefrtable/intraday_edel')}}">Intraday Company</a></li></ul> </div>
+            <div class="col-lg-4" ><ul><li><a href="{{url('/updateKiteTable')}}">Intraday Company</a></li></ul> </div>
             <div class="col-lg-4" ><ul><li><a href="{{url('/updatetable/EQUITY_L')}}">All Company</a></li></ul> </div>
     </div>
     

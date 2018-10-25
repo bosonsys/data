@@ -1,4 +1,4 @@
-console.log("getPositions Started..."); //for debug purpose so i can see it in the console log
+console.log("getPositions Started..."); 
 var token = getCookie("public_token");
 let target = 1;
 let stop = -1;

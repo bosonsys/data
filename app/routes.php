@@ -24,6 +24,7 @@ Route::get('/market/{filter}', 'MarketController@index');
 Route::get('/market/stockJSON/{nse}', 'MarketController@stockJSON');
 Route::get('/market/stock/{nse}', 'MarketController@stock');
 Route::get('/updatefrtable/{table}', 'MarketController@updateFrTable');
+Route::get('/updateKiteTable', 'MarketController@updateKiteTable');
 Route::get('/updatetable/{script}/{year?}', 'MarketController@updateTable');
 Route::get('/pennystock', 'MarketController@prevday');
 //Route::get('/newtable/{script}/{year?}', 'MarketController@newTable');

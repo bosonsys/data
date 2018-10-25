@@ -21,7 +21,7 @@
         
     ?>
         <tr>
-        <td>{{$p->SYMBOL}}</td>
+        <td><?php echo "<a href='".url('stock/'.$p->SYMBOL)."' target='_blank'>$p->SYMBOL</a>" ?></td>
         <td> <?php echo round(($p->per),2) ?></td>
         </tr>
         <?php
@@ -41,7 +41,7 @@
         
     ?>
         <tr>
-        <td>{{$n->SYMBOL}}</td>
+        <td><?php echo "<a href='".url('stock/'.$n->SYMBOL)."' target='_blank'>$n->SYMBOL</a>"; ?></td>
         <td>
         <?php echo round(($n->per),2) ?> </td>
         </tr>
