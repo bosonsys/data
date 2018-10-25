@@ -42,7 +42,18 @@ class KiteController extends \BaseController {
 		$input = Input::all();
 		$c = array();
         foreach ($input['data'] as $k => $v) {
-			$insert[''] = $v[''];
+			$insert['absoluteChange'] = $v['absoluteChange'];
+			$insert['averagePrice'] = $v['averagePrice'];
+			$insert['change'] = $v['change'];
+			$insert['highPrice'] = $v['highPrice'];
+			$insert['lastPrice'] = $v['lastPrice'];
+			$insert['lastQuantity'] = $v['lastQuantity'];
+			$insert['lowPrice'] = $v['lowPrice'];
+			$insert['openPrice'] = $v['openPrice'];
+			$insert['totalBuyQuantity'] = $v['totalBuyQuantity'];
+			$insert['totalSellQuantity'] = $v['totalSellQuantity'];
+			$insert['tradingsymbol'] = $v['tradingsymbol'];
+			$insert['volume'] = $v['volume'];
 			$sc = $this->sma($v['tradingsymbol'],$v);
 			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			if($trend)
