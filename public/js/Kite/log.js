@@ -28,9 +28,9 @@ setInterval(function () {
     // storeData(sd);
     // insertWatch(sd);
     // insetinto MySQL
-    // updateMarketWatch(sd, null);
+    updateMarketWatch(sd, null);
         // console.log(sd);
-}, 10 * 1000);
+}, 30 * 1000);
 
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {
