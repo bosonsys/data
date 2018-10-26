@@ -1,6 +1,6 @@
 @extends('layout.index')
 @section('title')
-	Stock View
+	{{$cCompany["name"]}} - Stock View
 @stop
 @section('content')
 <style type="text/css">

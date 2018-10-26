@@ -12,7 +12,7 @@ class BreakoutController extends \BaseController {
 	{
 		//echo "asdfasdfasD";
 
-        return View::make('breakout.5days');
+        return View::make('breakout.last5days');
 	}
 
 	public function days5()
@@ -32,13 +32,13 @@ class BreakoutController extends \BaseController {
 		// ->orderby('TIMESTAMP','DESC')
 		->take(20)
         ->get();
-       echo "<pre>"; print_r($stock); exit();
+       //echo "<pre>"; print_r($stock); exit();
         return View::make('breakout.5days')->with('lists', $arr);
          //return json_encode($stock);
 	}
 
 	
-public function last5days($nse)
+    public function last5days($nse)
 	{   //$array= array_merge($day, $stock);
 		
 		$day = DB::table('csvdata')
@@ -68,10 +68,40 @@ public function last5days($nse)
 		->whereIn('TIMESTAMP',$arr)
 		->orderBy('SYMBOL')
 		->take(5)
-        ->get();
-        echo "<pre>"; print_r($stock); exit();
+		->get();
+		echo "<pre>"; print_r($stock); 
+		$data = $this->getwatchData($nse, 'desc');
+	    $max = max($data);
+		$min = min($data);
+		//echo "<pre>"; print_r($max); exit;
+		 echo "<pre>"; print_r($max); print_r($min); exit();
         return View::make('breakout.last5days')->with('lists', $arr)->with('nse', $nse);
          //return json_encode($stock);
 	}
+	function getwatchData($nse, $order)
+	{
+		return DB::table('kite_watch')
+		->select('tradingsymbol','openPrice','lastPrice','absoluteChange','change','highPrice','lowPrice','insert_on')
+		->where('tradingsymbol',$nse)
+		//->take(1)
+		->orderBy('insert_on',$order)
+		// ->orderBy('change',$order)
+		->get();
+
+		
+	// 	// echo "<pre>"; print_r($lastRec); 
+	// 	// echo "<pre>"; print_r($max);
+	// 	// echo "<pre>"; print_r($min);
+	// 	//echo $max->lastPrice;
+	// 	// exit;
+	// 	if($data['lastPrice'] < $min->lastPrice)
+	// 	{
+	// 		return "Down";
+	// 	} else if($data['lastPrice'] > $max->lastPrice)
+	// 	{
+	// 		return "Up";
+	// 	}
+	}
+
 
 }

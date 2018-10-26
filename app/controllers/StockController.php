@@ -38,19 +38,18 @@ class StockController extends \BaseController {
 	}
 	public function lastday()
 	{
-		$lastday = date('Y-m-d');
-		// $lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		$lastDate = date('Y-m-d');
+		$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
 		
-		$lasttop = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
+		$last = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
 				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
 				->where('TIMESTAMP',$lastday)
 				 ->where('csvdata.series','EQ')
 				->get();
 				
 				$lastval = array();
-				foreach($lasttop as $key => $v)
+				foreach($last as $key => $v)
 				{
-					
 					$high = $v->HIGH;
 					$low = $v->LOW;
 				$v->per = $this->getPercentageChange($high, $low);
@@ -64,11 +63,20 @@ class StockController extends \BaseController {
 
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $lastval);
 		$last = array_slice($lastval, 0, 10);
-		//return array('top' => $top , 'last' => $last );
-		// echo "<pre>";
-		// print_r($top);
-		// print_r($last); exit;
-		return View::make('stock.intra-suggest')->with(array('top'=>$top, 'last'=>$last));
+		
+		$lasttop = $this->getlastDay($lastday, 'desc');
+		$lastlosers = $this->getlastDay($lastday, 'asc');
+		return View::make('stock.intra-suggest')->with(array('top'=>$top, 'last'=>$last))->with('lasttop',$lasttop)->with('lastlosers',$lastlosers);
+	}
+	function getlastDay($lastday, $order)
+	{
+		return DB::table('csvdata')->select('SYMBOL', 'CLOSEP', 'TIMESTAMP')
+				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
+				->where('TIMESTAMP',$lastday)
+				->where('csvdata.series','EQ')
+				->take(10)
+				->orderBy('csvdata.CLOSEP', $order)
+				->get();
 	}
 
 	function getPercentageChange($oldNumber, $newNumber){
