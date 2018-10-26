@@ -11,7 +11,7 @@ setInterval(function () {
   checkStatus();
 }, 10 * 1000);
 
-function getPositions() 
+function getPositions() {
     $.ajax({
       url: "https://kite.zerodha.com/api/portfolio/positions",
       headers: {"x-csrftoken": token},
@@ -61,7 +61,7 @@ function parsePData(sd, watchList) {
 }
 
 function squareOffBuy(d) {
-  // console.log(d.percentage);
+  console.log(d.percentage);
   if (d.percentage >= target) {
     squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), 'SELL', 't')
   } else if (d.percentage <= stop) {
