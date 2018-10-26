@@ -38,8 +38,8 @@ class StockController extends \BaseController {
 	}
 	public function lastday()
 	{
-		$lastDate = date('Y-m-d');
-		$lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		$lastday = date('Y-m-d');
+		$lastday = date( 'Y-m-d', strtotime( $lastday . ' -1 day' ) );
 		
 		$last = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
 				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
@@ -63,7 +63,7 @@ class StockController extends \BaseController {
 
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $lastval);
 		$last = array_slice($lastval, 0, 10);
-		
+
 		$lasttop = $this->getlastDay($lastday, 'desc');
 		$lastlosers = $this->getlastDay($lastday, 'asc');
 		return View::make('stock.intra-suggest')->with(array('top'=>$top, 'last'=>$last))->with('lasttop',$lasttop)->with('lastlosers',$lastlosers);
