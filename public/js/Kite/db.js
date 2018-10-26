@@ -1,4 +1,6 @@
 let db = createDB();
+console.log(db);
+
 //
 // Define your database
 //
@@ -12,7 +14,8 @@ function createDB() {
 	  	sma1, sma2, rsi, trend, created_on`,
 	  watch5: `++, absoluteChange, averagePrice, closePrice, highPrice, lastPrice,lastQuantity, 
 	  	lowPrice, openPrice, tickChange,totalBuyQuantity, totalSellQuantity, tradingsymbol, volume, 
-	  	sma1, sma2, rsi, trend, created_on`
+		  sma1, sma2, rsi, trend, created_on`,
+	   deep: `++, symbol, type, orders, price, quantity`
 	});
 	return db;
 }

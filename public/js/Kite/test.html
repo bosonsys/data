@@ -1,0 +1,44 @@
+<html>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"></script>
+<script src="vendor/dexie.js"></script>
+<script src="vendor/jquery.js"></script>
+<script src="db.js"></script>
+
+<script>
+    let jD = '{"265":{"mode":"full","isTradeable":false,"token":265,"lastPrice":33349.31,"highPrice":33776.8,"lowPrice":33291.58,"openPrice":33776.8,"closePrice":33690.09,"change":-1.0115140683803423,"absoluteChange":-340.77999999999884},"107265":{"mode":"ltp","token":107265,"isTradeable":true,"volume":494194,"lastQuantity":1,"totalBuyQuantity":0,"totalSellQuantity":8426,"lastPrice":90.75,"averagePrice":91.58,"openPrice":92.7,"highPrice":93.15,"lowPrice":90,"closePrice":91.45,"change":-0.7654455986878106,"absoluteChange":-0.7000000000000028,"tickChange":-1},"256265":{"mode":"full","isTradeable":false,"token":256265,"lastPrice":10030,"highPrice":10128.85,"lowPrice":10004.55,"openPrice":10122.35,"closePrice":10124.9,"change":-0.9372932078341479,"absoluteChange":-94.89999999999964},"359937":{"mode":"full","token":359937,"isTradeable":true,"volume":6314578,"lastQuantity":5,"totalBuyQuantity":13260,"totalSellQuantity":0,"lastPrice":225.3,"averagePrice":223.25,"openPrice":226.3,"highPrice":227.75,"lowPrice":218.1,"closePrice":226.4,"change":-0.4858657243816229,"absoluteChange":-1.0999999999999943,"depth":{"buy":[{"price":225.3,"orders":29,"quantity":13260},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}],"sell":[{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}]},"lastTradedTime":"2018-10-26 15:59:41","oi":0,"oiDayHigh":0,"oiDayLow":0,"tickChange":-1},"636673":{"mode":"ltp","token":636673,"isTradeable":true,"volume":4734844,"lastQuantity":9,"totalBuyQuantity":0,"totalSellQuantity":4793,"lastPrice":65.95,"averagePrice":65.1,"openPrice":66.8,"highPrice":66.8,"lowPrice":63.5,"closePrice":66.45,"change":-0.7524454477050414,"absoluteChange":-0.5,"tickChange":-1},"876289":{"mode":"ltp","token":876289,"isTradeable":true,"volume":89316,"lastQuantity":527,"totalBuyQuantity":0,"totalSellQuantity":2938,"lastPrice":636.7,"averagePrice":641.12,"openPrice":635.1,"highPrice":654.55,"lowPrice":620.55,"closePrice":644.55,"change":-1.2179039640058815,"absoluteChange":-7.849999999999909,"tickChange":-1},"898305":{"mode":"ltp","token":898305,"isTradeable":true,"volume":622498,"lastQuantity":2000,"totalBuyQuantity":0,"totalSellQuantity":11426,"lastPrice":37.9,"averagePrice":38.2,"openPrice":39.05,"highPrice":39.25,"lowPrice":37.35,"closePrice":38.5,"change":-1.558441558441562,"absoluteChange":-0.6000000000000014,"tickChange":-1},"2714625":{"mode":"ltp","token":2714625,"isTradeable":true,"volume":7858963,"lastQuantity":3,"totalBuyQuantity":0,"totalSellQuantity":2485,"lastPrice":297.95,"averagePrice":297.96,"openPrice":297.1,"highPrice":306,"lowPrice":287,"closePrice":295.55,"change":0.8120453391980975,"absoluteChange":2.3999999999999773,"tickChange":1},"2911489":{"mode":"full","token":2911489,"isTradeable":true,"volume":7768428,"lastQuantity":5,"totalBuyQuantity":0,"totalSellQuantity":8104,"lastPrice":604.05,"averagePrice":619.78,"openPrice":642,"highPrice":644.4,"lowPrice":600,"closePrice":618.3,"change":-2.304706453178069,"absoluteChange":-14.25,"depth":{"buy":[{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}],"sell":[{"price":604.05,"orders":51,"quantity":8104},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}]},"lastTradedTime":"2018-10-26 15:58:50","oi":0,"oiDayHigh":0,"oiDayLow":0,"tickChange":-1},"3721473":{"mode":"ltp","token":3721473,"isTradeable":true,"volume":28824952,"lastQuantity":3,"totalBuyQuantity":0,"totalSellQuantity":18073,"lastPrice":40.9,"averagePrice":39.97,"openPrice":36.95,"highPrice":41.85,"lowPrice":36.75,"closePrice":36.95,"change":10.690121786197551,"absoluteChange":3.9499999999999957,"tickChange":1},"4632577":{"mode":"ltp","token":4632577,"isTradeable":true,"volume":4265919,"lastQuantity":25,"totalBuyQuantity":9,"totalSellQuantity":0,"lastPrice":1055.55,"averagePrice":1038.65,"openPrice":1070,"highPrice":1081.5,"lowPrice":977,"closePrice":1074.1,"change":-1.7270272786518905,"absoluteChange":-18.549999999999955,"tickChange":-1},"4834049":{"mode":"ltp","token":4834049,"isTradeable":true,"volume":1097519,"lastQuantity":5,"totalBuyQuantity":0,"totalSellQuantity":11742,"lastPrice":28.6,"averagePrice":28.19,"openPrice":28.4,"highPrice":29,"lowPrice":27.25,"closePrice":29,"change":-1.3793103448275814,"absoluteChange":-0.3999999999999986,"tickChange":-1},"5181953":{"mode":"ltp","token":5181953,"isTradeable":true,"volume":166448,"lastQuantity":2,"totalBuyQuantity":0,"totalSellQuantity":305,"lastPrice":422.85,"averagePrice":419.75,"openPrice":423.45,"highPrice":429.95,"lowPrice":410.05,"closePrice":420.05,"change":0.6665873110344034,"absoluteChange":2.8000000000000114,"tickChange":1},"7712001":{"mode":"full","token":7712001,"isTradeable":true,"volume":13434156,"lastQuantity":5,"totalBuyQuantity":1830,"totalSellQuantity":0,"lastPrice":683.9,"averagePrice":687.19,"openPrice":691,"highPrice":722.25,"lowPrice":645.25,"closePrice":689.1,"change":-0.7546074590045052,"absoluteChange":-5.2000000000000455,"depth":{"buy":[{"price":683.9,"orders":20,"quantity":1830},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}],"sell":[{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}]},"lastTradedTime":"2018-10-26 15:57:47","oi":0,"oiDayHigh":0,"oiDayLow":0,"tickChange":-1},"7982337":{"mode":"full","token":7982337,"isTradeable":true,"volume":2231691,"lastQuantity":20,"totalBuyQuantity":0,"totalSellQuantity":1244,"lastPrice":724.4,"averagePrice":717.55,"openPrice":710.4,"highPrice":748,"lowPrice":677.5,"closePrice":701.35,"change":3.2865188564910466,"absoluteChange":23.049999999999955,"depth":{"buy":[{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}],"sell":[{"price":724.4,"orders":22,"quantity":1244},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0},{"price":0,"orders":0,"quantity":0}]},"lastTradedTime":"2018-10-26 15:58:54","oi":0,"oiDayHigh":0,"oiDayLow":0,"tickChange":1}}';
+
+    chart = '[{"name":"IBULHSGFIN","token":"7712001","segment":"NSE"},{"name":"HINDPETRO","token":"359937","segment":"NSE"},{"name":"BIOCON","token":"2911489","segment":"NSE"},{"name":"MCX","token":"7982337","segment":"NSE"}]';
+
+    d = JSON.parse(jD);
+    c = JSON.parse(chart);
+    let cName = [];
+    c.forEach(function (e) {
+        d[e.token]["name"] = e.name;
+        cName.push(d[e.token]);
+    });
+    console.log(cName);
+    insertWatch(cName, 'deep');
+
+    function insertWatch(data, t) {
+        // console.log(data);
+        var table = db.table(t);
+        const now = new Date();
+        timestamp = now.getTime();
+        data.forEach(function (e) {
+        e.depth.buy.forEach(function(a){
+            console.log(a);
+            a.name = e.name;
+            a.type = 'buy';
+            table.add(a);
+        });
+        e.depth.sell.forEach(function (a) {
+            console.log(a);
+            a.name = e.name;
+            a.type = 'sell';
+            table.add(a);
+        });
+       });
+        return data;
+    }
+
+</script>

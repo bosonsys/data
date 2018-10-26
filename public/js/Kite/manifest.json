@@ -21,6 +21,19 @@
     "all_frames": true
     },
     {
+      "matches": [
+        "https://kite.zerodha.com/static/build/multiple-chart.html?*"
+      ],
+      "js": [
+        "vendor/dexie.js",
+        "vendor/alasql.js",
+        "db.js",
+        "deep.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": true
+    },
+    {
     "matches": ["https://kite.zerodha.com/positions"],
     "js": ["vendor/jquery.js", "lib.js", "positions.js"],
     "run_at": "document_end",
@@ -28,6 +41,7 @@
     }, 
     {
     "matches": ["https://kite.zerodha.com/*"],
+    "exclude_globs": ["https://kite.zerodha.com/static/build/multiple-chart.html?*"],
     "js": ["vendor/jquery.js", "vendor/dexie.js","vendor/polyfill.min.js","vendor/browser.js","lib.js","db.js","storage.js","log.js"],
     "run_at": "document_end",
     "all_frames": true
