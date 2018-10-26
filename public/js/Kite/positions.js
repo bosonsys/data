@@ -46,13 +46,13 @@ function parsePData(sd, watchList) {
           if (a.buy_quantity > a.sell_quantity) {
             a.call = "BUY";
             a.percentage = (a.last_price - a.buy_price) / a.buy_price * 100;
-            squareOffBuy(a);
+            checkTarget(a,'SELL');
             // console.log(a.tradingsymbol + ' Buy at ' + a.buy_price + " qty " + a.buy_quantity +
             //   " cValue " + a.last_price + " % " + a.percentage);
           } else if(a.buy_quantity < a.sell_quantity) {
             a.call = "SELL";
             a.percentage = (a.sell_price - a.last_price) / a.sell_price * 100;
-            squareOffSell(a);
+            checkTarget(a, 'BUY');
             // console.log(a.tradingsymbol + ' Sell at ' + a.sell_price + " qty " + a.sell_quantity + 
             //   " cValue " + a.last_price + " % " + a.percentage);
           }
@@ -60,18 +60,18 @@ function parsePData(sd, watchList) {
   return watchList;
 }
 
-function squareOffBuy(d) {
-  console.log(d.percentage);
+function checkTarget(d, a) {
+  console.log(d.tradingsymbol, parseFloat(d.percentage).toFixed(2));
   if (d.percentage >= target) {
-    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), 'SELL', 't')
+    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 't')
   } else if (d.percentage <= stop) {
-    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), 'SELL', 's')
+    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 's')
   }
 }
 
 
 function squareOffSell(d) {
-  console.log(d.percentage);
+  console.log(d.tradingsymbol, parseFloat(d.percentage).toFixed(2));
   if (d.percentage >= target) {
     squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), 'BUY', 't')
   } else if (d.percentage <= stop) {

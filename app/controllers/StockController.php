@@ -39,7 +39,7 @@ class StockController extends \BaseController {
 	public function lastday()
 	{
 		$lastday = date('Y-m-d');
-		// $lastday = date( 'Y-m-d', strtotime( $lastDate . ' -1 day' ) );
+		$lastday = date( 'Y-m-d', strtotime( $lastday . ' -1 day' ) );
 		
 		$lasttop = DB::table('csvdata')->select('SYMBOL', 'HIGH', 'LOW', 'LAST', 'TIMESTAMP')
 				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
