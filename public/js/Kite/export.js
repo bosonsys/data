@@ -1,9 +1,9 @@
 console.log("Export")
-var table = db.table('watch1');
+var table = db.table('deep');
 exportWatch(table);
 
-var table = db.table('watch5');
-exportWatch(table);
+// var table = db.table('watch5');
+// exportWatch(table);
 
 function exportWatch(table){
 	table.toArray()
