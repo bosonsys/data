@@ -8,7 +8,7 @@ var positions;
 getPositions();
 
 setInterval(function () {
-  checkStatus();
+  let d = positionWatch(positions);
 }, 10 * 1000);
 
 function getPositions() {
@@ -17,13 +17,8 @@ function getPositions() {
       headers: {"x-csrftoken": token},
     }).done(function(result) {
         // console.log(result);
-      positions = result.data.day;
+      positions = getMISPosition(result.data.day);
     });
-}
-
-function checkStatus() {
-    let pos = getMISPosition(positions);
-    let d = positionWatch(pos);
 }
 
 function getMISPosition(r) {
@@ -81,6 +76,7 @@ function squareOffSell(d) {
 
 function squareOFF(s, q, t, f) {
   console.log(s, q, t, f);
+  // delete myArray["lastname"];
   placeOrder(s,q, t, 'MIS');
 }
 
