@@ -82,12 +82,12 @@ class KiteController extends \BaseController {
 		Session::put('nifty', $nifty[3]);
 		DB::table('nifty')->insert($update);
 	} 
-	public function screenCall($script, $data)
+	public function screenCall($script, $data, $i=null)
 	{
 		$r = null;
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
 		if (isset($calls[0])) {
-			$r = $this->closeCall($calls[0], $data);
+			$r = $this->closeCall($calls[0], $data, $i);
 		}
 		else {
 			//echo $breakout = $this->breakout($script, $data);
@@ -98,46 +98,20 @@ class KiteController extends \BaseController {
 			}
 			//if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
-					if ($data['absoluteChange'] > 0)
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1','breakout10');
+					// if ($data['absoluteChange'] > 0)
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$data['absoluteChange'], $i);
 				}
 			//}
 			//else if($breakout == 'Down') {
 			 else if($sTrend == "downtrend") {
-				 	if ($data['absoluteChange'] < 0)
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2','breakout10');
+				 	// if ($data['absoluteChange'] < 0)
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
 				}
 			//}
 		}
 		return $r;
     }
 	
-	// public function breakout($callData, $data)
-	// {
-	// 	$ldate = date('Y-m-d');
-	// 	$lastRec = DB::table('kite_watch')
-	// 				->select('lastPrice')
-	// 				->where('insert_on', '>',  $ldate.' 09:14:00')
-	// 				->where('tradingsymbol', $data['tradingsymbol'])
-	// 				->orderBy('id', 'DESC')
-	// 				->take(10)
-	// 				->get();
-	// 	$max = max($lastRec);
-	// 	$min = min($lastRec);
-	// 	// echo "<pre>"; print_r($lastRec); 
-	// 	// echo "<pre>"; print_r($max);
-	// 	// echo "<pre>"; print_r($min);
-	// 	//echo $max->lastPrice;
-	// 	// exit;
-	// 	if($data['lastPrice'] < $min->lastPrice)
-	// 	{
-	// 		return "Down";
-	// 	} else if($data['lastPrice'] > $max->lastPrice)
-	// 	{
-	// 		return "Up";
-	// 	}
-	// 	return false;
-	// }
 	
 	public function callWatch($callData, $data)
 	{
@@ -164,20 +138,25 @@ class KiteController extends \BaseController {
 		}
 	}
 
-    public function insIntraCall($script, $price, $per, $call, $str)
+    public function insIntraCall($script, $price, $per, $call, $str, $in=null)
 	{
 		$i['nse'] = $script;
         $i['price'] = $price;
         $i['per'] = $per;
 		$i['call'] = $call;
 		$i['strategy'] = $str;
+		if ($in)
+			$i['inserted_on'] = $in;
 		DB::table('intra_call')->insert($i);
 		return $i;
 	}
 
-	public function closeCall($callData, $data)
+	public function closeCall($callData, $data, $u=null)
 	{
 		// print_r($data);
+		if (!$u) {
+			$u = date('Y-m-d H:i:s');
+		}
 		$target = 1;
 		$stop = -1;
 		if ($callData->call == 1) {
@@ -188,11 +167,11 @@ class KiteController extends \BaseController {
 		if ($diff >= $target) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+				->update(array('status' => 1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
 		} else if ($diff <= $stop) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
-				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change']));
+				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
 		}
 
 		// if ($callData->call == 1) {
