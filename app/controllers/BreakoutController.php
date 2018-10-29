@@ -100,14 +100,22 @@ class BreakoutController extends \BaseController {
 			//  $data_per[$key] = $v->data1;
 			//$value = array_merge($v->data, $v->data1);
 			array_push($r, $v);
-			// echo "<pre>"; print_r($data);
-			// print_r($data1); exit;
+			// if($data->absolutechange > 0)
+			// {
+			// 	return Uptrend;
+			// } 
+			// //elseif($data['absolutechange'] < 0)
+			// // {
+			// // 	return Downtrend;
+			// // }
+			// echo "<pre>"; print_r($data->absolutechange); exit;
+			// // print_r($data1); exit;
 		 }
 
 		 $result = array('nse' => $v->SYMBOL,
-		            'absolutechange' => $data[0]->absoluteChange, 
-                    'maxHIGH'=>$v->maxHIGH,
-                    'minLOW'=>$v->minLOW,
+					'absolutechange' => $data[0]->absoluteChange, 
+                    'maxhigh'=>$v->maxHIGH,
+                    'minlow'=>$v->minLOW,
 					'openprice' => $data[0]->openPrice,
 					'lastprice' => $data[0]->lastPrice,
 					'highPrice' => $data[0]->highPrice,
@@ -121,6 +129,13 @@ class BreakoutController extends \BaseController {
 					'perlow' => $percent,
 					'insert_on' => $data[0]->insert_on
 				);
+				if($result['absolutechange'] > 0)
+				{
+					return 'Uptrend';
+				} elseif($result['absolutechange'] < 0)
+				{
+					return 'Downtrend';
+				}
 				echo "<pre>"; print_r($result); exit;
 
         return View::make('breakout.last5days')->with('lists', $arr)->with('nse', $nse);
@@ -135,7 +150,7 @@ class BreakoutController extends \BaseController {
 		->orderBy('insert_on',$order)
 		->get();
 
-		// if($data1['change'])
+		// if(absoluteChange)
 		// {
 		// 	return "Down";
 		// } else if($data['change'])

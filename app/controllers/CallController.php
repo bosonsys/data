@@ -631,6 +631,34 @@ public function report()
 		->get();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
-
+public function summary()
+{
+	$ldate = date('Y-m-d');
+	$buys = DB::table('intra_call')
+		->select(DB::raw('count("call") as value, status, strategy, nse'))
+		->where('call',1)
+		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->groupBy('nse')
+		->get();
+//echo "<pre>"; print_r($buy); exit;
+	$sells = DB::table('intra_call')
+	    ->select(DB::raw('count("call") as total, status, strategy, nse'))
+		->where('call',2)
+		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->groupBy('nse')
+		->get();
+	//echo "<pre>"; print_r($sells); exit();
+		$calldetails = DB::table('intra_call')
+		->select('call','status','strategy','nse')
+		//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
+		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->orderBy('id')
+		//->groupBy('nse')
+		//->groupBy('call')
+		// ->take(5)
+		->get();
+		echo "<pre>"; print_r($calldetails); exit();
+		return View::make('report.summary')->with(array('buys'=>$buys, 'sells'=>$sells, 'calldetails'=>$calldetails));
+} 
 
 }

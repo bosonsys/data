@@ -45,12 +45,20 @@ class DashboardController extends \BaseController {
 		$negative = array_slice($neg, 0, 10);
 
 	$pWeek = date( 'Y-m-d', strtotime( $lastDate . ' -1 week' ) );
-	$tomorrow = date( 'Y-m-d', strtotime( $lastDate . ' +2 day' ) );
-	$pMonth = date( 'Y-m-d', strtotime( $tomorrow . ' -1 month' ) );
+	//$tomorrow = date( 'Y-m-d', strtotime( $lastDate . ' +1 day' ) );
+	$pMonth = date( 'Y-m-d', strtotime( $lastDate . ' -1 month' ) );
 	//echo $pMonth; exit;
 	//$tomorrow = '2018-09-25'; 
-		$arr1 = $this->getTopList($cDate, $pWeek);
-		$arr2 = $this->getTopList($cDate, $pMonth);
+	$arr1 = $this->getTopList($cDate, $pWeek);
+	$arr2 = $this->getTopList($cDate, $pMonth);
+	// if($arr2['top'] == 0)
+	// {
+	// 	return false;
+	// } elseif($arr2['top'] != 0)
+	// {
+	// 	echo $arr2 = $this->getTopList($cDate, $pMonth);	
+	// }
+	//echo "<pre>"; print_r($arr2['top']); exit;
 
 		return View::make('dashboard.dashboard')->with('lastDate',$lastDate)->with('positive',$positive)->with('negative',$negative)->with('pos',$cDate)->with('neg',$neg)
 		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);
@@ -61,7 +69,7 @@ class DashboardController extends \BaseController {
 		$data = $this->compData($date);
 		$compList = array();
         foreach($cDate as $key => $v)
-		{
+		{ 
 			$comp = $v->n;
 			// print_r($v);
 			foreach ($data as $ckey => $cv) {
@@ -87,6 +95,8 @@ class DashboardController extends \BaseController {
 	}
 	function compData($date)
 	{
+		// $date = date('Y-m-d');
+		//echo $date; exit;
 		return $d =  DB::table('csvdata')
 						->select('SYMBOL', 'CLOSE', 'TIMESTAMP')
 						->whereIn('SERIES', ['EQ', 'BE'])
