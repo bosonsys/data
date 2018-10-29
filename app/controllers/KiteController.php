@@ -98,13 +98,13 @@ class KiteController extends \BaseController {
 			}
 			//if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
-					// if ($data['absoluteChange'] > 0)
+					if ($data['absoluteChange'] > 0)
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$data['absoluteChange'], $i);
 				}
 			//}
 			//else if($breakout == 'Down') {
 			 else if($sTrend == "downtrend") {
-				 	// if ($data['absoluteChange'] < 0)
+				 	if ($data['absoluteChange'] < 0)
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
 				}
 			//}
