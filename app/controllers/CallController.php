@@ -606,9 +606,10 @@ public function insertIntraTableDB()
 	{
 		//
 	}
-public function report()
+public function report($ldate=null)
 {
-	$ldate = date('Y-m-d');
+	if (!$ldate)
+		$ldate = date('Y-m-d');
 	$buy = DB::table('intra_call')
 		->select(DB::raw('count("call") as value, status, strategy'))
 		->where('call',1)

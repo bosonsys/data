@@ -17,29 +17,38 @@ class BacktestController extends \KiteController {
 
     public function backtest()
     {
-		$script = 'IBULHSGFIN';
-        $ldate ='2018-10-26';
-        $test = DB::table('kite_watch')
-                    ->where('tradingsymbol','=', $script)
-                    ->where('insert_on', '>',  $ldate.' 09:14:00')
-                    // ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
-					->orderBy('id', 'DESC')
-					// ->toArray();
+		$ldate ='2018-10-26';
+
+		$compList = DB::table('kite_watch')
+					->where('insert_on', '>',  $ldate.' 09:14:00')
+					->where('insert_on', '<',  $ldate.' 15:20:00')
+					->select('tradingsymbol')
+					->distinct()
 					->get();
-		//$backtest = array();
+		foreach ($compList as $key => $c) {
+			$this->runTest($c->tradingsymbol, $ldate);
+			// exit;
+		}
+
+	}
+	public function runTest($script, $ldate)
+	{
+		$test = DB::table('kite_watch')
+			->where('tradingsymbol','=', $script)
+			->where('insert_on', '>',  $ldate.' 09:14:00')
+			->where('insert_on', '<',  $ldate.' 15:20:00')
+			->orderBy('id', 'ASC')
+			->get();
+
 		$result = array_map(function ($value) {
     					return (array)$value;
 				}, $test);
 
-
 		foreach($result as $key => $v)
 		{
 			$trend = $this->isTrendChange($v['sma1'], $v['sma2'], $v['tradingsymbol']);
-			// $dataArray=$data->toArray();
 			if($trend)
-				$call[] = $this->screenCall($script, $v);
+				$call[] = $this->screenCall($script, $v, $v['insert_on']);
 		}
-		echo "<pre>";
-        print_r($call);
-    }
+	}
 }
