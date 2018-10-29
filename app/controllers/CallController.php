@@ -658,8 +658,26 @@ public function summary()
 		//->groupBy('call')
 		// ->take(5)
 		->get();
-		echo "<pre>"; print_r($calldetails); exit();
-		return View::make('report.summary')->with(array('buys'=>$buys, 'sells'=>$sells, 'calldetails'=>$calldetails));
+		$list = DB::table('intra_call')->select('nse')->distinct('nse')
+			     ->get();
+		// echo "<pre>"; print_r($list); exit();
+		return View::make('report.summary')->with(array('buys'=>$buys, 'sells'=>$sells, 'calldetails'=>$calldetails, 'list'=>$list));
 } 
+static public function printD($script)
+{
+		
+			 //echo "<pre>"; print_r($list); exit;
+	$ldate = date('Y-m-d');
+		return $calldetails = DB::table('intra_call')
+		->select('call','status','strategy','nse')
+		//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
+		->where('nse',$script)
+		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->orderBy('id')
+		//->groupBy('nse')
+		//->groupBy('call')
+		// ->take(5)
+		->get();
+}
 
 }

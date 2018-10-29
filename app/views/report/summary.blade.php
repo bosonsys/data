@@ -5,40 +5,6 @@
 @section('content')
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
- 
- <?php
-
-//print_r($call);
-// print_r($buy);
-// print_r($sell);
-//$count = DB::table('intra_call')->where('status','=','-1')->count();
-//echo "<pre>"; print_r($count); exit();
-         //echo "<pre>"; print_r($sell); exit();
-         $sell_success = 0;
-         $sell_fail = 0;
-         $sell_notex = 0;
-
-         $buy_success = 0;
-         $buy_fail = 0;
-         $buy_notex = 0;
-
-    foreach ($buys as $key => $v) {
-        if($v->status == '1')
-            $buy_success = $v->value;
-        if($v->status == '-1')
-            $buy_fail = $v->value;
-        // if($v->status == '0')
-        //     $buy_notex = $v->value;
-    }
-    
-    foreach ($sells as $key => $v) {
-        if($v->status == '1')
-            $sell_success = $v->total;
-        if($v->status == '-1')
-            $sell_fail = $v->total;
-    }
-
-    ?>
 
     <table id="sort" class="table table-bordered">
     <thead>
@@ -54,9 +20,28 @@
         <tbody>
     <?php
     $j=0;
-    foreach ($calldetails as $key => $k)
-    { 
-        $j++;
+    echo "<pre>";
+    foreach($list as $l)
+    {
+        $bs = $bf = $ss = $sf = 0;
+        $data = CallController::printD($l->nse);
+        foreach ($data as $v) {
+            if ($v->call == 1) {
+                if ($v->status == 1) {
+                    $bs++;
+                } else {
+                    $bf++;
+                }
+            }
+             if ($v->call == 2) {
+                if ($v->status == 1) {
+                    $ss++;
+                } else {
+                    $sf++;
+                }
+            }
+        }
+        // exit;
     ?>
         <tr>
             <td style="text-align:center">
@@ -64,14 +49,14 @@
             echo $j;
             ?>
             </td>
-            <td style="text-align:center">{{$k->nse}}</td>
-            <td style="text-align:center"></td>
-            <td style="text-align:center">{{count($buy_success)}} / {{count($buy_fail)}}</td>
-            <td style="text-align:center">{{count($sell_success)}} / {{count($sell_fail)}}</td>
+            <td style="text-align:center">{{$l->nse}}</td>
+             <td style="text-align:center">{{$bs+$bf+$ss+$sf}}</td>
+            <td style="text-align:center">{{$bs}} / {{$bf}}</td>
+            <td style="text-align:center">{{$ss}} / {{$sf}}</td>
         </tr>
         
     <?php
-        }
+    }    
     ?>
     </tbody>
     </table>
