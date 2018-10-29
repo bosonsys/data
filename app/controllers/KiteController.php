@@ -177,6 +177,7 @@ class KiteController extends \BaseController {
 
 	public function closeCall($callData, $data)
 	{
+		// print_r($data);
 		$target = 1;
 		$stop = -1;
 		if ($callData->call == 1) {

@@ -69,3 +69,4 @@ Route::get('/dashboard/lastday', 'DashboardController@lastday');
 //Route::get('/dashboard/last5days', 'DashboardController@last5days');
 Route::post('/update/marketwatch', 'KiteController@updateMarketwatch');
 Route::get('/intra-suggest', 'StockController@lastday');
+Route::get('/backtest', 'BacktestController@backtest');
