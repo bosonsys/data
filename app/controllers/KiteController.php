@@ -57,7 +57,6 @@ class KiteController extends \BaseController {
 			$insert['mHigh'] = $v['mHigh'];
 			$insert['mLow'] = $v['mLow'];
 			$sc = $this->sma($v['tradingsymbol'],$v);
-			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
 			//echo $v['tradingsymbol']." - $primaryTrend <br>";
 			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			if($trend)
@@ -100,18 +99,17 @@ class KiteController extends \BaseController {
 			if ($sdata['trend']) {
 				$sTrend = $sdata['trend'];
 			}
+			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
 			//if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
-					if ($data['absoluteChange'] > 0)
-					//$t = $this->getPrimaryTrend($script, $cPrice);
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$data['absoluteChange'], $i);
+					if ($primaryTrend == "uptrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$primaryTrend, $i);
 				}
 			//}
 			//else if($breakout == 'Down') {
 			 else if($sTrend == "downtrend") {
-					 if ($data['absoluteChange'] < 0)
-					 //$t = $this->getPrimaryTrend($script, $cPrice);
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
+					 if ($primaryTrend == "downtrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$primaryTrend, $i);
 				}
 			//}
 		}
