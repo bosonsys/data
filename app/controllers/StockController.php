@@ -38,6 +38,10 @@ class StockController extends \BaseController {
 	}
 	public function lastday()
 	{
+		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->take(1)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+        $it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
+		$l = iterator_to_array($it, false);
+		
 		$lastday = date('Y-m-d');
 		$lastday = date( 'Y-m-d', strtotime( $lastday . ' -1 day' ) );
 		
