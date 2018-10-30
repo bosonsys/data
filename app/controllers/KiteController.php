@@ -103,12 +103,14 @@ class KiteController extends \BaseController {
 			if ($sdata['trend']) {
 				$sTrend = $sdata['trend'];
 			}
-			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
+			$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice']);
+
 			//if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
-					if ($primaryTrend == "uptrend")
-					//$t = $this->getPrimaryTrend($script, $cPrice);
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$data['absoluteChange'], $i);
+					if ($primaryTrend == "Uptrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$primaryTrend, $i);
+				// echo '<pre>'; print_r($r);
+				// exit;
 				}
 			//}
 			//else if($breakout == 'Down') {
@@ -116,6 +118,8 @@ class KiteController extends \BaseController {
 					 if ($primaryTrend == "downtrend")
 					 //$t = $this->getPrimaryTrend($script, $cPrice);
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
+					 if ($primaryTrend == "Downtrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$primaryTrend, $i);
 				}
 			//}
 		}
