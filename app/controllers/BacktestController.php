@@ -30,6 +30,7 @@ class BacktestController extends \KiteController {
 			$this->runTest($c->tradingsymbol, $ldate);
 			// exit;
 		}
+			// $this->runTest('IBULHSGFIN', $ldate);
 
 	}
 	public function runTest($script, $ldate)
@@ -51,5 +52,6 @@ class BacktestController extends \KiteController {
 			if($trend)
 				$call[] = $this->screenCall($script, $v, $v['insert_on']);
 		}
+		// echo '<pre>'; print_r($call);
 	}
 }

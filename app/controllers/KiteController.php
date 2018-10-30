@@ -287,7 +287,7 @@ class KiteController extends \BaseController {
 			->get();
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
-		//print_r($l);
+			if (count($l) == $sma3) {
 			$sma50 = trader_sma($l, $sma3);
 			// echo $sma50[($sma3 - 1)];
 			// echo $cPrice;
@@ -307,6 +307,7 @@ class KiteController extends \BaseController {
 			{
 				return 'Uptrend';
 			}
+		}
 		return 'Range';
 	}
 	public function autoclose()
