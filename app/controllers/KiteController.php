@@ -66,7 +66,10 @@ class KiteController extends \BaseController {
 				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             if ($sc[0]) {
                 $insert['sma1'] = $sc[0];
-                $insert['sma2'] = $sc[1];
+				$insert['sma2'] = $sc[1];
+				$insert['rsi'] = $sc[2];
+				// echo "<pre>"; print_r($sc[0]);
+				// print_r($sc[1]); print_r($sc[2]);
             }
             // Insert Into Table
             DB::table('kite_watch')->insert($insert);
@@ -210,29 +213,41 @@ class KiteController extends \BaseController {
 	  $i = 1;
 	  $sma1 = 21;
 	  $sma2 = 9;
+	  $rsi = 14;
+	  $r = NULL;
 	  $smaAvg2 = $smaAvg1 = null;
 	  $his = DB::table('kite_watch')
+			->select('lastPrice')
 			->where('tradingsymbol','=', $script)
 			->where('insert_on', '>',  $ldate.' 09:14:00')
 			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
 			->orderBy('id', 'DESC')
 			->take($sma1)
-            ->get();
+			->get();
+			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
+			$s = iterator_to_array($t, false);
+		// print_r($s);
+			$r = trader_rsi($s, $rsi);
+			$s1 = trader_sma($s, $sma1);
+			$s2 = trader_sma($s, $sma2);
+			// echo "<pre>"; print_r($s2);
+			// print_r($s1); print_r($r);
+			// echo "<pre>"; print_r($r); exit;
             // array_unshift($a,"blue");
             // array_pop($a);
-		foreach($his as $key => $values) {
-			$sum += $values->lastPrice;
-			if ($i == $sma2) {
-				$smaSum = $sum;
-				$smaAvg2 = round(($sum / $sma2), 2);
-			}
-			if ($i == $sma1) {
-				$smaAvg1 = round(($sum / $sma1), 2);
-			}
-			//echo "<pre>"; print_r($smaAvg1); print_r($smaAvg2); exit;
-		$i++;
-		}	
-		return array($smaAvg1, $smaAvg2);
+		// foreach($his as $key => $values) {
+		// 	$sum += $values->lastPrice;
+		// 	if ($i == $sma2) {
+		// 		$smaSum = $sum;
+		// 		$smaAvg2 = round(($sum / $sma2), 2);
+		// 	}
+		// 	if ($i == $sma1) {
+		// 		$smaAvg1 = round(($sum / $sma1), 2);
+		// 	}
+		// 	//echo "<pre>"; print_r($smaAvg1); print_r($smaAvg2); exit;
+		// $i++;
+		// }	
+		return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 	}
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
 	{
