@@ -15,9 +15,10 @@ class BacktestController extends \KiteController {
         $collection = collect(DB::table('kite_watch')->get());
     }
 
-    public function backtest()
-    {
-		$ldate ='2018-10-26';
+	public function backtest($ldate=null)
+	{
+	if (!$ldate)
+		$ldate = date('Y-m-d');
 
 		$compList = DB::table('kite_watch')
 					->where('insert_on', '>',  $ldate.' 09:14:00')

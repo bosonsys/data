@@ -635,7 +635,7 @@ public function report($ldate=null)
 		->get();
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
-public function summary($ldate)
+public function summary($ldate=null)
 {
 	if (!$ldate)
 		$ldate = date('Y-m-d');
