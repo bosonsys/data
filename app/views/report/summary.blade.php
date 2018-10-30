@@ -20,10 +20,11 @@
         <tbody>
     <?php
     $j=0;
-    echo "<pre>";
+    //echo "<pre>";
     foreach($list as $l)
     {
-        $bs = $bf = $ss = $sf = 0;
+        $j++;
+       $bs = $bf = $ss = $sf = 0;
         $data = CallController::printD($l->nse);
         foreach ($data as $v) {
             if ($v->call == 1) {

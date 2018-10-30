@@ -54,7 +54,11 @@ class KiteController extends \BaseController {
 			$insert['totalSellQuantity'] = $v['totalSellQuantity'];
 			$insert['tradingsymbol'] = $v['tradingsymbol'];
 			$insert['volume'] = $v['volume'];
+			$insert['mHigh'] = $v['mHigh'];
+			$insert['mLow'] = $v['mLow'];
 			$sc = $this->sma($v['tradingsymbol'],$v);
+			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
+			//echo $v['tradingsymbol']." - $primaryTrend <br>";
 			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			if($trend)
 				$c[] = $this->screenCall($v['tradingsymbol'], $v);
@@ -99,12 +103,14 @@ class KiteController extends \BaseController {
 			//if ($breakout == 'Up') {
 				if ($sTrend == "uptrend") {
 					if ($data['absoluteChange'] > 0)
+					//$t = $this->getPrimaryTrend($script, $cPrice);
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$data['absoluteChange'], $i);
 				}
 			//}
 			//else if($breakout == 'Down') {
 			 else if($sTrend == "downtrend") {
-				 	if ($data['absoluteChange'] < 0)
+					 if ($data['absoluteChange'] < 0)
+					 //$t = $this->getPrimaryTrend($script, $cPrice);
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
 				}
 			//}
@@ -215,6 +221,7 @@ class KiteController extends \BaseController {
 			if ($i == $sma1) {
 				$smaAvg1 = round(($sum / $sma1), 2);
 			}
+			//echo "<pre>"; print_r($smaAvg1); print_r($smaAvg2); exit;
 		$i++;
 		}	
 		return array($smaAvg1, $smaAvg2);
@@ -255,5 +262,34 @@ class KiteController extends \BaseController {
 			DB::table('kite_margin')->insert($d);
 		}
 		return json_encode('Inserted Successfully');
+	}
+
+	public function getPrimaryTrend($script, $cPrice)
+	{
+		$sum = 0;
+		$sma3 = 50;
+		$ldate = date('Y-m-d');
+		$last50 = DB::table('kite_watch')
+			->where('tradingsymbol','=', $script)
+			->where('insert_on', '>',  $ldate.' 09:14:00')
+			->orderBy('id', 'DESC')
+			//->orderBy('insert_on')
+			->take($sma3)
+			->get();
+			// $sma50 = trader_sma(array($last50, 50));
+			// print_r($sma50);exit;
+			//print_r($last50); exit;
+			foreach($last50 as $key => $values)
+				$sum += $values->lastPrice;
+			$smaAvg3 = round(($sum / $sma3), 2);
+			//if($smaAvg3 > $values->lastPrice)
+			if($smaAvg3 > $cPrice)
+			{
+				return 'Downtrend';
+			}
+			elseif($smaAvg3 < $cPrice)
+			{
+				return 'Uptrend';
+			}
 	}
 }

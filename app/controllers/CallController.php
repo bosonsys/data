@@ -614,6 +614,7 @@ public function report($ldate=null)
 		->select(DB::raw('count("call") as value, status, strategy'))
 		->where('call',1)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->groupBy('status')
 		->get();
 
@@ -621,12 +622,14 @@ public function report($ldate=null)
 	    ->select(DB::raw('count("call") as total, status, strategy'))
 		->where('call',2)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->groupBy('status')
 		->get();
 		//echo "<pre>"; print_r($sell); exit();
 		$calldetail = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
 		// ->select('id','nse','price','cPrice','per','cPer','call','status')
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->orderBy('id')
 		// ->take(5)
 		->get();
@@ -636,13 +639,15 @@ public function summary($ldate)
 {
 	if (!$ldate)
 		$ldate = date('Y-m-d');
+		//$lday = date( 'Y-m-d', strtotime( $ldate . ' -1 day' ) );
+		//echo "<pre>"; print_r($lday); exit;
 	$buys = DB::table('intra_call')
 		->select(DB::raw('count("call") as value, status, strategy, nse'))
 		->where('call',1)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->groupBy('nse')
 		->get();
-//echo "<pre>"; print_r($buy); exit;
+//echo "<pre>"; print_r($buys); exit;
 	$sells = DB::table('intra_call')
 	    ->select(DB::raw('count("call") as total, status, strategy, nse'))
 		->where('call',2)
@@ -666,8 +671,6 @@ public function summary($ldate)
 } 
 static public function printD($script)
 {
-		
-			 //echo "<pre>"; print_r($list); exit;
 	$ldate = date('Y-m-d');
 		return $calldetails = DB::table('intra_call')
 		->select('call','status','strategy','nse')

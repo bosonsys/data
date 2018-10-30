@@ -141,21 +141,21 @@
     <?php 
     //echo $total; 
     ?></div> -->
-    <table class="table table-bordered" style="width:25%;margin-right:10px;" align="left">
+    <table class="table table-bordered" style="width:25%;margin-right:10px;margin-top:5px;" align="left">
         <tr style="background-color:#2ee80c">
             <td style="text-align:center">Success = {{$buy_success}}</td>
             <td style="text-align:center">Fail = {{$buy_fail}}</td>
             <td style="text-align:center">Not Yet Completed = {{$buy_notex}}</td>
         </tr>
     </table>  
-    <table class="table table-bordered" style="width:25%;margin-right:10px;" align="left">
+    <table class="table table-bordered" style="width:25%;margin-right:10px;margin-top:5px;" align="left">
         <tr style="background-color:#f90505">
             <td style="text-align:center">Success = {{$sell_success}}</td>
             <td style="text-align:center">Fail = {{$sell_fail}}</td>
             <td style="text-align:center">Not Yet Completed = {{$sell_notex}}</td>
         </tr>
     </table>
-    <table class="table table-bordered" style="width:20%;margin-right:10px;" align="left">
+    <table class="table table-bordered" style="width:20%;margin-right:10px;margin-top:5px;" align="left">
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Percentage
             <?php 
@@ -164,7 +164,7 @@
             </td>
         </tr>
     </table>
-    <table class="table table-bordered" style="width:20%;margin-right:10px;" align="left">
+    <table class="table table-bordered" style="width:20%;margin-right:10px;margin-top:5px;" align="left">
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Average
             <?php
@@ -176,6 +176,7 @@
             </td>
         </tr>
     </table>
+    <button style="width:75px;height:35px;margin-top:5px;"><a style="color:#333;text-decoration:none;" href='http://localhost/market/public/summary/2018-10-26'>GO</button>
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({
