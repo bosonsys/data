@@ -36,12 +36,14 @@ function insertWatch(data, t) {
             e.depth.buy.forEach(function (a) {
                 // console.log(a);
                 a.name = e.name;
+                a.time = e.timestamp;
                 a.type = 'buy';
                 table.add(a);
             });
             e.depth.sell.forEach(function (a) {
                 // console.log(a);
                 a.name = e.name;
+                a.time = e.timestamp;
                 a.type = 'sell';
                 table.add(a);
             });

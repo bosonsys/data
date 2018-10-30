@@ -1,5 +1,5 @@
 let db = createDB();
-console.log(db);
+// console.log(db);
 
 //
 // Define your database

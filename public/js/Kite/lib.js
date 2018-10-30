@@ -41,7 +41,16 @@ function parseSData(sd, watchList) {
         });
         if (t) {
             sd[a]['tradingsymbol'] = t.tradingsymbol;
+            // console.log(high[t.tradingsymbol]);
+            if (typeof high[t.tradingsymbol] == 'undefined' || high[t.tradingsymbol] > sd[a].lastPrice) {
+                high[t.tradingsymbol] = sd[a].lastPrice;
+            }
+            if (typeof low[t.tradingsymbol] == 'undefined' || low[t.tradingsymbol] < sd[a].lastPrice) {
+                low[t.tradingsymbol] = sd[a].lastPrice;
+            }
             cName.push(sd[a]);
+            // console.log(sd[a]);
+            
         }
 
        });

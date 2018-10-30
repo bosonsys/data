@@ -1,36 +1,38 @@
 console.log("Log Started..."); //for debug purpose so i can see it in the console log
 var token = getCookie("public_token");
-
+var liveData;
+var high = [];
+var low = [];
 let watchList = getWatchList(4);
-// console.log(watchList);
 
-// setInterval(function () {
-// 	let d = marketWatch(watchList);
-// 	insertWatch(d, 'watch1');
-// }, 10 * 1000);
-
-// setInterval(function () {
-// 	let d = marketWatch(watchList);
-// 	insertWatch(d, 'watch5');
-// }, (30 * 1000));
-
-
-// setTimeout(function(){
-//     placeOrder(token);
-// }, 2000);
 
 setInterval(function () {
-	// getPositions(token);
-    // console.log("Print Data");
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
-    let sd = parseSData(JSON.parse(sData), watchList);
-    // let wc = getWatchComp(sd);
-    // storeData(sd);
-    // insertWatch(sd);
-    // insetinto MySQL
-    updateMarketWatch(sd, null);
-        // console.log(sd);
+    liveData = parseSData(JSON.parse(sData), watchList);
+}, 1 * 1000);
+
+setInterval(function () {
+    liveData.forEach(e => {
+        e.mLow = low[e.tradingsymbol];
+        e.mHigh = high[e.tradingsymbol];
+    });
+    // console.log(liveData);
+    updateMarketWatch(liveData, null);
 }, 30 * 1000);
+
+
+// setInterval(function () {
+//     // getPositions(token);
+//     // console.log("Print Data");
+//     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
+//     let sd = parseSData(JSON.parse(sData), watchList);
+//     // let wc = getWatchComp(sd);
+//     // storeData(sd);
+//     // insertWatch(sd);
+//     // insetinto MySQL
+//     updateMarketWatch(sd, null);
+//     // console.log(sd);
+// }, 30 * 1000);
 
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {
