@@ -23,30 +23,41 @@ class DashboardController extends \BaseController {
     
     public function lastday()
 	{
-		$lastDate = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
-		->take(1)->orderby('TIMESTAMP','DESC')->get();
-		$lastDate = $lastDate[0]->TIMESTAMP;
+		$date = date( 'Y-m-d');
+		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->take(1)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+		$dates = $dates[0];
+		$pWeek = date( 'Y-m-d', strtotime( $date . ' -1 week' ) );
+		$prevdate = DB::table('csvdata')->where('TIMESTAMP', '<=', $pWeek)->orderBy('TIMESTAMP', 'desc')->take(5)->get();
+
+		//echo "<pre>"; print_r($prevdate); exit;
+		$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
+		$l = iterator_to_array($it, false);
+		$lastday = $l[0];
+		// $lastDate = DB::table('csvdata')->select('TIMESTAMP')->distinct('TIMESTAMP')
+		// ->take(1)->orderby('TIMESTAMP','DESC')->get();
+		// $lastDate = $lastDate[0]->TIMESTAMP;
 
 		$cDate = DB::table('csvdata')
 				->select('SYMBOL as n', 'CLOSEP as c', 'CLOSE as cl', 'TIMESTAMP as t')
 				->whereIn('SERIES', ['EQ', 'BE'])
-				->where('TIMESTAMP',$lastDate)
+				->where('TIMESTAMP',$lastday)
 				->orderby('CLOSEP','DESC')
 				// ->take(20)
 				->get();
 		$positive = array_slice($cDate, 0, 10); 
-		$neg = DB::table('csvdata')
-				->select('SYMBOL as n', 'CLOSEP as c', 'TIMESTAMP as t')
-				->whereIn('SERIES', ['EQ', 'BE'])
-				->where('TIMESTAMP',$lastDate)
-				->orderby('CLOSEP','ASC')
-				//->take(10)
-				->get();
-		$negative = array_slice($neg, 0, 10);
-
-	$pWeek = date( 'Y-m-d', strtotime( $lastDate . ' -1 week' ) );
-	//$tomorrow = date( 'Y-m-d', strtotime( $lastDate . ' +1 day' ) );
-	$pMonth = date( 'Y-m-d', strtotime( $lastDate . ' -1 month' ) );
+		$negative = array_slice($cDate, -10);
+			//echo "<pre>"; print_r($data); exit;
+		// $neg = DB::table('csvdata')
+		// 		->select('SYMBOL as n', 'CLOSEP as c', 'TIMESTAMP as t')
+		// 		->whereIn('SERIES', ['EQ', 'BE'])
+		// 		->where('TIMESTAMP',$lastday)
+		// 		->orderby('CLOSEP','ASC')
+		// 		//->take(10)
+		// 		->get();
+			//$negative = array_slice($neg, 0, 10);	
+	$pWeek = date( 'Y-m-d', strtotime( $lastday . ' -1 week' ) );
+	//$tomorrow = date( 'Y-m-d', strtotime( $lastday . ' -3 day' ) );
+	$pMonth = date( 'Y-m-d', strtotime( $lastday . ' -1 month' ) );
 	//echo $pMonth; exit;
 	//$tomorrow = '2018-09-25'; 
 	$arr1 = $this->getTopList($cDate, $pWeek);
@@ -60,7 +71,7 @@ class DashboardController extends \BaseController {
 	// }
 	//echo "<pre>"; print_r($arr2['top']); exit;
 
-		return View::make('dashboard.dashboard')->with('lastDate',$lastDate)->with('positive',$positive)->with('negative',$negative)->with('pos',$cDate)->with('neg',$neg)
+		return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)->with('pos',$cDate)->with('neg',$cDate)
 		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);
 		 //return json_encode($stock);
 	}

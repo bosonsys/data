@@ -176,7 +176,7 @@
             </td>
         </tr>
     </table>
-    <button style="width:75px;height:35px;margin-top:5px;"><a style="color:#333;text-decoration:none;" href='http://localhost/market/public/summary/2018-10-26'>GO</button>
+    <button style="width:75px;height:35px;margin-top:5px;"><a style="color:#333;text-decoration:none;" href='http://localhost/market/public/summary'>GO</button>
     <script>
         $(document).ready(function() {
             $('#sort').DataTable({

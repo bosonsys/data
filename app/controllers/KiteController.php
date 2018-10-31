@@ -94,8 +94,8 @@ class KiteController extends \BaseController {
 			 else if($sTrend == "downtrend") {
 					 if ($primaryTrend == "downtrend")
 					 //$t = $this->getPrimaryTrend($script, $cPrice);
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
-					 if ($primaryTrend == "Downtrend")
+					// 	$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
+					//  if ($primaryTrend == "Downtrend")
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$primaryTrend, $i);
 				}
 			//}
@@ -139,6 +139,7 @@ class KiteController extends \BaseController {
 				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
 		}
 		return $callData;
+		//echo "<pre>"; print_r($diff); print_r($callData);
 	}
 	public function sma($script, $data)
 	{
@@ -270,9 +271,9 @@ class KiteController extends \BaseController {
 				{
 					DB::table('intra_call')
 				      ->where('id', $c->id)
-				      ->update(array('status' => 1, 'cPrice' => $comp->lastPrice, 'cPer' => $comp->change, 'updated_on' => $comp->insert_on));
+				      ->update(array('status' => -1, 'cPrice' => $comp->lastPrice, 'cPer' => $comp->change, 'updated_on' => $comp->insert_on));
 				}
-				// exit;
+				//exit;
 			}
 		}
 }
