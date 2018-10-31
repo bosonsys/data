@@ -78,7 +78,7 @@ class KiteController extends \BaseController {
 			$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice']);
 
 				if ($sTrend == "uptrend") {
-					if ($primaryTrend == "Uptrend")
+					// if ($primaryTrend == "Uptrend")
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$primaryTrend, $i);
 				}
 			 else if($sTrend == "downtrend") {
