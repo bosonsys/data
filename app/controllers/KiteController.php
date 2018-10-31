@@ -64,7 +64,7 @@ class KiteController extends \BaseController {
 	{
 		$r = null;
 		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
-		
+		// echo '<pre>'; print_r($i);
 		if (isset($calls[0])) {
 			$r = $this->closeCall($calls[0], $data, $i);
 		}
@@ -75,15 +75,15 @@ class KiteController extends \BaseController {
 			if ($sdata['trend']) {
 				$sTrend = $sdata['trend'];
 			}
-			$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice']);
+			// $primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice']);
 
 				if ($sTrend == "uptrend") {
 					// if ($primaryTrend == "Uptrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$primaryTrend, $i);
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
 				}
 			 else if($sTrend == "downtrend") {
-					 if ($primaryTrend == "Downtrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$primaryTrend, $i);
+					//  if ($primaryTrend == "Downtrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
 				}
 		}
 		return $r;
@@ -115,6 +115,7 @@ class KiteController extends \BaseController {
 		} else if ($callData->call == 2) {
 			$diff = (float)$callData->per -  (float)$data['change'];
 		}
+		// echo $u."|".$diff."<br>";
 		if ($diff >= $target) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
