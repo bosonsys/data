@@ -160,10 +160,12 @@ class KiteController extends \BaseController {
 			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
 			$s = iterator_to_array($t, false);
 		// print_r($s);
+		if(count($s) > 20){
 			$r = trader_rsi($s, $rsi);
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
-		return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
+			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
+		}
 	}
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
 	{

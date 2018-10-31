@@ -77,7 +77,7 @@ function squareOffSell(d) {
 function squareOFF(s, q, t, f) {
   console.log(s, q, t, f);
   // delete myArray["lastname"];
-  placeOrder(s,q, t, 'MIS');
+    placeOrder(s,q, t, 'MIS');
 }
 
 // setInterval(function () {
