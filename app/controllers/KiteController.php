@@ -32,19 +32,14 @@ class KiteController extends \BaseController {
 			$insert['mLow'] = $v['mLow'];
 			$sc = $this->sma($v['tradingsymbol'],$v);
 			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
-			// exit;
-			//echo $v['tradingsymbol']." - $primaryTrend <br>";
-			$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
-			if($trend)
-				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             if ($sc[0]) {
                 $insert['sma1'] = $sc[0];
 				$insert['sma2'] = $sc[1];
 				$insert['rsi'] = $sc[2];
-				// echo "<pre>"; print_r($sc[0]);
-				// print_r($sc[1]); print_r($sc[2]);
+				$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
 			}
-			// print_r($insert);
+			if($trend)
+				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             // Insert Into Table
             DB::table('kite_watch')->insert($insert);
 		}
@@ -92,9 +87,6 @@ class KiteController extends \BaseController {
 			//}
 			//else if($breakout == 'Down') {
 			 else if($sTrend == "downtrend") {
-					 if ($primaryTrend == "downtrend")
-					 //$t = $this->getPrimaryTrend($script, $cPrice);
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$data['absoluteChange'], $i);
 					 if ($primaryTrend == "Downtrend")
 						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$primaryTrend, $i);
 				}
