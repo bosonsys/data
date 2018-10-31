@@ -3,12 +3,13 @@ var token = getCookie("public_token");
 let target = 1;
 let stop = -1;
 var positions;
+var orders;
 // let watchList = getWatchList(4);
 // console.log(watchList);
 getPositions();
-
+getOrderBook();
 setInterval(function () {
-  let d = positionWatch(positions);
+  let d = positionWatch();
 }, 10 * 1000);
 
 function getPositions() {
@@ -21,6 +22,17 @@ function getPositions() {
     });
 }
 
+function getOrderBook() {
+  $.ajax({
+    url: "https://kite.zerodha.com/api/orders",
+    headers: {"x-csrftoken": token},
+  }).done(function(result) {
+      console.log("Orders", result);
+      orders = result.data;
+    // positions = getMISPosition(result.data.day);
+  });
+}
+
 function getMISPosition(r) {
   // console.log(r);
   let rs = r.filter(function (e) {
@@ -29,24 +41,33 @@ function getMISPosition(r) {
   return rs;
 }
 
-function positionWatch(watchList) {
+function getOrderPrice(q, t) {
+  let rs = orders.filter(function (e) {
+    return e.product == "MIS" && e.tradingsymbol == t && e.quantity == q
+  });
+  return rs[0].average_price;
+}
+function positionWatch() {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
-    let sd = parsePData(JSON.parse(sData), watchList);
+    let sd = parsePData(JSON.parse(sData));
     return sd;
 }
 
-function parsePData(sd, watchList) {
-        watchList.forEach(function(a) {
+function parsePData(sd) {
+  positions.forEach(function(a) {
           a.last_price = sd[a.instrument_token].lastPrice;
           if (a.buy_quantity > a.sell_quantity) {
             a.call = "BUY";
-            a.percentage = (a.last_price - a.buy_price) / a.buy_price * 100;
+            let op = getOrderPrice(a.buy_quantity - a.sell_quantity, a.tradingsymbol);
+            // console.log(op);
+            a.percentage = (a.last_price - op) / op * 100;
             checkTarget(a,'SELL');
             // console.log(a.tradingsymbol + ' Buy at ' + a.buy_price + " qty " + a.buy_quantity +
             //   " cValue " + a.last_price + " % " + a.percentage);
           } else if(a.buy_quantity < a.sell_quantity) {
             a.call = "SELL";
-            a.percentage = (a.sell_price - a.last_price) / a.sell_price * 100;
+            let op = getOrderPrice(a.sell_quantity - a.buy_quantity, a.tradingsymbol);
+            a.percentage = (op - a.last_price) / op * 100;
             checkTarget(a, 'BUY');
             // console.log(a.tradingsymbol + ' Sell at ' + a.sell_price + " qty " + a.sell_quantity + 
             //   " cValue " + a.last_price + " % " + a.percentage);
@@ -58,9 +79,9 @@ function parsePData(sd, watchList) {
 function checkTarget(d, a) {
   console.log(d.tradingsymbol, parseFloat(d.percentage).toFixed(2));
   if (d.percentage >= target) {
-    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 't')
+    // squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 't')
   } else if (d.percentage <= stop) {
-    squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 's')
+    // squareOFF(d.tradingsymbol, (d.buy_quantity - d.sell_quantity), a, 's')
   }
 }
 

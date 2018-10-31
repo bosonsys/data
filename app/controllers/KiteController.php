@@ -43,7 +43,8 @@ class KiteController extends \BaseController {
 				$insert['rsi'] = $sc[2];
 				// echo "<pre>"; print_r($sc[0]);
 				// print_r($sc[1]); print_r($sc[2]);
-            }
+			}
+			// print_r($insert);
             // Insert Into Table
             DB::table('kite_watch')->insert($insert);
 		}

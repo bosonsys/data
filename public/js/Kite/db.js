@@ -85,7 +85,7 @@ function updateMarketWatch(d, n) {
             dataType: "json",
             success: function(res){
               if (res != null) {
-                console.log(res);
+                // console.log(res);
                 // let index = d.findIndex(x => x.TradingSymbol==res.nse);
                 // 	enterCall(index,res);
                  // portfolioCall();
