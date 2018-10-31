@@ -20,17 +20,17 @@ class BacktestController extends \KiteController {
 	if (!$ldate)
 		$ldate = date('Y-m-d');
 
-		// $compList = DB::table('kite_watch')
-		// 			->where('insert_on', '>',  $ldate.' 09:14:00')
-		// 			->where('insert_on', '<',  $ldate.' 15:20:00')
-		// 			->select('tradingsymbol')
-		// 			->distinct()
-		// 			->get();
-		// foreach ($compList as $key => $c) {
-		// 	$this->runTest($c->tradingsymbol, $ldate);
-		// 	// exit;
-		// }
-			$this->runTest('IBULHSGFIN', $ldate);
+		$compList = DB::table('kite_watch')
+					->where('insert_on', '>',  $ldate.' 09:14:00')
+					->where('insert_on', '<',  $ldate.' 15:20:00')
+					->select('tradingsymbol')
+					->distinct()
+					->get();
+		foreach ($compList as $key => $c) {
+			$this->runTest($c->tradingsymbol, $ldate);
+			// exit;
+		}
+			// $this->runTest('IBULHSGFIN', $ldate);
 
 	}
 	public function runTest($script, $ldate)
@@ -48,14 +48,13 @@ class BacktestController extends \KiteController {
 
 		foreach($result as $key => $v)
 		{
-			$SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
-			$trend = $this->isTrendChange($SMA, $v['sma2'], $v['tradingsymbol']);
-			if($trend)
-				$call[] = $this->screenCall($script, $v, $v['insert_on']);
+			// $SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
+			// $this->callWatch($v, $v['insert_on'], $SMA);
+			$this->callWatch($v, $v['insert_on']);
 		}
 		// echo '<pre>'; print_r($call);
 	}
-	public function getSMA($script, $time, $sma = 100)
+	public function getSMA($script, $time, $sma = 50)
 	{
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')

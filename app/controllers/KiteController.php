@@ -31,15 +31,12 @@ class KiteController extends \BaseController {
 			$insert['mHigh'] = $v['mHigh'];
 			$insert['mLow'] = $v['mLow'];
 			$sc = $this->sma($v['tradingsymbol'],$v);
-			$primaryTrend = $this->getPrimaryTrend($v['tradingsymbol'], $v['lastPrice']);
             if ($sc[0]) {
                 $insert['sma1'] = $sc[0];
 				$insert['sma2'] = $sc[1];
 				$insert['rsi'] = $sc[2];
-				$trend = $this->isTrendChange($sc[0], $sc[1], $v['tradingsymbol']);
+				$this->callWatch($insert);
 			}
-			if($trend)
-				$c[] = $this->screenCall($v['tradingsymbol'], $v);
             // Insert Into Table
             DB::table('kite_watch')->insert($insert);
 		}
@@ -47,6 +44,21 @@ class KiteController extends \BaseController {
 			$this->insertNifty($input['nifty']);
         return json_encode($c);
 	}
+
+	public function callWatch($data, $time = NULL, $sma50 = NULL)
+	{
+		$calls = DB::table('intra_call')->where('nse','=', $data['tradingsymbol'])->where('status','=', 0)->take(1)->get();
+		if (isset($calls[0])) {
+			$r = $this->closeCall($calls[0], $data, $time);
+		}
+		else {
+			$sma1 = $sma50?$sma50:$data['sma1'];
+			$trend = $this->isTrendChange($sma1, $data['sma2'], $data['tradingsymbol']);
+			if($trend)
+				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
+		}
+	}
+
 	public function insertNifty($nifty)
 	{
 		// echo '<pre>'; print_r($nifty); exit();
@@ -59,32 +71,25 @@ class KiteController extends \BaseController {
 		$update['per'] = number_format(($nifty[3] /  ($nifty[2] + $nifty[3]))*100, 2);
 		Session::put('nifty', $nifty[3]);
 		DB::table('nifty')->insert($update);
-	} 
-	public function screenCall($script, $data, $i=null)
-	{
-		$r = null;
-		$calls = DB::table('intra_call')->where('nse','=', $script)->where('status','=', 0)->take(1)->get();
-		// echo '<pre>'; print_r($i);
-		if (isset($calls[0])) {
-			$r = $this->closeCall($calls[0], $data, $i);
-		}
-		else {
-			//echo $breakout = $this->breakout($script, $data);
-			$sdata = Session::get($script);
-			$sTrend = null;
-			if ($sdata['trend']) {
-				$sTrend = $sdata['trend'];
-			}
-			// $primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice']);
+	}
 
-				if ($sTrend == "uptrend") {
-					// if ($primaryTrend == "Uptrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
-				}
-			 else if($sTrend == "downtrend") {
-					//  if ($primaryTrend == "Downtrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
-				}
+	public function callEnter($script, $data, $i=null)
+	{
+		echo "<br>Entry". $i;
+		$r = null;
+		$sdata = Session::get($script);
+		$sTrend = null;
+		if ($sdata['trend']) {
+			$sTrend = $sdata['trend'];
+		}
+		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
+		if ($sTrend == "uptrend") {
+			if ($primaryTrend == "Uptrend")
+				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+		}
+		else if($sTrend == "downtrend") {
+			 if ($primaryTrend == "Downtrend")
+				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
 		}
 		return $r;
     }
@@ -194,10 +199,10 @@ class KiteController extends \BaseController {
 		return json_encode('Inserted Successfully');
 	}
 
-	public function getPrimaryTrend($script, $cPrice)
+	public function getPrimaryTrend($script, $cPrice, $time = NULL)
 	{
 		$sum = 0;
-		$sma3 = 50;
+		$sma3 = 100;
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
 			->select('lastPrice')
@@ -205,8 +210,11 @@ class KiteController extends \BaseController {
 			->where('insert_on', '>',  $ldate.' 09:14:00')
 			->orderBy('id', 'DESC')
 			//->orderBy('insert_on')
-			->take($sma3)
-			->get();
+			->take($sma3);
+			if ($time) {
+				$last50 = $last50->where('insert_on', '<',  $time);
+			}
+			$last50 = $last50->get();
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
 			if (count($l) == $sma3) {
@@ -222,6 +230,7 @@ class KiteController extends \BaseController {
 		}
 		return 'Range';
 	}
+
 	public function autoclose()
 	{
 		$ldate = date('Y-m-d');
