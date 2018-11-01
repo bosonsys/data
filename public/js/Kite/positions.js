@@ -45,7 +45,8 @@ function getOrderPrice(q, t) {
   let rs = orders.filter(function (e) {
     return e.product == "MIS" && e.tradingsymbol == t && e.quantity == q
   });
-  return rs[0].average_price;
+  // console.log(rs.length);
+  return rs[(rs.length - 1)].average_price;
 }
 function positionWatch() {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');

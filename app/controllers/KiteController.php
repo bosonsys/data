@@ -245,6 +245,8 @@ class KiteController extends \BaseController {
 			{
 				return 'Uptrend';
 			}
+		} else {
+			return NULL;
 		}
 		return 'Range';
 	}
