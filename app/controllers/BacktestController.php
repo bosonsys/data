@@ -30,7 +30,7 @@ class BacktestController extends \KiteController {
 			$this->runTest($c->tradingsymbol, $ldate);
 			// exit;
 		}
-			// $this->runTest('IBULHSGFIN', $ldate);
+			// $this->runTest('INFIBEAM', $ldate);
 
 	}
 	public function runTest($script, $ldate)
@@ -48,13 +48,13 @@ class BacktestController extends \KiteController {
 
 		foreach($result as $key => $v)
 		{
-			// $SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
-			// $this->callWatch($v, $v['insert_on'], $SMA);
-			$this->callWatch($v, $v['insert_on']);
+			$SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
+			$this->callWatch($v, $v['insert_on'], $SMA);
+			// $this->callWatch($v, $v['insert_on']);
 		}
 		// echo '<pre>'; print_r($call);
 	}
-	public function getSMA($script, $time, $sma = 50)
+	public function getSMA($script, $time, $sma = 40)
 	{
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
