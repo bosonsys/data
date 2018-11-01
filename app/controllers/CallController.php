@@ -655,7 +655,7 @@ public function summary($ldate=null)
 		->groupBy('nse')
 		->get();
 	//echo "<pre>"; print_r($sells); exit();
-		$calldetails = DB::table('intra_call')
+	$calldetails = DB::table('intra_call')
 		->select('call','status','strategy','nse')
 		//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
 		->where('inserted_on', '>',$ldate.' 09:00:00')

@@ -54,6 +54,7 @@ class KiteController extends \BaseController {
 		else {
 			$sma1 = $sma50?$sma50:$data['sma1'];
 			$trend = $this->isTrendChange($sma1, $data['sma2'], $data['tradingsymbol']);
+			$value = $this->getValue($sma1, $data['sma2'], $data['tradingsymbol']);
 			if($trend)
 				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
@@ -75,7 +76,7 @@ class KiteController extends \BaseController {
 
 	public function callEnter($script, $data, $i=null)
 	{
-		echo "<br>Entry". $i;
+		//echo "<br>Entry". $i;
 		$r = null;
 		$sdata = Session::get($script);
 		$sTrend = null;
@@ -120,7 +121,7 @@ class KiteController extends \BaseController {
 		} else if ($callData->call == 2) {
 			$diff = (float)$callData->per -  (float)$data['change'];
 		}
-		// echo $u."|".$diff."<br>";
+		//  echo $u."|".$diff."<br>";
 		if ($diff >= $target) {
 			DB::table('intra_call')
 				->where('id', $callData->id)
@@ -153,11 +154,12 @@ class KiteController extends \BaseController {
 			->get();
 			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
 			$s = iterator_to_array($t, false);
-		// print_r($s);
+		//  print_r($s);
 		if(count($s) > 20){
 			$r = trader_rsi($s, $rsi);
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
+			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2); exit;
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
 	}
@@ -184,6 +186,22 @@ class KiteController extends \BaseController {
 			}
 		}
 		return false;
+	}
+	public function getValue($smaAvg1, $smaAvg2, $script)
+    {
+		$ldate = date('Y-m-d H:i:s');
+		$last5 = DB::table('kite_watch')
+		->select(DB::raw('tradingsymbol, max(mHigh) as maxHIGH, min(mLow) as minLOW, insert_on'))
+		->where('tradingsymbol', '=', $script)
+		->where('insert_on', '<', $ldate)
+		//->where('insert_on', '<=', \DB::raw('DATE_SUB(NOW(), INTERVAL 5 MINUTE)'))
+		->orderBy('insert_on', 'DESC')
+		->take(5)
+		->get(); 
+		echo "<pre>"; print_r($last5);
+		
+       
+
 	}
 	public function insertIntraKite()
 	{
@@ -256,7 +274,7 @@ class KiteController extends \BaseController {
 
                 //   $call = $c->
 				$dif = $comp->lastPrice - $c->price;
-				// print_r($dif);
+				//print_r($dif);
 				if($dif > 0)
 				{
 					DB::table('intra_call')
@@ -270,6 +288,6 @@ class KiteController extends \BaseController {
 				      ->update(array('status' => -1, 'cPrice' => $comp->lastPrice, 'cPer' => $comp->change, 'updated_on' => $comp->insert_on));
 				}
 				//exit;
-			}
-		}
+			    }
+	}
 }

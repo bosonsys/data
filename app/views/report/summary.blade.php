@@ -11,7 +11,7 @@
     <tr style="background-color:#c1c5c5">
     <th style="text-align:center">S.No.</th>
             <th style="text-align:center">Company</th>
-            <th style="text-align:center">Total</th>
+            <th style="text-align:center">Total Success/Fail</th>
             <th style="text-align:center">Buy Success/Fail</th>
             <th style="text-align:center">Sell Success/Fail</th>            
         </tr>
@@ -51,7 +51,7 @@
             ?>
             </td>
             <td style="text-align:center">{{$l->nse}}</td>
-             <td style="text-align:center">{{$bs+$bf+$ss+$sf}}</td>
+             <td style="text-align:center">{{$bs+$ss}} / {{$bf+$sf}}</td>
             <td style="text-align:center">{{$bs}} / {{$bf}}</td>
             <td style="text-align:center">{{$ss}} / {{$sf}}</td>
         </tr>
