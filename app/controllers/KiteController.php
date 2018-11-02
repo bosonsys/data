@@ -54,10 +54,11 @@ class KiteController extends \BaseController {
 		else {
 			$sma1 = $sma50?$sma50:$data['sma1'];
 			$trend = $this->isTrendChange($sma1, $data['sma2'], $data['tradingsymbol']);
-			$value = $this->getValue($sma1, $data['sma2'], $data['tradingsymbol']);
+			//$value = $this->getValue($sma1, $data['sma2'], $data['tradingsymbol']);
 			if($trend)
 				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
+		$p = $this->adx($data['tradingsymbol'], $data); 
 	}
 
 	public function insertNifty($nifty)
@@ -154,12 +155,13 @@ class KiteController extends \BaseController {
 			->get();
 			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
 			$s = iterator_to_array($t, false);
-		//  print_r($s);
+		 //echo "<pre>"; print_r($s);
 		if(count($s) > 20){
 			$r = trader_rsi($s, $rsi);
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
-			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2); exit;
+			//$s3 = trader_adx() 
+			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
 	}
@@ -187,22 +189,23 @@ class KiteController extends \BaseController {
 		}
 		return false;
 	}
-	public function getValue($smaAvg1, $smaAvg2, $script)
-    {
-		$ldate = date('Y-m-d H:i:s');
-		$last5 = DB::table('kite_watch')
-		->select(DB::raw('tradingsymbol, max(mHigh) as maxHIGH, min(mLow) as minLOW, insert_on'))
-		->where('tradingsymbol', '=', $script)
-		->where('insert_on', '<', $ldate)
-		//->where('insert_on', '<=', \DB::raw('DATE_SUB(NOW(), INTERVAL 5 MINUTE)'))
-		->orderBy('insert_on', 'DESC')
-		->take(5)
-		->get(); 
-		echo "<pre>"; print_r($last5);
+
+	// public function getValue($smaAvg1, $smaAvg2, $script)
+    // {
+	// 	$ldate = date('Y-m-d H:i:s');
+	// 	$last5 = DB::table('kite_watch')
+	// 	->select(DB::raw('tradingsymbol, max(mHigh) as maxHIGH, min(mLow) as minLOW, insert_on'))
+	// 	->where('tradingsymbol', '=', $script)
+	// 	->where('insert_on', '<', $ldate)
+	// 	//->where('insert_on', '<=', \DB::raw('DATE_SUB(NOW(), INTERVAL 5 MINUTE)'))
+	// 	->orderBy('insert_on', 'DESC')
+	// 	->take(5)
+	// 	->get(); 
+	// 	//echo "<pre>"; print_r($last5);
 		
        
 
-	}
+	// }
 	public function insertIntraKite()
 	{
 		$input = Input::all();
@@ -251,6 +254,41 @@ class KiteController extends \BaseController {
 		return 'Range';
 	}
 
+	public function adx($script, $data)
+	{
+		$range = 14;
+		$ldate = date('Y-m-d');
+		$adx = DB::table('kite_watch')
+			->select('mHigh','mLow','lastPrice')
+			->where('tradingsymbol','=', $script)
+			->where('insert_on', '>',  $ldate.' 09:14:00')
+			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
+			->orderBy('id', 'DESC')
+			->take(5)
+			->get();
+			$high = array();
+			$low = array();
+			$ltp = array();
+			foreach($adx as $b)
+			{
+			    array_push($high, $b->mHigh);
+			    array_push($low, $b->mLow);
+			    array_push($ltp, $b->lastPrice);
+			
+			}
+			echo "<pre>";
+			$a = trader_atr($high, $low, $ltp, $range);
+			print_r($a);
+
+			//print_r($ltp);
+			//print_r($low);
+			//echo (implode(" ",$high));
+			// $result = call_user_func_array("array_merge", );
+			// echo "<pre>"; print_r($result);
+			// print_r (explode(" ",$low));
+			// print_r (explode(" ",$lastprice));
+			//echo $i->mHigh."|".$i->mLow."<br>";
+	}
 	public function autoclose()
 	{
 		$ldate = date('Y-m-d');
