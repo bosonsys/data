@@ -38,12 +38,17 @@ class KiteController extends \BaseController {
 				$this->callWatch($insert);
 			}
             // Insert Into Table
-            DB::table('kite_watch')->insert($insert);
+			$id = DB::table('kite_watch')->insertGetId($insert);
+			//echo "<pre>"; print_r($id);
 		}
+		//$indicators = $this->insertIndicators(); 
+
 		if($input['nifty'])
 			$this->insertNifty($input['nifty']);
-        return json_encode($c);
+		return json_encode($c);
+		//echo "<pre>"; print_r($c); exit;
 	}
+
 
 	public function callWatch($data, $time = NULL, $sma50 = NULL)
 	{
@@ -63,7 +68,7 @@ class KiteController extends \BaseController {
 
 	public function insertNifty($nifty)
 	{
-		// echo '<pre>'; print_r($nifty); exit();
+		//echo '<pre>'; print_r($nifty); exit();
 		if (Session::get('nifty')) {
 			$pCpoint = Session::get('nifty');
 			$update['diff'] = ($nifty[3] - $pCpoint);
@@ -74,7 +79,7 @@ class KiteController extends \BaseController {
 		Session::put('nifty', $nifty[3]);
 		DB::table('nifty')->insert($update);
 	}
-
+	
 	public function callEnter($script, $data, $i=null)
 	{
 		//echo "<br>Entry". $i;
@@ -108,6 +113,21 @@ class KiteController extends \BaseController {
 		DB::table('intra_call')->insert($i);
 		return $i;
 	}
+    // public function insertIndicators()
+	// {
+	// 	$input = Input::all();
+	// 	DB::table('kite_watch')->get();
+	// 	foreach($input['data'] as $key=>$v)
+	// 	{
+	// 		$script = $v['tradingsymbol'];
+	// 		$sma1 = $v['sma1'];
+	// 		// $mis = rtrim($v['MIS Multiplier'],'x');
+	// 		// $d['Multiplier'] = $mis;
+	// 		// $d['Scrip'] = $script[0];
+	// 		// DB::table('kite_margin')->insert($d);
+	// 	echo '<pre>'; print_r($v); exit();
+	// 	}
+	// }
 
 	public function closeCall($callData, $data, $u=null)
 	{
@@ -162,6 +182,7 @@ class KiteController extends \BaseController {
 			$s2 = trader_sma($s, $sma2);
 			//$s3 = trader_adx() 
 			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
+			DB::table('indicators')->insert(array('tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)]));
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
 	}
@@ -276,9 +297,9 @@ class KiteController extends \BaseController {
 			    array_push($ltp, $b->lastPrice);
 			
 			}
-			echo "<pre>";
-			$a = trader_atr($high, $low, $ltp, $range);
-			print_r($a);
+			// echo "<pre>";
+			// $a = trader_adx($high, $low, $ltp, $range);
+			//print_r($a);
 
 			//print_r($ltp);
 			//print_r($low);
