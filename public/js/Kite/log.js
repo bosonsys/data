@@ -15,6 +15,8 @@ setInterval(function () {
     liveData.forEach(e => {
         e.mLow = low[e.tradingsymbol];
         e.mHigh = high[e.tradingsymbol];
+        delete low[e.tradingsymbol];
+        delete high[e.tradingsymbol];
     });
     // console.log(liveData);
     updateMarketWatch(liveData, null);
