@@ -19,18 +19,19 @@ class BacktestController extends \KiteController {
 	{
 	if (!$ldate)
 		$ldate = date('Y-m-d');
-
+echo $ldate;
+// exit;
 		$compList = DB::table('kite_watch')
 					->where('insert_on', '>',  $ldate.' 09:14:00')
 					->where('insert_on', '<',  $ldate.' 15:20:00')
 					->select('tradingsymbol')
 					->distinct()
 					->get();
-		foreach ($compList as $key => $c) {
-			$this->runTest($c->tradingsymbol, $ldate);
-			// exit;
-		}
-			// $this->runTest('INFIBEAM', $ldate);
+		// foreach ($compList as $key => $c) {
+		// 	$this->runTest($c->tradingsymbol, $ldate);
+		// 	// exit;
+		// }
+			$this->runTest('IRB', $ldate);
 
 	}
 	public function runTest($script, $ldate)
@@ -54,7 +55,7 @@ class BacktestController extends \KiteController {
 		}
 		// echo '<pre>'; print_r($call);
 	}
-	public function getSMA($script, $time, $sma = 40)
+	public function getSMA($script, $time, $sma = 50)
 	{
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
