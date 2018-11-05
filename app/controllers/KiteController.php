@@ -33,6 +33,7 @@ class KiteController extends \BaseController {
             // Insert Into Table
 			$id = DB::table('kite_watch')->insertGetId($insert);
 			$indData = $this->insertIndicators($v['tradingsymbol']);
+			if($indData)
 			$this->callWatch($insert, $indData);
 
 			//echo "<pre>"; print_r($id);
@@ -54,8 +55,8 @@ class KiteController extends \BaseController {
 		}
 		else {
 			// $indicators = DB::table('indicators')->where('tradingsymbol','=', $data['tradingsymbol'])->take(1)->get();
-			print_r($indData);
-			exit;
+			// print_r($indData);
+			// exit;
 			if(isset($indicators[0])){
 				$trend = $this->isTrendChange($indicators[0]->sma1, $indicators[0]->sma2, $data['tradingsymbol']);
 				if($trend)
@@ -141,6 +142,7 @@ class KiteController extends \BaseController {
 	}
 	public function insertIndicators($script, $ldate = NULL)
 	{
+		echo $script;
 	if (!$ldate)
 		$ldate = date('Y-m-d');
 	  $sum = 0;
@@ -160,16 +162,17 @@ class KiteController extends \BaseController {
 			->get();
 			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
 			$s = iterator_to_array($t, false);
-		 //echo "<pre>"; print_r($s);
-		if(count($s) > $sma1){
+		 echo "<pre>"; print_r(count($s));
+		if(count($s) >= $sma1){
 			$r = trader_rsi($s, $rsi);
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
 			//$s3 = trader_adx() 
-			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
+			// echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
 			DB::table('indicators')->insert(array('tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)]));
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
+		return NULL;
 	}
 
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
