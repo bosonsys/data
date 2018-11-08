@@ -43,13 +43,8 @@ class KiteController extends \BaseController {
 	}
 	public function marketwatch($v, $id, $ldate=null, $time=null)
 	{
-<<<<<<< HEAD
-			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate);
-			echo '<pre>'; print_r($indData); 
-=======
 		//echo '<pre>'; print_r($id); 
 			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate, $v['insert_on']);
->>>>>>> ffe0c3046a7a1e1c4e246c4759b3f51285f70df9
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
