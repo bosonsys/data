@@ -49,7 +49,7 @@ class BacktestController extends \KiteController {
 				}, $test);
 		foreach($result as $key => $v)
 		{
-			$this->marketwatch($v, $v['id'], $ldate);
+			$this->marketwatch($v, $v['id'], $ldate, $v['insert_on']);
 		}
 	}
 }

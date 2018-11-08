@@ -21,7 +21,7 @@
         
     ?>
         <tr>
-        <td>{{$p->n}}</td>
+        <td><?php echo "<a href='".url('stock/'.$p->n)."' target='_blank'>$p->n</a>" ?></td>
         <td>{{$p->c}}</td>
         </tr>
         <?php
@@ -41,7 +41,7 @@
         
     ?>
         <tr>
-        <td>{{$n->n}}</td>
+        <td><?php echo "<a href='".url('stock/'.$n->n)."' target='_blank'>$n->n</a>" ?></td>
         <td>{{$n->c}}</td>
         </tr>
         <?php
