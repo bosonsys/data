@@ -24,14 +24,18 @@ class DashboardController extends \BaseController {
     public function lastday()
 	{
 		$date = date( 'Y-m-d');
-		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->take(1)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
 		//$dates = $dates[0];
 		$pWeek = date( 'Y-m-d', strtotime( $date . ' -1 week' ) );
-		$last5days = DB::table('csvdata')->where('TIMESTAMP', '<', $pWeek)->orderBy('TIMESTAMP', 'desc')->get();
+		$last5days = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pWeek)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
 		
+		//$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
 		$pMonth = date( 'Y-m-d', strtotime( $date . ' -1 month' ) );
-		$lastmonth = DB::table('csvdata')->where('TIMESTAMP', '<', $pMonth)->orderBy('TIMESTAMP', 'desc')->get();
-		//echo "<pre>"; print_r($lastmonth); exit;
+        $lastmonth = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pMonth)->orderBy('TIMESTAMP', 'desc')->get();
+		
+		//$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
+		//$last3month = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $p3Month)->orderBy('TIMESTAMP', 'desc')->get();
+		// echo "<pre>"; print_r($last3month); exit;
 		$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
 		$l = iterator_to_array($it, false);
 		$lastday = $l[0];
@@ -49,15 +53,17 @@ class DashboardController extends \BaseController {
 				// ->take(20)
 				->get();
 		$positive = array_slice($cDate, 0, 10); 
-		$negative = array_slice($cDate, -10);
-	    sort($negative);
-       //echo "<pre>"; print_r($negative); exit;
-		$arr1 = $this->getTopList($cDate, $pWeek, 'asc');
-		$arr2 = $this->getTopList($cDate, $pMonth);
-	
+	    ksort($cDate);
+		$negative = array_reverse(array_slice($cDate, -10, 10, true));
+	   
 		
-	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)->with('pos',$cDate)->with('neg',$cDate)
-		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);
+		$arr1 = $this->getTopList($cDate, $pWeek);
+		$arr2 = $this->getTopList($cDate, $pMonth);
+	    //$arr3 = $this->getTopList($cDate, $p3Month);
+		
+	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
+		->with('pos',$cDate)->with('neg',$cDate)->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);
+		//->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last'])
 		 //return json_encode($stock);
 	}
 	function getTopList($cDate, $date)
@@ -67,26 +73,28 @@ class DashboardController extends \BaseController {
         foreach($cDate as $key => $v)
 		{ 
 			$comp = $v->n;
-			//print_r($v);
 			foreach ($data as $ckey => $cv) {
 				if ($comp == $cv->SYMBOL) {
-					//print_r($cv); 
+					//echo "<pre>"; print_r($comp);
+				//$v->cval = $cv->CLOSEP; 
 				$v->cvalue = $cv->CLOSE; 
 				$v->per = $this->getPercentageChange($v->cl, $v->cvalue);
 				$data_per[$key] = $v->per;
 				array_push($compList, $v);
-				//echo "<pre>"; print_r($compList); exit;
 				// echo $comp. " = ".$v->cvalue." | $cv->SYMBOL = ".$v->c."<br>";
-								// exit;
-//print_r($compList); exit;
+				// 				 exit;
+                 //print_r($compList); exit;
 				}
 			}
 		}
 		//echo $data_per;
-        array_multisort($data_per, SORT_DESC, $compList);
+		array_multisort($data_per, SORT_DESC, SORT_NUMERIC, $compList);
 		$top = array_slice($compList, 0, 5);
-		array_multisort($data_per, SORT_ASC, $compList);
+		
+		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $compList);
 		$last = array_slice($compList, 0, 5);
+
+		//$last = array_reverse(array_slice($compList, -5, 5, true));
 		//echo "<pre>"; print_r($top); print_r($last); exit;
 		return array('top' => $top , 'last' => $last );
 	}
@@ -94,7 +102,7 @@ class DashboardController extends \BaseController {
 	{
 		// $date = date('Y-m-d');
 		//echo $date; exit;
-		return $d =  DB::table('csvdata')
+		return DB::table('csvdata')
 						->select('SYMBOL', 'CLOSE', 'TIMESTAMP')
 						->whereIn('SERIES', ['EQ', 'BE'])
 						->where('TIMESTAMP', $date)

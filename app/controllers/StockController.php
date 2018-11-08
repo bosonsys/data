@@ -65,6 +65,7 @@ class StockController extends \BaseController {
 
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $lastval);
 		$high = array_slice($lastval, 0, 10);
+		//$high = array_reverse(array_slice($lastval, -10, 10, true));
 
 		$lasttop = $this->getlastDay($lastday, 'desc');
 		$lastlosers = $this->getlastDay($lastday, 'asc');
