@@ -12,6 +12,7 @@ class KiteController extends \BaseController {
 	{
 		// print_r($id);
 		date_default_timezone_set('Asia/Kolkata');
+
 		$input = Input::all();
 		$c = array();
         foreach ($input['data'] as $k => $v) {
@@ -29,16 +30,15 @@ class KiteController extends \BaseController {
 			$insert['volume'] = $v['volume'];
 			$insert['mHigh'] = $v['mHigh'];
 			$insert['mLow'] = $v['mLow'];
+			$sc = $this->sma($v['tradingsymbol'],$v);
+            if ($sc[0]) {
+                $insert['sma1'] = $sc[0];
+				$insert['sma2'] = $sc[1];
+				$insert['rsi'] = $sc[2];
+				$this->callWatch($insert);
+			}
             // Insert Into Table
 			$id = DB::table('kite_watch')->insertGetId($insert);
-			$indData = $this->insertIndicators($v['tradingsymbol'], $id);
-			if($indData)
-			{
-				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				$this->getSwing($v['tradingsymbol'], $trend);
-				$this->callWatch($insert, $trend);
-			}
-
 			//echo "<pre>"; print_r($id);
 		}
 		//$indicators = $this->insertIndicators(); 
@@ -49,40 +49,21 @@ class KiteController extends \BaseController {
 		//echo "<pre>"; print_r($c); exit;
 	}
 
-	public function getSwing($script, $trend)
-	{
-		if($trend){
-			$ldate = date('Y-m-d');
-			$sw = DB::table('kite_watch')
-				->select('mHigh','mLow','lastPrice')
-				->where('tradingsymbol','=', $script)
-				->where('insert_on', '>',  $ldate.' 09:14:00')
-				->orderBy('id', 'DESC')
-				->take(5)
-				->get();
-			// echo '<pre>'; print_r($sw);
-			foreach ($sw as $key => $row) {
-				$sHigh = $sLow = NULL;
-				if (!$sHigh || $sHigh < $row->mHigh ) {
-					$sHigh = $row->mHigh;
-				}
-				if (!$sLow || $sLow > $row->mLow ) {
-					$sLow = $row->mLow;
-				}
-			}
-			echo "Swing : $sLow | $sHigh";
-		}
-	}
-	public function callWatch($data, $trend, $time = NULL, $sma50 = NULL)
+
+	public function callWatch($data, $time = NULL, $sma50 = NULL)
 	{
 		$calls = DB::table('intra_call')->where('nse','=', $data['tradingsymbol'])->where('status','=', 0)->take(1)->get();
 		if (isset($calls[0])) {
 			$r = $this->closeCall($calls[0], $data, $time);
 		}
 		else {
-				if($trend)
-					$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
+			$sma1 = $sma50?$sma50:$data['sma1'];
+			$trend = $this->isTrendChange($sma1, $data['sma2'], $data['tradingsymbol']);
+			//$value = $this->getValue($sma1, $data['sma2'], $data['tradingsymbol']);
+			if($trend)
+				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
+		$p = $this->adx($data['tradingsymbol'], $data); 
 	}
 
 	public function insertNifty($nifty)
@@ -101,10 +82,14 @@ class KiteController extends \BaseController {
 	
 	public function callEnter($script, $data, $i=null)
 	{
+		//echo "<br>Entry". $i;
 		$r = null;
-		$sTrend = $this->getCTrend($script);
+		$sdata = Session::get($script);
+		$sTrend = null;
+		if ($sdata['trend']) {
+			$sTrend = $sdata['trend'];
+		}
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
-		// echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
 				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
@@ -115,15 +100,7 @@ class KiteController extends \BaseController {
 		}
 		return $r;
     }
-	public function getCTrend($script)
-	{
-		$sdata = Session::get($script);
-		$sTrend = null;
-		if ($sdata['trend']) {
-			$sTrend = $sdata['trend'];
-		}
-		return $sTrend;
-	}
+	
     public function insIntraCall($script, $price, $per, $call, $str, $in=null)
 	{
 		$i['nse'] = $script;
@@ -136,6 +113,21 @@ class KiteController extends \BaseController {
 		DB::table('intra_call')->insert($i);
 		return $i;
 	}
+    // public function insertIndicators()
+	// {
+	// 	$input = Input::all();
+	// 	DB::table('kite_watch')->get();
+	// 	foreach($input['data'] as $key=>$v)
+	// 	{
+	// 		$script = $v['tradingsymbol'];
+	// 		$sma1 = $v['sma1'];
+	// 		// $mis = rtrim($v['MIS Multiplier'],'x');
+	// 		// $d['Multiplier'] = $mis;
+	// 		// $d['Scrip'] = $script[0];
+	// 		// DB::table('kite_margin')->insert($d);
+	// 	echo '<pre>'; print_r($v); exit();
+	// 	}
+	// }
 
 	public function closeCall($callData, $data, $u=null)
 	{
@@ -161,18 +153,16 @@ class KiteController extends \BaseController {
 				->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
 		}
 		return $callData;
+		//echo "<pre>"; print_r($diff); print_r($callData);
 	}
-
-	public function insertIndicators($script, $ref_id, $ldate = NULL)
+	public function sma($script, $data)
 	{
-		// echo $script;
-	if (!$ldate)
-		$ldate = date('Y-m-d');
+	  $ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 42;
+	  $sma1 = 21;
 	  $sma2 = 9;
-	  $rsi = 28;
+	  $rsi = 14;
 	  $r = NULL;
 	  $smaAvg2 = $smaAvg1 = null;
 	  $his = DB::table('kite_watch')
@@ -185,19 +175,17 @@ class KiteController extends \BaseController {
 			->get();
 			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
 			$s = iterator_to_array($t, false);
-		//  echo "<pre>"; print_r(count($s));
-		if(count($s) >= $sma1){
+		 //echo "<pre>"; print_r($s);
+		if(count($s) > 20){
 			$r = trader_rsi($s, $rsi);
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
 			//$s3 = trader_adx() 
-			// echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
-			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)]));
+			//echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
+			DB::table('indicators')->insert(array('tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)]));
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
-		return NULL;
 	}
-
 	public function isTrendChange($smaAvg1, $smaAvg2, $script)
 	{
 		$sTrend = null;
@@ -223,6 +211,22 @@ class KiteController extends \BaseController {
 		return false;
 	}
 
+	// public function getValue($smaAvg1, $smaAvg2, $script)
+    // {
+	// 	$ldate = date('Y-m-d H:i:s');
+	// 	$last5 = DB::table('kite_watch')
+	// 	->select(DB::raw('tradingsymbol, max(mHigh) as maxHIGH, min(mLow) as minLOW, insert_on'))
+	// 	->where('tradingsymbol', '=', $script)
+	// 	->where('insert_on', '<', $ldate)
+	// 	//->where('insert_on', '<=', \DB::raw('DATE_SUB(NOW(), INTERVAL 5 MINUTE)'))
+	// 	->orderBy('insert_on', 'DESC')
+	// 	->take(5)
+	// 	->get(); 
+	// 	//echo "<pre>"; print_r($last5);
+		
+       
+
+	// }
 	public function insertIntraKite()
 	{
 		$input = Input::all();
@@ -240,23 +244,21 @@ class KiteController extends \BaseController {
 	public function getPrimaryTrend($script, $cPrice, $time = NULL)
 	{
 		$sum = 0;
-		$sma3 = 80;
+		$sma3 = 100;
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
 			->select('lastPrice')
 			->where('tradingsymbol','=', $script)
+			->where('insert_on', '>',  $ldate.' 09:14:00')
 			->orderBy('id', 'DESC')
 			//->orderBy('insert_on')
 			->take($sma3);
 			if ($time) {
 				$last50 = $last50->where('insert_on', '<',  $time);
-			} else {
-				$last50 = $last50->where('insert_on', '>',  $ldate.' 09:14:00');
 			}
 			$last50 = $last50->get();
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
-			// print_r($l);
 			if (count($l) == $sma3) {
 			$sma50 = trader_sma($l, $sma3);
 			if($sma50[($sma3 - 1)] > $cPrice)
@@ -293,6 +295,7 @@ class KiteController extends \BaseController {
 			    array_push($high, $b->mHigh);
 			    array_push($low, $b->mLow);
 			    array_push($ltp, $b->lastPrice);
+			
 			}
 			// echo "<pre>";
 			// $a = trader_adx($high, $low, $ltp, $range);

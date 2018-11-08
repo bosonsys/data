@@ -19,7 +19,7 @@ class BacktestController extends \KiteController {
 	{
 	if (!$ldate)
 		$ldate = date('Y-m-d');
-echo $ldate;
+//echo $ldate;
 // exit;
 		$compList = DB::table('kite_watch')
 					->where('insert_on', '>',  $ldate.' 09:14:00')
@@ -27,6 +27,7 @@ echo $ldate;
 					->select('tradingsymbol')
 					->distinct()
 					->get();
+					//echo "<pre>"; print_r($compList);
 		// foreach ($compList as $key => $c) {
 		// 	$this->runTest($c->tradingsymbol, $ldate);
 		// 	// exit;
@@ -42,16 +43,15 @@ echo $ldate;
 			->where('insert_on', '<',  $ldate.' 15:20:00')
 			->orderBy('id', 'ASC')
 			->get();
-
+//echo "<pre>"; print_r($test);
 		$result = array_map(function ($value) {
     					return (array)$value;
 				}, $test);
-
 		foreach($result as $key => $v)
 		{
-			$SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
-			$this->callWatch($v, $v['insert_on'], $SMA);
-			// $this->callWatch($v, $v['insert_on']);
+			// $SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
+			// $this->callWatch($v, $v['insert_on'], $SMA);
+			$this->callWatch($v, $v['insert_on']);
 		}
 		// echo '<pre>'; print_r($call);
 	}
