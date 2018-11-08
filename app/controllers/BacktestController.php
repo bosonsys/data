@@ -32,6 +32,7 @@ class BacktestController extends \KiteController {
 		// 	$this->runTest($c->tradingsymbol, $ldate);
 		// 	// exit;
 		// }
+			Session::flush();
 			$this->runTest('PCJEWELLER', $ldate);
 
 	}
@@ -49,7 +50,7 @@ class BacktestController extends \KiteController {
 				}, $test);
 		foreach($result as $key => $v)
 		{
-			$this->marketwatch($v, $v['id'], $ldate);
+			$this->marketwatch($v, $v['id'], $ldate, $v['insert_on']);
 		}
 	}
 }

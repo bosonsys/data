@@ -41,40 +41,49 @@ class KiteController extends \BaseController {
 		return json_encode($c);
 		//echo "<pre>"; print_r($c); exit;
 	}
-	public function marketwatch($v, $id, $ldate=null)
+	public function marketwatch($v, $id, $ldate=null, $time=null)
 	{
-		echo '<pre>'; print_r($id); 
 			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate);
+			echo '<pre>'; print_r($indData); 
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				// $this->getSwing($v['tradingsymbol'], $trend);
+				$this->getSwing($v['tradingsymbol'], $trend, $ldate, $time);
 				$this->callWatch($v, $trend);
 			}
 	}
 
-	public function getSwing($script, $trend)
+	public function getSwing($script, $trend, $ldate = null, $time=null)
 	{
 		if($trend){
-			$ldate = date('Y-m-d');
+			echo "Swing Entry - $script | $ldate --- ";
+			if (!$ldate)
+				$ldate = date('Y-m-d');
 			$sw = DB::table('kite_watch')
-				->select('mHigh','mLow','lastPrice')
+				->select('mHigh','mLow','lastPrice', 'insert_on')
 				->where('tradingsymbol','=', $script)
-				->where('insert_on', '>',  $ldate.' 09:14:00')
-				->orderBy('id', 'DESC')
+				->where('insert_on', '>',  $ldate.' 09:14:00');
+				if ($time) {
+					$sw = $sw->where('insert_on', '<=',  $time);
+				}
+				$sw = $sw->orderBy('id', 'DESC')
 				->take(5)
 				->get();
-			// echo '<pre>'; print_r($sw);
+			echo '<pre>'; print_r($sw);
+
+			$sHigh = $sLow = NULL;
+			$sHighT = $sLowT = NULL;
 			foreach ($sw as $key => $row) {
-				$sHigh = $sLow = NULL;
 				if (!$sHigh || $sHigh < $row->mHigh ) {
 					$sHigh = $row->mHigh;
+					$sHighT = $row->insert_on;
 				}
 				if (!$sLow || $sLow > $row->mLow ) {
 					$sLow = $row->mLow;
+					$sLowT = $row->insert_on;
 				}
 			}
-			echo "Swing : $sLow | $sHigh";
+			echo "Swing : $sLow -  $sLowT | $sHigh - $sHighT";
 		}
 	}
 	public function callWatch($data, $trend, $time = NULL, $sma50 = NULL)
