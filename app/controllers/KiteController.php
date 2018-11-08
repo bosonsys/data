@@ -48,45 +48,82 @@ class KiteController extends \BaseController {
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				$this->getSwing($v['tradingsymbol'], $trend, $ldate, $time);
+				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
 				$this->callWatch($v, $trend);
 			}
         // echo "<pre>"; print_r($a);
 	}
 
-	public function getSwing($script, $trend, $ldate = null, $time=null)
+	public function watchSwing($script, $trend, $ldate = null, $time=null)
 	{
 		if($trend){
 			// echo "Swing Entry - $script | $ldate --- ";
 			if (!$ldate)
 				$ldate = date('Y-m-d');
-			$sw = DB::table('kite_watch')
-				->select('mHigh','mLow','lastPrice', 'insert_on')
-				->where('tradingsymbol','=', $script)
-				->where('insert_on', '>',  $ldate.' 09:14:00');
-				if ($time) {
-					$sw = $sw->where('insert_on', '<=',  $time);
+				$swing = DB::table('swingdata')->where('script','=', $script)->where('status','=', 0)->take(1)->get();
+			if (isset($swing[0])) {
+					$sd = $this->getSwing($script, $ldate, $time);
+					$sTrend = $this->getCTrend($script);
+					if($sTrend == 'downtrend'){
+						$eprice = $sd['sHigh'];
+						$epriceT = $sd['sHighT'];
+					} elseif($sTrend == 'uptrend'){
+						$eprice = $sd['sLow'];
+						$epriceT = $sd['sLowT'];
+					}
+					$len = $this->getPercentageChange($swing[0]->sprice, $eprice);
+					DB::table('swingdata')
+					->where('id', $swing[0]->id)
+					->update(array('status' => 1, 'eprice' => $eprice, 'etime' => $epriceT, 'sLenth' => $len));
 				}
-				$sw = $sw->orderBy('id', 'DESC')
-				->take(5)
-				->get();
-			echo '<pre>'; print_r($sw);
-
-			$sHigh = $sLow = NULL;
-			$sHighT = $sLowT = NULL;
-			foreach ($sw as $key => $row) {
-				if (!$sHigh || $sHigh < $row->mHigh ) {
-					$sHigh = $row->mHigh;
-					$sHighT = $row->insert_on;
+			else {		
+				// echo "Swing : $sLow -  $sLowT | $sHigh - $sHighT";
+				$sd = $this->getSwing($script, $ldate, $time);
+				$sTrend = $this->getCTrend($script);
+				if($sTrend == 'uptrend'){
+					$sprice = $sd['sHigh'];
+					$spriceT = $sd['sHighT'];
+				} elseif($sTrend == 'downtrend'){
+					$sprice = $sd['sLow'];
+					$spriceT = $sd['sLowT'];
 				}
-				if (!$sLow || $sLow > $row->mLow ) {
-					$sLow = $row->mLow;
-					$sLowT = $row->insert_on;
-				}
+				DB::table('swingdata')->insert(array('script' => $script, 'trend' => $sTrend, 'sprice' => $sprice, 'stime' => $spriceT));
 			}
-			echo "Swing : $sLow -  $sLowT | $sHigh - $sHighT";
-			// DB::table('swingdata')->insert(array('script' => $script, 'trend' => $script, 'sprice' => $sprice, 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time));
 		}
+	}
+	public function getSwing($script, $ldate, $time)
+	{
+		$sw = DB::table('kite_watch')
+		->select('mHigh','mLow','lastPrice', 'insert_on')
+		->where('tradingsymbol','=', $script)
+		->where('insert_on', '>',  $ldate.' 09:14:00');
+		if ($time) {
+			$sw = $sw->where('insert_on', '<=',  $time);
+		}
+		$sw = $sw->orderBy('id', 'DESC')
+		->take(5)
+		->get();
+		echo '<pre>'; print_r($sw);
+
+		$sHigh = $sLow = NULL;
+		$sHighT = $sLowT = NULL;
+		foreach ($sw as $key => $row) {
+			if (!$sHigh || $sHigh < $row->mHigh ) {
+				$sHigh = $row->mHigh;
+				$sHighT = $row->insert_on;
+			}
+			if (!$sLow || $sLow > $row->mLow ) {
+				$sLow = $row->mLow;
+				$sLowT = $row->insert_on;
+			}
+		}
+		// $sTrend = $this->getCTrend($script);
+		// if($sTrend == 'uptrend'){
+
+		// } elseif($sTrend == 'downtrend'){
+
+		// }
+		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
 	public function callWatch($data, $trend, $time = NULL, $sma50 = NULL)
 	{
@@ -95,8 +132,8 @@ class KiteController extends \BaseController {
 			$r = $this->closeCall($calls[0], $data, $time);
 		}
 		else {
-				if($trend)
-					$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
+			if($trend)
+				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
 	}
 
@@ -375,5 +412,9 @@ class KiteController extends \BaseController {
 				}
 				//exit;
 			    }
+	}
+	function getPercentageChange($oldNumber, $newNumber){
+		$decreaseValue = $oldNumber - $newNumber;
+		return ($decreaseValue / $oldNumber) * 100;
 	}
 }
