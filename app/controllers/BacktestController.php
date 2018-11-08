@@ -31,7 +31,7 @@ echo $ldate;
 		// 	$this->runTest($c->tradingsymbol, $ldate);
 		// 	// exit;
 		// }
-			$this->runTest('IRB', $ldate);
+			$this->runTest('PCJEWELLER', $ldate);
 
 	}
 	public function runTest($script, $ldate)
@@ -46,32 +46,9 @@ echo $ldate;
 		$result = array_map(function ($value) {
     					return (array)$value;
 				}, $test);
-
 		foreach($result as $key => $v)
 		{
-			$SMA = $this->getSMA($v['tradingsymbol'], $v['insert_on']);
-			$this->callWatch($v, $v['insert_on'], $SMA);
-			// $this->callWatch($v, $v['insert_on']);
+			$this->marketwatch($v, $v['id'], $ldate);
 		}
-		// echo '<pre>'; print_r($call);
-	}
-	public function getSMA($script, $time, $sma = 50)
-	{
-		$ldate = date('Y-m-d');
-		$last50 = DB::table('kite_watch')
-					->select('lastPrice')
-					->where('tradingsymbol','=', $script)
-					->where('insert_on', '>',  $ldate.' 09:14:00')
-					->where('insert_on', '<',  $time)
-					->orderBy('id', 'DESC')
-					->take($sma)
-					->get();
-			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
-			$l = iterator_to_array($it, false);
-			if (count($l) == $sma) {
-				$sma50 = trader_sma($l, $sma);
-				return $sma50[($sma - 1)];
-			}
-		return NULL;
 	}
 }

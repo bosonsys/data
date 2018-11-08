@@ -31,14 +31,7 @@ class KiteController extends \BaseController {
 			$insert['mLow'] = $v['mLow'];
             // Insert Into Table
 			$id = DB::table('kite_watch')->insertGetId($insert);
-			$indData = $this->insertIndicators($v['tradingsymbol'], $id);
-			if($indData)
-			{
-				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				$this->getSwing($v['tradingsymbol'], $trend);
-				$this->callWatch($insert, $trend);
-			}
-
+			$this->marketwatch($v, $id);
 			//echo "<pre>"; print_r($id);
 		}
 		//$indicators = $this->insertIndicators(); 
@@ -47,6 +40,17 @@ class KiteController extends \BaseController {
 			$this->insertNifty($input['nifty']);
 		return json_encode($c);
 		//echo "<pre>"; print_r($c); exit;
+	}
+	public function marketwatch($v, $id, $ldate=null)
+	{
+		echo '<pre>'; print_r($id); 
+			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate);
+			if($indData)
+			{
+				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
+				// $this->getSwing($v['tradingsymbol'], $trend);
+				$this->callWatch($v, $trend);
+			}
 	}
 
 	public function getSwing($script, $trend)
@@ -165,7 +169,6 @@ class KiteController extends \BaseController {
 
 	public function insertIndicators($script, $ref_id, $ldate = NULL)
 	{
-		// echo $script;
 	if (!$ldate)
 		$ldate = date('Y-m-d');
 	  $sum = 0;
