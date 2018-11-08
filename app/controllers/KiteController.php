@@ -44,7 +44,7 @@ class KiteController extends \BaseController {
 	public function marketwatch($v, $id, $ldate=null, $time=null)
 	{
 		//echo '<pre>'; print_r($id); 
-			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate, $v['insert_on']);
+			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate, $time);
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
@@ -177,7 +177,7 @@ class KiteController extends \BaseController {
 		return $callData;
 	}
 
-	public function insertIndicators($script, $ref_id, $ldate = NULL, $insert_on)
+	public function insertIndicators($script, $ref_id, $ldate = NULL, $time = NULL)
 	{
 	if (!$ldate)
 		$ldate = date('Y-m-d');
@@ -188,16 +188,22 @@ class KiteController extends \BaseController {
 	  $rsi = 28;
 	  $r = NULL;
 	  $smaAvg2 = $smaAvg1 = null;
-	  $his = DB::table('kite_watch')
+	  $historyData = DB::table('kite_watch')
 			->select('lastPrice')
 			->where('tradingsymbol','=', $script)
-			->where('insert_on', '>',  $ldate.' 09:14:00')
-			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
-			->orderBy('id', 'DESC')
+			->where('insert_on', '>',  $ldate.' 09:14:00');
+			if ($time) {
+				echo "<br>$time";
+					$historyData = $historyData->where('insert_on', '<=',  $time);
+				}
+			$historyData = $historyData->orderBy('id', 'DESC')
 			->take($sma1)
 			->get();
-			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($his));
+			echo "<pre>"; print_r($historyData);
+			$t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($historyData));
 			$s = iterator_to_array($t, false);
+			//echo "<pre>"; print_r($s);
+
 			// $a = $this->adx($script);
 			// $adx = trader_adx($a[0], $a[1], $a[2]);
 			// echo "<pre>"; print_r($adx);
@@ -207,8 +213,9 @@ class KiteController extends \BaseController {
 			$s1 = trader_sma($s, $sma1);
 			$s2 = trader_sma($s, $sma2);
 			$a = $this->adx($script, $ldate);
-			// echo "<pre>"; print_r($r); print_r($s1); print_r($s2);
-			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $insert_on));
+			//  print_r($r); print_r($s1); print_r($s2);
+			echo "<pre>"; print_r($s1);
+			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma1 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time));
 			return array($s1[($sma1 - 1)], $s2[($sma1 - 1)], $r[($sma1 - 1)]);
 		}
 		return NULL;
