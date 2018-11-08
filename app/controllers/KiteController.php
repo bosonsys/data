@@ -85,7 +85,7 @@ class KiteController extends \BaseController {
 				}
 			}
 			echo "Swing : $sLow -  $sLowT | $sHigh - $sHighT";
-			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time));
+			// DB::table('swingdata')->insert(array('script' => $script, 'trend' => $script, 'sprice' => $sprice, 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time));
 		}
 	}
 	public function callWatch($data, $trend, $time = NULL, $sma50 = NULL)
