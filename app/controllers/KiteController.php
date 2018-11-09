@@ -71,7 +71,7 @@ class KiteController extends \BaseController {
 						$eprice = $sd['sLow'];
 						$epriceT = $sd['sLowT'];
 					}
-					$len = $this->getPercentageChange($swing[0]->sprice, $eprice);
+					$len = $this->getPercentageChange($eprice, $swing[0]->sprice);
 					DB::table('swingdata')
 					->where('id', $swing[0]->id)
 					->update(array('status' => 1, 'eprice' => $eprice, 'etime' => $epriceT, 'sLenth' => $len));
@@ -101,7 +101,7 @@ class KiteController extends \BaseController {
 			$sw = $sw->where('insert_on', '<=',  $time);
 		}
 		$sw = $sw->orderBy('id', 'DESC')
-		->take(5)
+		->take(15)
 		->get();
 		echo '<pre>'; print_r($sw);
 
