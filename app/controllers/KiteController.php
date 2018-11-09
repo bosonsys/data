@@ -246,7 +246,7 @@ class KiteController extends \BaseController {
 				$r = trader_rsi($s, $rsi);
 				$s1 = trader_sma($s, $sma1);
 				$s2 = trader_sma($s, $sma2);
-				$a = $this->adx($script, $ldate);
+				$a = $this->adx($script, $ldate, $time);
 			//  print_r($r); print_r($s1); print_r($s2);
 			// echo "<pre> SMA"; print_r($s2);
 			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time, 'indicator4' => $a[0], 'indicator5' => $a[1]));
@@ -330,21 +330,23 @@ class KiteController extends \BaseController {
 		return 'Range';
 	}
 
-	public function adx($script, $ldate)
+	public function adx($script, $ldate, $time)
 	{
 		$range = 14;
 		$d = null;
 		$adx = DB::table('kite_watch')
 			->select('mHigh', 'mLow', 'lastPrice', 'insert_on')
 			->where('tradingsymbol','=', $script)
-			->where('insert_on', '>',  $ldate.' 09:14:00')
+			->where('insert_on', '>',  $ldate.' 09:14:00');
 			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
-			->orderBy('id', 'DESC')
-		    ->take($range*2)
-			->get();
+		if ($time) {
+			$adx = $adx->where('insert_on', '<=',  $time);
+		}
+		$adx = $adx->orderBy('id', 'DESC')->take($range*2)->get();
 			
-		echo "<pre>$script"; 
+		// echo "<pre>$script"; 
 		// print_r($adx);
+		// exit;
 			$high = array();
 			$low = array();
 			$ltp = array();
