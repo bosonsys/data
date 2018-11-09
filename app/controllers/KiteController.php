@@ -103,7 +103,7 @@ class KiteController extends \BaseController {
 		$sw = $sw->orderBy('id', 'DESC')
 		->take(5)
 		->get();
-		echo '<pre>'; print_r($sw);
+		//echo '<pre>'; print_r($sw);
 
 		$sHigh = $sLow = NULL;
 		$sHighT = $sLowT = NULL;
@@ -242,14 +242,14 @@ class KiteController extends \BaseController {
 			$s = iterator_to_array($t, false);
 			// echo "Array - 45";
 			// echo '<pre>'; print_r($s);
-		if(count($s) >= $sma1){
-			$r = trader_rsi($s, $rsi);
-			$s1 = trader_sma($s, $sma1);
-			$s2 = trader_sma($s, $sma2);
-			$a = $this->adx($script, $ldate);
+			if(count($s) >= $sma1){
+				$r = trader_rsi($s, $rsi);
+				$s1 = trader_sma($s, $sma1);
+				$s2 = trader_sma($s, $sma2);
+				$a = $this->adx($script, $ldate);
 			//  print_r($r); print_r($s1); print_r($s2);
 			// echo "<pre> SMA"; print_r($s2);
-			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time));
+			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time, 'indicator4' => $a[0], 'indicator5' => $a[1]));
 			return array($s1[($sma1 - 1)], $s2[($sma2 - 1)], $r[($sma1 - 1)]);
 		}
 		return NULL;
@@ -333,44 +333,40 @@ class KiteController extends \BaseController {
 	public function adx($script, $ldate)
 	{
 		$range = 14;
+		$d = null;
 		$adx = DB::table('kite_watch')
-			->select('mHigh','mLow','lastPrice', 'insert_on' )
+			->select('mHigh', 'mLow', 'lastPrice', 'insert_on')
 			->where('tradingsymbol','=', $script)
 			->where('insert_on', '>',  $ldate.' 09:14:00')
 			// ->where('insert_on', '>=', \DB::raw('DATE_SUB(NOW(), INTERVAL 1 MINUTE)'))
 			->orderBy('id', 'DESC')
-			->take(6)
+		    ->take($range*2)
 			->get();
-			//echo "<pre>"; print_r($adx);exit;
+			
+		echo "<pre>$script"; 
+		// print_r($adx);
 			$high = array();
 			$low = array();
 			$ltp = array();
 			foreach($adx as $b)
 			{
-				
 			    array_push($high, $b->mHigh);
 			    array_push($low, $b->mLow);
 				array_push($ltp, $b->lastPrice);
 			}
-			// echo "<pre>"; print_r($high); 
-			// echo "<pre>"; print_r($low); 
+			//echo "<pre>"; print_r($high); 
+			//print_r($low); 
 			//echo "<pre>"; print_r(array($high[0])); 
-		   //$a = trader_adx(array($high), array($low), array($ltp), $range);
-	       $a = trader_adx($high, $low, $ltp, $range);
-		//   echo "<pre>"; print_r($a);
-			return $a;
-			// echo "<pre>";
-			// $a = trader_adx($high, $low, $ltp, $range);
-			//print_r($a);
-
-			//print_r($ltp);
-			//print_r($low);
-			//echo (implode(" ",$high));
-			// $result = call_user_func_array("array_merge", );
-			// echo "<pre>"; print_r($result);
-			// print_r (explode(" ",$low));
-			// print_r (explode(" ",$lastprice));
-			//echo $i->mHigh."|".$i->mLow."<br>";
+		  // $d = trader_adx(array($high), array($low), array($ltp), $range);
+		//   echo count($ltp);
+		  if (count($ltp) >= $range) {
+		 	$d = trader_adx($high, $low, $ltp, $range);
+		 	$atr = trader_atr($high, $low, $ltp, $range);
+			//  echo "<pre>"; print_r(array($d[($range*2)-1], $atr[($range)]));
+			return array($d[($range*2)-1], $atr[($range)]); 
+			//return $atr[($range)];
+		  }
+		return null;
 	}
 	public function autoclose()
 	{

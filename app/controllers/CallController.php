@@ -640,11 +640,12 @@ public function summary($ldate=null)
 	if (!$ldate)
 		$ldate = date('Y-m-d');
 		//$lday = date( 'Y-m-d', strtotime( $ldate . ' -1 day' ) );
-		//echo "<pre>"; print_r($lday); exit;
+		//echo "<pre>"; print_r($ldate); exit;
 	$buys = DB::table('intra_call')
 		->select(DB::raw('count("call") as value, status, strategy, nse'))
 		->where('call',1)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->groupBy('nse')
 		->get();
 //echo "<pre>"; print_r($buys); exit;
@@ -652,6 +653,7 @@ public function summary($ldate=null)
 	    ->select(DB::raw('count("call") as total, status, strategy, nse'))
 		->where('call',2)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->groupBy('nse')
 		->get();
 	//echo "<pre>"; print_r($sells); exit();
@@ -659,29 +661,30 @@ public function summary($ldate=null)
 		->select('call','status','strategy','nse')
 		//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
 		->where('inserted_on', '>',$ldate.' 09:00:00')
+		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->orderBy('id')
 		//->groupBy('nse')
 		//->groupBy('call')
 		// ->take(5)
 		->get();
 		$list = DB::table('intra_call')->select('nse')->distinct('nse')
-			     ->get();
-		// echo "<pre>"; print_r($list); exit();
+		->get();
 		return View::make('report.summary')->with(array('buys'=>$buys, 'sells'=>$sells, 'calldetails'=>$calldetails, 'list'=>$list));
 } 
 static public function printD($script)
 {
 	$ldate = date('Y-m-d');
-		return $calldetails = DB::table('intra_call')
-		->select('call','status','strategy','nse')
-		//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
-		->where('nse',$script)
-		->where('inserted_on', '>',$ldate.' 09:00:00')
-		->orderBy('id')
-		//->groupBy('nse')
-		//->groupBy('call')
-		// ->take(5)
-		->get();
+	return $calldetails = DB::table('intra_call')
+	->select('call','status','strategy','nse')
+	//->select(DB::raw('count("call") as totalcall, status, strategy, nse'))
+	->where('nse',$script)
+	->where('inserted_on', '>',$ldate.' 09:00:00')
+	->where('inserted_on', '<',$ldate.' 15:20:00')
+	->orderBy('id')
+	//->groupBy('nse')
+	//->groupBy('call')
+	// ->take(5)
+	->get();
 }
 
 }
