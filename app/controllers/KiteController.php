@@ -31,7 +31,7 @@ class KiteController extends \BaseController {
 			$insert['mLow'] = $v['mLow'];
             // Insert Into Table
 			$id = DB::table('kite_watch')->insertGetId($insert);
-			$this->marketwatch($v, $id);
+			$c[] = $this->marketwatch($v, $id);
 			//echo "<pre>"; print_r($id);
 		}
 		//$indicators = $this->insertIndicators(); 
@@ -49,7 +49,7 @@ class KiteController extends \BaseController {
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
 				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
-				$this->callWatch($v, $trend, $time);
+				return $this->callWatch($v, $trend, $time);
 			}
         // echo "<pre>"; print_r($a);
 	}
@@ -133,7 +133,7 @@ class KiteController extends \BaseController {
 		}
 		else {
 			if($trend)
-				$c[] = $this->callEnter($data['tradingsymbol'], $data, $time);
+				return $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
 	}
 
@@ -221,7 +221,7 @@ class KiteController extends \BaseController {
 		$ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 42;
+	  $sma1 = 21;
 	  $sma2 = 9;
 	  $rsi = 28;
 	  $r = NULL;

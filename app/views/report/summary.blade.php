@@ -24,9 +24,10 @@
     foreach($list as $l)
     {
         $j++;
-       $bs = $bf = $ss = $sf = 0;
-        $data = CallController::printD($l->nse);
+        $bs = $bf = $ss = $sf = 0;
+       $data = CallController::printD($l->nse, $ldate);
         foreach ($data as $v) {
+           // echo "<pre>"; print_r($v);
             if ($v->call == 1) {
                 if ($v->status == 1) {
                     $bs++;
