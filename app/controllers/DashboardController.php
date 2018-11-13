@@ -56,13 +56,16 @@ class DashboardController extends \BaseController {
 	    ksort($cDate);
 		$negative = array_reverse(array_slice($cDate, -10, 10, true));
 	   
-		
+	
 		$arr1 = $this->getTopList($cDate, $pWeek);
+		//$arr1->sortByDesc('per');
+		echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
+		//echo "<pre>"; print_r($arr2); exit;
 	    //$arr3 = $this->getTopList($cDate, $p3Month);
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
-		->with('pos',$cDate)->with('neg',$cDate)->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth', $arr2['top'])->with('lMonth', $arr2['last']);
+		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last']);
 		//->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last'])
 		 //return json_encode($stock);
 	}
@@ -82,7 +85,7 @@ class DashboardController extends \BaseController {
 				$data_per[$key] = $v->per;
 				array_push($compList, $v);
 				// echo $comp. " = ".$v->cvalue." | $cv->SYMBOL = ".$v->c."<br>";
-				// 				 exit;
+				//  				 exit;
                  //print_r($compList); exit;
 				}
 			}
@@ -93,11 +96,13 @@ class DashboardController extends \BaseController {
 		
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $compList);
 		$last = array_slice($compList, 0, 5);
+		//$top = array_slice($compList, 0, 5, true);
 
-		//$last = array_reverse(array_slice($compList, -5, 5, true));
+		//$last = array_slice($compList, 0, 5, true);
 		//echo "<pre>"; print_r($top); print_r($last); exit;
 		return array('top' => $top , 'last' => $last );
 	}
+
 	function compData($date)
 	{
 		// $date = date('Y-m-d');

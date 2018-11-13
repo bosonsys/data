@@ -58,15 +58,15 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($top as $key => $p)
+    foreach ($top->sortBy('per') as $key => $t)
     { 
-        
+       if($t->per)
     ?>
         <tr>
-        <td>{{$p->n}}</td>
+        <td>{{$t->n}}</td>
         <td>
         <?php
-        echo round(($p->per), 2)
+        echo round(($t->per), 2)
         ?></td>
         </tr>
         <?php
@@ -81,15 +81,15 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($last as $key => $n)
+    foreach ($last as $key => $l)
     { 
         
     ?>
         <tr>
-        <td>{{$n->n}}</td>
+        <td>{{$l->n}}</td>
         <td>
         <?php
-        echo round(($n->per), 2)
+        echo round(($l->per), 2)
         ?>
         </td>
         </tr>
@@ -147,132 +147,7 @@
         </table>
         </td>
         </tr>
-        <tr>
-        <td style="text-align:center">Last 3 Months
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($pos as $key => $p)
-    { 
         
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        <td style="text-align:center">Last 3 Months
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($neg as $key => $n)
-    { 
-        
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        </tr>
-        <tr>
-        <td style="text-align:center">Last 6 Months
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($pos as $key => $p)
-    { 
-        
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        <td style="text-align:center">Last 6 Months
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($neg as $key => $n)
-    { 
-        
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        </tr>
-         <tr>
-        <td style="text-align:center">Last 1 Year
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($pos as $key => $p)
-    { 
-        
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        <td style="text-align:center">Last 1 Year
-        <table border="1" width="50%" align="center">
-        <tr>
-        <td>Name</td>
-        <td>%</td>
-        </tr>
-        <?php
-    foreach ($neg as $key => $n)
-    { 
-        
-    ?>
-        <tr>
-        <td></td>
-        <td></td>
-        </tr>
-        <?php
-    }
-    ?>
-        </table>
-        </td>
-        </tr>
     </table>
 
 @stop
