@@ -297,14 +297,15 @@ class KiteController extends \BaseController {
 	public function getPrimaryTrend($script, $cPrice, $time = NULL)
 	{
 		$sum = 0;
-		$sma3 = 80;
+		$sma3 = 46;
+		$sma4 = 80;
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
 			->select('lastPrice')
 			->where('tradingsymbol','=', $script)
 			->orderBy('id', 'DESC')
 			//->orderBy('insert_on')
-			->take($sma3);
+			->take($sma4);
 			if ($time) {
 				$last50 = $last50->where('insert_on', '<',  $time);
 			} else {
@@ -314,22 +315,32 @@ class KiteController extends \BaseController {
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
 			// print_r($l);
-			if (count($l) == $sma3) {
-			$sma50 = trader_sma($l, $sma3);
-			if($sma50[($sma3 - 1)] > $cPrice)
-			{
-				return 'Downtrend';
+			if (count($l) == $sma4) {
+				$smaVal1 = trader_sma($l, $sma3);
+				$smaVal2 = trader_sma($l, $sma4);
+				$chkSMA3 = $this->trendCheck($smaVal1, $cPrice, $sma3);
+				$chkSMA4 = $this->trendCheck($smaVal2, $cPrice, $sma4);
+				if($chkSMA3 == $chkSMA4)
+					return $chkSMA3;
+				else
+					return 'Range';
 			}
-			elseif($sma50[($sma3 - 1)] < $cPrice)
-			{
-				return 'Uptrend';
+			else {
+				return NULL;
 			}
-		} else {
-			return NULL;
-		}
-		return 'Range';
 	}
 
+	public function trendCheck($smaVal, $cPrice, $pos)
+	{
+		if($smaVal[($pos - 1)] > $cPrice)
+		{
+			return 'Downtrend';
+		}
+		elseif($smaVal[($pos - 1)] < $cPrice)
+		{
+			return 'Uptrend';
+		}
+	}
 	public function adx($script, $ldate, $time)
 	{
 		$range = 14;
