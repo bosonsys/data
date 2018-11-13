@@ -33,7 +33,7 @@ class BacktestController extends \KiteController {
 		// 	// exit;
 		// }
 			Session::flush();
-			$this->runTest('INFIBEAM', $ldate);
+			$this->runTest('DHFL', $ldate);
 
 	}
 	public function runTest($script, $ldate)
