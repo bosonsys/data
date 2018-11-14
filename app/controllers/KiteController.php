@@ -143,22 +143,28 @@ class KiteController extends \BaseController {
 		$sw = $sw->orderBy('id', 'DESC')
 		->take(5)
 		->get();
-		//echo max($s['mHigh']); 
 		echo "<pre>"; print_r($sw);
-		// echo max(array_column($s, 'mHigh'));
-		// $data = array_reduce($s, function ($a, $b) {
-		// 	return @$a['mHigh'] > $b['mHigh'] ? $a : $b ;
-		// });
-		// print_r($data);
+
 		$high = array();
 		$low = array();
 		foreach ($sw as $s) {
 			$high[] = $s->mHigh;
 			$low[] = $s->mLow;
-			//echo "<pre>"; print_r($high);
 		}
-		echo max($high);
-		echo min($low);
+		echo "<pre>";
+		echo max($high). '|' .min($low). '|' .$time;
+		//echo "jhlkjl"; 
+		if(max($high) < $s->mHigh && min($low) > $s->mLow)
+		{
+			//echo "asfsgsd"; exit;
+			//return null;
+		}
+		// else
+		// {
+        //   DB::table('intra_call')
+		// 		->where('id', $callData->id)
+		// 		->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
+		// }
 	}
 	public function callWatch($data, $trend, $time = NULL)
 	{
@@ -191,6 +197,7 @@ class KiteController extends \BaseController {
 		$r = null;
 		$sTrend = $this->getCTrend($script);
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
+		//$sCall = $this->swingCall($script, $ldate, $time);
 		echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
