@@ -82,31 +82,79 @@ function getCookie(cname) {
 }
 
 
+function pullWatchList() {
+    console.log("pullWatchList");
+    $.ajax({
+        url: "http://localhost/market/public/watch-list",
+        method: "GET",
+    }).done(function (result) {
+        let pulledList = JSON.parse(result);
+        console.log(pulledList);
+        let i = 0;
+        pulledList.forEach(function (e) {
+            console.log(e);
+            setTimeout(function () { addWatchList(e, 67048091, i); }, 30 * 1000);
+            i++;
+        });
+        // return JSON.parse(result);
+    });
+}
+
+function sampleAPI() {
+    console.log("Sample");
+    // console.log(s.Scrip, id);
+    $.ajax({
+        url: "https://api.kite.trade/user/margins",
+        method: "GET",
+        headers: { "x-csrftoken": token },
+    }).done(function (result) {
+        console.log(result);
+    });
+}
+
+function addWatchList(s, id, i) {
+    console.log("addWatchList");
+    console.log(s.Scrip, id);
+    $.ajax({
+        url: "https://kite.zerodha.com/api/marketwatch/" + id + "/items",
+        method: "POST",
+        data: {
+            segment: "NSE",
+            tradingsymbol: s.Scrip,
+            watch_id: id,
+            weight: i
+        },
+        headers: { "x-csrftoken": token },
+    }).done(function (result) {
+        console.log(result);
+    });
+}
 
 function placeOrder(s, q, t, p) {
     console.log("placeOrder");
     console.log(s, q, t, p);
     $.ajax({
-      url: "https://kite.zerodha.com/api/orders/regular",
-      method: "POST",
-      data: {   exchange: "NSE",
-                tradingsymbol: s,
-                transaction_type: t,
-                order_type: "MARKET",
-                quantity: Math.abs(q),
-                price: 0,
-                product: p,
-                validity: "DAY",
-                disclosed_quantity: 0,
-                trigger_price: 0,
-                squareoff: 0,
-                stoploss: 0,
-                trailing_stoploss: 0,
-                variety: "regular",
-                user_id: "DF7292"
-            },
-      headers: {"x-csrftoken": token},
-    }).done(function(result) {
+        url: "https://kite.zerodha.com/api/orders/regular",
+        method: "POST",
+        data: {
+            exchange: "NSE",
+            tradingsymbol: s,
+            transaction_type: t,
+            order_type: "MARKET",
+            quantity: Math.abs(q),
+            price: 0,
+            product: p,
+            validity: "DAY",
+            disclosed_quantity: 0,
+            trigger_price: 0,
+            squareoff: 0,
+            stoploss: 0,
+            trailing_stoploss: 0,
+            variety: "regular",
+            user_id: "DF7292"
+        },
+        headers: { "x-csrftoken": token },
+    }).done(function (result) {
         console.log(result);
         getPositions();
     });
