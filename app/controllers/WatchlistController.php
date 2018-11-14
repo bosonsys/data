@@ -14,14 +14,27 @@ class WatchlistController extends \BaseController {
         //     ->with('calls', $calls);
         //$collection = collect(DB::table('kite_watch')->get());
 	}
-	public function watchList($nse)
+	public function watchList($name = null)
 	{
-	$list = DB::table('kite_margin')->select('Scrip','Multiplier')
-				->join('cnx500', 'kite_margin.Scrip', '=', 'cnx500.symbol')
-				->where('kite_margin.Scrip',$nse)
+		if(!$name)
+			$name = 'ind_nifty500list';	
+		$data = fopen("C:\\xampp\\htdocs\\market\\public\\data\\".$name.".csv", "r"); 
+		//echo "<pre>"; print_r($data); exit;
+		$list = DB::table('kite_margin')
+				->select('Scrip','Multiplier')
 				->get();
-	//echo "<pre>"; print_r($list); exit;	
+				$arr = array();
+		while(($d = fgetcsv($data)) !== FALSE)
+		{
+			//  echo "<pre> ".$d[2];
+			 foreach ($list as $key => $value) 				// print_r($value->Scrip);
+             {
+				if ($d[2] == $value->Scrip ) {
+					array_push($arr, array($value->Scrip, $value->Multiplier));
+				}
+			 }
+		}
 	
-	return json_encode($list);
+	return json_encode($arr);
 	}
 }
