@@ -14,11 +14,11 @@ class WatchlistController extends \BaseController {
         //     ->with('calls', $calls);
         //$collection = collect(DB::table('kite_watch')->get());
 	}
-	public function watchList()
+	public function watchList($nse)
 	{
 	$list = DB::table('kite_margin')->select('Scrip','Multiplier')
 				->join('cnx500', 'kite_margin.Scrip', '=', 'cnx500.symbol')
-				//->where('kite_margin.Multiplier')
+				->where('kite_margin.Scrip',$nse)
 				->get();
 	//echo "<pre>"; print_r($list); exit;	
 	
