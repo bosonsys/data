@@ -150,15 +150,14 @@ class KiteController extends \BaseController {
 		foreach ($sw as $s) {
 			$high[] = $s->mHigh;
 			$low[] = $s->mLow;
+			if(max($high) < $s->mHigh && min($low) > $s->mLow)
+			{
+				echo "asfsgsd";
+				//return null;
+			}
+			echo max($high). '|' .$s->mHigh. '|' .min($low). '|' .$s->mLow. '|' .$time. '|' ;
 		}
-		echo "<pre>";
-		echo max($high). '|' .min($low). '|' .$time;
-		//echo "jhlkjl"; 
-		if(max($high) < $s->mHigh && min($low) > $s->mLow)
-		{
-			//echo "asfsgsd"; exit;
-			//return null;
-		}
+		
 		// else
 		// {
         //   DB::table('intra_call')
