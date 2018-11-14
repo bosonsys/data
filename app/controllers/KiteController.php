@@ -56,11 +56,13 @@ class KiteController extends \BaseController {
 
 	public function watchSwing($script, $trend, $ldate = null, $time=null)
 	{
+		$g = $this->swingCall($script, $ldate, $time);
 		if($trend){
-			// echo "Swing Entry - $script | $ldate --- ";
+			//echo "Swing Entry - $script | $ldate --- ";
 			if (!$ldate)
 				$ldate = date('Y-m-d');
 				$swing = DB::table('swingdata')->where('script','=', $script)->where('status','=', 0)->take(1)->get();
+			 //echo "<pre>"; print_r($swing); exit;
 			if (isset($swing[0])) {
 					$sd = $this->getSwing($script, $ldate, $time);
 					$sTrend = $this->getCTrend($script);
@@ -78,6 +80,7 @@ class KiteController extends \BaseController {
 				}
 		//	else {		
 				// echo "Swing : $sLow -  $sLowT | $sHigh - $sHighT";
+				
 				$sd = $this->getSwing($script, $ldate, $time);
 				$sTrend = $this->getCTrend($script);
 				if($sTrend == 'uptrend'){
@@ -124,6 +127,38 @@ class KiteController extends \BaseController {
 
 		// }
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
+	}
+	public function swingCall($script, $ldate, $time)
+	{
+	//   $s = DB::table('swingdata')->where('script','=', $script)->take(3)->get();
+	// 	echo "<pre>"; print_r($s); 
+      $sw = DB::table('kite_watch')
+		->select('id', 'mHigh', 'mLow', 'lastPrice', 'insert_on')
+		//->select(DB::raw('id, max(mHigh) as high, min(mLow) as low, insert_on' ))
+		->where('tradingsymbol','=', $script)
+		->where('insert_on', '>',  $ldate.' 09:14:00');
+		if ($time) {
+			$sw = $sw->where('insert_on', '<=',  $time);
+		}
+		$sw = $sw->orderBy('id', 'DESC')
+		->take(5)
+		->get();
+		//echo max($s['mHigh']); 
+		echo "<pre>"; print_r($sw);
+		// echo max(array_column($s, 'mHigh'));
+		// $data = array_reduce($s, function ($a, $b) {
+		// 	return @$a['mHigh'] > $b['mHigh'] ? $a : $b ;
+		// });
+		// print_r($data);
+		$high = array();
+		$low = array();
+		foreach ($sw as $s) {
+			$high[] = $s->mHigh;
+			$low[] = $s->mLow;
+			//echo "<pre>"; print_r($high);
+		}
+		echo max($high);
+		echo min($low);
 	}
 	public function callWatch($data, $trend, $time = NULL)
 	{
@@ -223,7 +258,7 @@ class KiteController extends \BaseController {
 	  $i = 1;
 	  $sma1 = 21;
 	  $sma2 = 9;
-	  $rsi = 28;
+	  $rsi = 14;
 	  $r = NULL;
 	  $smaAvg2 = $smaAvg1 = null;
 	  $historyData = DB::table('kite_watch')
