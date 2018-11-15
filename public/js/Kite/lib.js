@@ -85,7 +85,7 @@ function getCookie(cname) {
 function pullWatchList() {
     console.log("pullWatchList");
     $.ajax({
-        url: "http://localhost/market/public/watch-list",
+        url: "http://localhost/market/public/watch-list/ind_niftymidcap50list",
         method: "GET",
     }).done(function (result) {
         let pulledList = JSON.parse(result);
@@ -93,34 +93,22 @@ function pullWatchList() {
         let i = 0;
         pulledList.forEach(function (e) {
             console.log(e);
-            setTimeout(function () { addWatchList(e, 67048091, i); }, 30 * 1000);
+            setTimeout(function () { addWatchList(e, 67048091, i); }, (30 * 1000));
             i++;
         });
         // return JSON.parse(result);
     });
 }
 
-function sampleAPI() {
-    console.log("Sample");
-    // console.log(s.Scrip, id);
-    $.ajax({
-        url: "https://api.kite.trade/user/margins",
-        method: "GET",
-        headers: { "x-csrftoken": token },
-    }).done(function (result) {
-        console.log(result);
-    });
-}
-
 function addWatchList(s, id, i) {
     console.log("addWatchList");
-    console.log(s.Scrip, id);
+    console.log(s[0], i);
     $.ajax({
         url: "https://kite.zerodha.com/api/marketwatch/" + id + "/items",
         method: "POST",
         data: {
             segment: "NSE",
-            tradingsymbol: s.Scrip,
+            tradingsymbol: s[0],
             watch_id: id,
             weight: i
         },
