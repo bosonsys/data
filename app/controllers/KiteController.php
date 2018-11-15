@@ -56,7 +56,7 @@ class KiteController extends \BaseController {
 
 	public function watchSwing($script, $trend, $ldate = null, $time=null)
 	{
-		$g = $this->swingCall($script, $ldate, $time);
+		//$g = $this->swingCall($script, $ldate, $time);
 		if($trend){
 			//echo "Swing Entry - $script | $ldate --- ";
 			if (!$ldate)
@@ -344,13 +344,15 @@ class KiteController extends \BaseController {
 		$sum = 0;
 		$sma3 = 46;
 		$sma4 = 80;
+		$sma5 = 120;
+		$sma6 = 180;
 		$ldate = date('Y-m-d');
 		$last50 = DB::table('kite_watch')
 			->select('lastPrice')
 			->where('tradingsymbol','=', $script)
 			->orderBy('id', 'DESC')
 			//->orderBy('insert_on')
-			->take($sma4);
+			->take($sma6);
 			if ($time) {
 				$last50 = $last50->where('insert_on', '<',  $time);
 			} else {
@@ -359,14 +361,19 @@ class KiteController extends \BaseController {
 			$last50 = $last50->get();
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
-			// print_r($l);
-			if (count($l) == $sma4) {
+			//echo "<pre>"; print_r($l); exit;
+			if (count($l) == $sma6) {
 				$smaVal1 = trader_sma($l, $sma3);
 				$smaVal2 = trader_sma($l, $sma4);
+				$smaVal3 = trader_sma($l, $sma5);
+				$smaVal4 = trader_sma($l, $sma6); 
 				$chkSMA3 = $this->trendCheck($smaVal1, $cPrice, $sma3);
 				$chkSMA4 = $this->trendCheck($smaVal2, $cPrice, $sma4);
-				if($chkSMA3 == $chkSMA4)
-					return $chkSMA3;
+				$chkSMA5 = $this->trendCheck($smaVal3, $cPrice, $sma5);
+				$chkSMA6 = $this->trendCheck($smaVal4, $cPrice, $sma6);
+				//echo "<pre>"; print_r($chkSMA6); 
+				if($chkSMA3 == $chkSMA4 && $chkSMA3 == $chkSMA5 && $chkSMA3 == $chkSMA6)	
+				    return $chkSMA3;
 				else
 					return 'Range';
 			}
