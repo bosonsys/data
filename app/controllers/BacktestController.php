@@ -28,12 +28,12 @@ class BacktestController extends \KiteController {
 					->distinct()
 					->get();
 					//echo "<pre>"; print_r($compList);
-		// foreach ($compList as $key => $c) {
-		// 	$this->runTest($c->tradingsymbol, $ldate);
-		// 	// exit;
-		// }
-			Session::flush();
-			$this->runTest('PCJEWELLER', $ldate);
+		Session::flush();
+		foreach ($compList as $key => $c) {
+			$this->runTest($c->tradingsymbol, $ldate);
+			// exit;
+		}
+		// $this->runTest('PCJEWELLER', $ldate);
 
 	}
 	public function runTest($script, $ldate)
