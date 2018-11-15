@@ -56,10 +56,6 @@ class KiteController extends \BaseController {
 
 	public function watchSwing($script, $trend, $ldate = null, $time=null)
 	{
-<<<<<<< HEAD
-=======
-		//$g = $this->swingCall($script, $ldate, $time);
->>>>>>> 85f6ee35ee7adc18ef423549b46c9c20c099aba2
 		if($trend){
 			//echo "Swing Entry - $script | $ldate --- ";
 			if (!$ldate)
