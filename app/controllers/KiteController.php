@@ -124,29 +124,45 @@ class KiteController extends \BaseController {
 
 	public function priceAction($script, $cPrice, $ldate=null, $time=null)
 	{
-      $sw = DB::table('kite_watch')
-		->select('id', 'mHigh', 'mLow', 'lastPrice', 'insert_on')
-		->where('tradingsymbol','=', $script)
-		->where('insert_on', '>',  $ldate.' 09:14:00');
+		$swing = DB::table('swingdata')->where('script','=', $script)->where('status','=', 0);
 		if ($time) {
-			$sw = $sw->where('insert_on', '<=',  $time);
+			$swing = $swing->where('stime', '<=',  $time);
 		}
-		$sw = $sw->orderBy('id', 'DESC')
-		->take(10)
-		->get();
-		$high = array();
-		$low = array();
-		foreach ($sw as $s) {
-			$high[] = $s->mHigh;
-			$low[] = $s->mLow;
-		}
+		$swing = $swing->take(1)->get();
+    //   $sw = DB::table('kite_watch')
+	// 	->select('id', 'mHigh', 'mLow', 'lastPrice', 'insert_on')
+	// 	->where('tradingsymbol','=', $script)
+	// 	->where('insert_on', '>',  $ldate.' 09:14:00');
+	// 	if ($time) {
+	// 		$sw = $sw->where('insert_on', '<=',  $time);
+	// 	}
+	// 	$sw = $sw->orderBy('id', 'DESC')
+	// 	->take(10)
+	// 	->get();
+	// 	$high = array();
+	// 	$low = array();
+	// 	foreach ($sw as $s) {
+	// 		$high[] = $s->mHigh;
+	// 		$low[] = $s->mLow;
+	// 	}
+	// 	echo "<pre>";
+	// 	echo $cPrice. ' < ' .max($high). ' && ' .$cPrice. ' > ' .min($low). '|' .$time;
+		// if($cPrice > max($high))
+		// {
+		// 	return 'upTrend';
+		// }
+		// else if ($cPrice < min($low)) {
+		// 	return 'downTrend';
+		// }
 		echo "<pre>";
-		echo $cPrice. ' < ' .max($high). ' && ' .$cPrice. ' > ' .min($low). '|' .$time;
-		if($cPrice > max($high))
+		print_r($swing);
+		if($swing[0]->trend == 'uptrend')
 		{
+			// echo $swing[0]->trend;
 			return 'upTrend';
 		}
-		else if ($cPrice < min($low)) {
+		else if($swing[0]->trend == 'downtrend') {
+			// echo $swing[0]->trend;
 			return 'downTrend';
 		}
 		return NULL;
@@ -183,23 +199,27 @@ class KiteController extends \BaseController {
 		$r = null;
 		$sTrend = $this->getCTrend($script);
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
-		echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
+		// echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
 			{
 				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
-				echo '<pre> pa'; print_r($pA);
 				if ($pA == "upTrend")
+				{
+					// echo '<pre> pa - '; print_r($pA);
 					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+				}
 			}
 		}
 		else if($sTrend == "downtrend") {
 			 if ($primaryTrend == "Downtrend")
 			 {
 				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
-				echo '<pre> pa'; print_r($pA);
 				if ($pA == "downTrend")
+				{
+					// echo '<pre> pa - '; print_r($pA);
 					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
+				}
 			 }
 		}
 		return $r;
@@ -258,7 +278,7 @@ class KiteController extends \BaseController {
 		$ldate = date('Y-m-d');
 	  $sum = 0;
 	  $i = 1;
-	  $sma1 = 21;
+	  $sma1 = 32;
 	  $sma2 = 9;
 	  $rsi = 14;
 	  $r = NULL;
