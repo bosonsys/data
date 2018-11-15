@@ -128,7 +128,7 @@ class KiteController extends \BaseController {
 		// }
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
-	public function swingCall($script, $ldate, $time)
+	public function swingCall($script, $ldate=null, $time=null)
 	{
 	//   $s = DB::table('swingdata')->where('script','=', $script)->take(3)->get();
 	// 	echo "<pre>"; print_r($s); 
@@ -143,22 +143,26 @@ class KiteController extends \BaseController {
 		$sw = $sw->orderBy('id', 'DESC')
 		->take(5)
 		->get();
-		echo "<pre>"; print_r($sw);
+		//echo "<pre>"; print_r($sw);
 
 		$high = array();
 		$low = array();
 		foreach ($sw as $s) {
 			$high[] = $s->mHigh;
 			$low[] = $s->mLow;
-			if(max($high) < $s->mHigh && min($low) > $s->mLow)
-			{
-				echo "asfsgsd";
-				//return null;
-			}
-			echo max($high). '|' .$s->mHigh. '|' .min($low). '|' .$s->mLow. '|' .$time. '|' ;
 		}
-		
-		// else
+		echo "<pre>";
+		echo max($high). ' < ' .$s->mHigh. ' && ' .min($low). ' > ' .$s->mLow. '|' .$time;
+		if(max($high) < $s->mHigh && min($low) > $s->mLow)
+		{
+			echo "asfsgsd";
+		}
+		else
+		{
+			echo "error";
+			//  return 'error';
+		}
+			// else
 		// {
         //   DB::table('intra_call')
 		// 		->where('id', $callData->id)
@@ -191,12 +195,12 @@ class KiteController extends \BaseController {
 		DB::table('nifty')->insert($update);
 	}
 	
-	public function callEnter($script, $data, $i=null)
+	public function callEnter($script, $data, $i=null, $ldate=null, $time=null)
 	{
 		$r = null;
 		$sTrend = $this->getCTrend($script);
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
-		//$sCall = $this->swingCall($script, $ldate, $time);
+		//$g = $this->swingCall($script, $ldate, $time);
 		echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
