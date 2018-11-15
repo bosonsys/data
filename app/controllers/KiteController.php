@@ -56,7 +56,6 @@ class KiteController extends \BaseController {
 
 	public function watchSwing($script, $trend, $ldate = null, $time=null)
 	{
-		$g = $this->swingCall($script, $ldate, $time);
 		if($trend){
 			//echo "Swing Entry - $script | $ldate --- ";
 			if (!$ldate)
@@ -120,31 +119,21 @@ class KiteController extends \BaseController {
 				$sLowT = $row->insert_on;
 			}
 		}
-		// $sTrend = $this->getCTrend($script);
-		// if($sTrend == 'uptrend'){
-
-		// } elseif($sTrend == 'downtrend'){
-
-		// }
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
-	public function swingCall($script, $ldate=null, $time=null)
+
+	public function priceAction($script, $cPrice, $ldate=null, $time=null)
 	{
-	//   $s = DB::table('swingdata')->where('script','=', $script)->take(3)->get();
-	// 	echo "<pre>"; print_r($s); 
       $sw = DB::table('kite_watch')
 		->select('id', 'mHigh', 'mLow', 'lastPrice', 'insert_on')
-		//->select(DB::raw('id, max(mHigh) as high, min(mLow) as low, insert_on' ))
 		->where('tradingsymbol','=', $script)
 		->where('insert_on', '>',  $ldate.' 09:14:00');
 		if ($time) {
 			$sw = $sw->where('insert_on', '<=',  $time);
 		}
 		$sw = $sw->orderBy('id', 'DESC')
-		->take(5)
+		->take(10)
 		->get();
-		//echo "<pre>"; print_r($sw);
-
 		$high = array();
 		$low = array();
 		foreach ($sw as $s) {
@@ -152,23 +141,17 @@ class KiteController extends \BaseController {
 			$low[] = $s->mLow;
 		}
 		echo "<pre>";
-		echo $s->mHigh. ' < ' .max($high). ' && ' .$s->mLow. ' > ' .min($low). '|' .$time;
-		if($s->mHigh < max($high) && $s->mLow > min($low))
+		echo $cPrice. ' < ' .max($high). ' && ' .$cPrice. ' > ' .min($low). '|' .$time;
+		if($cPrice > max($high))
 		{
-			echo "asfsgsd";
+			return 'upTrend';
 		}
-		else
-		{
-			echo "error";
-			//  return 'error';
+		else if ($cPrice < min($low)) {
+			return 'downTrend';
 		}
-			// else
-		// {
-        //   DB::table('intra_call')
-		// 		->where('id', $callData->id)
-		// 		->update(array('status' => -1, 'cPrice' => $data['lastPrice'], 'cPer' => $data['change'], 'updated_on' => $u));
-		// }
+		return NULL;
 	}
+
 	public function callWatch($data, $trend, $time = NULL)
 	{
 		$calls = DB::table('intra_call')->where('nse','=', $data['tradingsymbol'])->where('status','=', 0)->take(1)->get();
@@ -200,15 +183,24 @@ class KiteController extends \BaseController {
 		$r = null;
 		$sTrend = $this->getCTrend($script);
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
-		//$g = $this->swingCall($script, $ldate, $time);
 		echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
-				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+			{
+				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
+				echo '<pre> pa'; print_r($pA);
+				if ($pA == "upTrend")
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+			}
 		}
 		else if($sTrend == "downtrend") {
 			 if ($primaryTrend == "Downtrend")
-				$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
+			 {
+				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
+				echo '<pre> pa'; print_r($pA);
+				if ($pA == "downTrend")
+					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
+			 }
 		}
 		return $r;
     }
