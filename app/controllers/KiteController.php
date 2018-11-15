@@ -152,8 +152,8 @@ class KiteController extends \BaseController {
 			$low[] = $s->mLow;
 		}
 		echo "<pre>";
-		echo max($high). ' < ' .$s->mHigh. ' && ' .min($low). ' > ' .$s->mLow. '|' .$time;
-		if(max($high) < $s->mHigh && min($low) > $s->mLow)
+		echo $s->mHigh. ' < ' .max($high). ' && ' .$s->mLow. ' > ' .min($low). '|' .$time;
+		if($s->mHigh < max($high) && $s->mLow > min($low))
 		{
 			echo "asfsgsd";
 		}
