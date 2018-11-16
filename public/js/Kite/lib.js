@@ -83,6 +83,21 @@ function getCookie(cname) {
 
 
 
+function getData() {
+    console.log("Data Reader");
+    // console.log(s, q, t, p);
+    // $.ajax({
+    //   url: "https://api.kite.trade/quote",
+    //   method: "GET",
+    //   data: {   i: "NSE:INFY"
+    //         },
+    //   headers: {"x-csrftoken": token},
+    // }).done(function(result) {
+    //     console.log(result);
+    //     // getPositions();
+    // });
+}
+
 function placeOrder(s, q, t, p) {
     console.log("placeOrder");
     console.log(s, q, t, p);

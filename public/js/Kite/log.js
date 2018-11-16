@@ -4,14 +4,13 @@ var liveData;
 var high = [];
 var low = [];
 let watchList = getWatchList(4);
-
-
 setInterval(function () {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
     liveData = parseSData(JSON.parse(sData), watchList);
 }, 1 * 1000);
 
 setInterval(function () {
+    getData();
     liveData.forEach(e => {
         e.mLow = low[e.tradingsymbol];
         e.mHigh = high[e.tradingsymbol];
