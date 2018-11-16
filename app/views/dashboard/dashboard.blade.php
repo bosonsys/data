@@ -58,7 +58,7 @@
         <td>%</td>
         </tr>
         <?php
-    foreach ($top->sortBy('per') as $key => $t)
+    foreach ($top as $key => $t)
     { 
        if($t->per)
     ?>

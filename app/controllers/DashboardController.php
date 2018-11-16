@@ -29,8 +29,8 @@ class DashboardController extends \BaseController {
 		$pWeek = date( 'Y-m-d', strtotime( $date . ' -1 week' ) );
 		$last5days = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pWeek)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
 		
-		//$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
-		$pMonth = date( 'Y-m-d', strtotime( $date . ' -1 month' ) );
+		$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
+		$pMonth = date( 'Y-m-d', strtotime( $yesterday . ' -1 month' ) );
         $lastmonth = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pMonth)->orderBy('TIMESTAMP', 'desc')->get();
 		
 		//$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
@@ -58,10 +58,9 @@ class DashboardController extends \BaseController {
 	   
 	
 		$arr1 = $this->getTopList($cDate, $pWeek);
-		//$arr1->sortByDesc('per');
-		echo "<pre>"; print_r($arr1); exit;
+		//echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
-		//echo "<pre>"; print_r($arr2); exit;
+		echo "<pre>"; print_r($arr2); exit;
 	    //$arr3 = $this->getTopList($cDate, $p3Month);
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
