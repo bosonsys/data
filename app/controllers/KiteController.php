@@ -82,10 +82,10 @@ class KiteController extends \BaseController {
 				
 				$sd = $this->getSwing($script, $ldate, $time);
 				$sTrend = $this->getCTrend($script);
-				if($sTrend == 'uptrend'){
+				if($sTrend == 'downtrend'){
 					$sprice = $sd['sHigh'];
 					$spriceT = $sd['sHighT'];
-				} elseif($sTrend == 'downtrend'){
+				} elseif($sTrend == 'uptrend'){
 					$sprice = $sd['sLow'];
 					$spriceT = $sd['sLowT'];
 				}
@@ -93,20 +93,10 @@ class KiteController extends \BaseController {
 			// }
 		}
 	}
-	public function getSwing($script, $ldate, $time)
+	public function getSwing($script, $ldate, $time, $limit = 15)
 	{
-		$sw = DB::table('kite_watch')
-		->select('mHigh','mLow','lastPrice', 'insert_on')
-		->where('tradingsymbol','=', $script)
-		->where('insert_on', '>',  $ldate.' 09:14:00');
-		if ($time) {
-			$sw = $sw->where('insert_on', '<=',  $time);
-		}
-		$sw = $sw->orderBy('id', 'DESC')
-		->take(15)
-		->get();
+		$sw = $this->getPastData($script, $ldate, $time, $limit);
 		//echo '<pre>'; print_r($sw);
-
 		$sHigh = $sLow = NULL;
 		$sHighT = $sLowT = NULL;
 		foreach ($sw as $key => $row) {
@@ -122,48 +112,59 @@ class KiteController extends \BaseController {
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
 
+	public function getPastData($script, $ldate, $time, $limit)
+	{
+		if (!$ldate)
+			$ldate = date('Y-m-d');
+		$pData = DB::table('kite_watch')
+					->where('tradingsymbol','=', $script)
+					->where('insert_on', '>',  $ldate.' 09:14:00');
+		if ($time) {
+			$pData = $pData->where('insert_on', '<=',  $time);
+		}
+		$pData = $pData->take($limit)->orderBy('id', 'DESC')->get();
+		return $pData;
+	}
+
+	public function momentumChk($script, $data, $ldate=null, $time=null)
+	{
+		$mi = 0;
+		$mData = $this->getPastData($script, $ldate, $time, 5);
+		foreach ($mData as $val) {
+			// echo '<pre>'; print_r($val);
+			$mi += $val->mHigh - $val->mLow;
+		}
+		$miA = $mi/5;
+		$cmi = $data['mHigh'] - $data['mLow'];
+		$sMI = 0;
+		if (Session::get($script)) {
+			$sdata = Session::get($script);
+			if (isset($sdata['MI'])) {
+				$sMI = $sdata['MI'];
+			}
+		}
+		if ($cmi > ($miA * 2)) {
+			$sMI++;
+		}
+		$sdata['MI'] = $sMI;
+		Session::put($script, $sdata);
+		if ($sMI >= 3) {
+			return true;
+		}
+		return false;
+	}
+
 	public function priceAction($script, $cPrice, $ldate=null, $time=null)
 	{
-		$swing = DB::table('swingdata')->where('script','=', $script)->where('status','=', 0);
-		if ($time) {
-			$swing = $swing->where('stime', '<=',  $time);
-		}
-		$swing = $swing->take(1)->get();
-    //   $sw = DB::table('kite_watch')
-	// 	->select('id', 'mHigh', 'mLow', 'lastPrice', 'insert_on')
-	// 	->where('tradingsymbol','=', $script)
-	// 	->where('insert_on', '>',  $ldate.' 09:14:00');
-	// 	if ($time) {
-	// 		$sw = $sw->where('insert_on', '<=',  $time);
-	// 	}
-	// 	$sw = $sw->orderBy('id', 'DESC')
-	// 	->take(10)
-	// 	->get();
-	// 	$high = array();
-	// 	$low = array();
-	// 	foreach ($sw as $s) {
-	// 		$high[] = $s->mHigh;
-	// 		$low[] = $s->mLow;
-	// 	}
-	// 	echo "<pre>";
-	// 	echo $cPrice. ' < ' .max($high). ' && ' .$cPrice. ' > ' .min($low). '|' .$time;
-		// if($cPrice > max($high))
-		// {
-		// 	return 'upTrend';
-		// }
-		// else if ($cPrice < min($low)) {
-		// 	return 'downTrend';
-		// }
-		echo "<pre>";
-		print_r($swing);
-		if($swing[0]->trend == 'uptrend')
-		{
-			// echo $swing[0]->trend;
-			return 'upTrend';
-		}
-		else if($swing[0]->trend == 'downtrend') {
-			// echo $swing[0]->trend;
-			return 'downTrend';
+		$sd = $this->getSwing($script, $ldate, $time, 20);
+		// $mData = $this->getPastData($script, $ldate, $time, 5);
+		echo '<pre>'; 
+		if ($sd['sHigh'] < $cPrice) {
+			echo $sd['sHigh']." < ".$cPrice." | ".$cPrice." > ".$sd['sLow'];
+			return "upTrend";
+		} else if ($cPrice < $sd['sLow']) {
+			// echo $sd['sHigh']." < ".$cPrice." | ".$cPrice." > ".$sd['sLow'];
+			return "downTrend";
 		}
 		return NULL;
 	}
@@ -175,7 +176,7 @@ class KiteController extends \BaseController {
 			$r = $this->closeCall($calls[0], $data, $time);
 		}
 		else {
-			if($trend)
+			// if($trend)
 				return $this->callEnter($data['tradingsymbol'], $data, $time);
 		}
 	}
@@ -203,22 +204,24 @@ class KiteController extends \BaseController {
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
 			{
-				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
-				if ($pA == "upTrend")
+				$MC = $this->momentumChk($script, $data, $ldate, $time);
+				if ($MC)
 				{
-					// echo '<pre> pa - '; print_r($pA);
-					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+					// $pA = $this->priceAction($script, $data['mHigh'], $ldate, $time);
+					// if ($pA == "upTrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
 				}
 			}
 		}
 		else if($sTrend == "downtrend") {
 			 if ($primaryTrend == "Downtrend")
 			 {
-				$pA = $this->priceAction($script, $data['lastPrice'], $ldate, $time);
-				if ($pA == "downTrend")
-				{
-					// echo '<pre> pa - '; print_r($pA);
-					$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
+				 $MC = $this->momentumChk($script, $data, $ldate, $time);
+				 if ($MC)
+				 {
+					// $pA = $this->priceAction($script, $data['mLow'], $ldate, $time);
+					// if ($pA == "downTrend")
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
 				}
 			 }
 		}
@@ -364,7 +367,7 @@ class KiteController extends \BaseController {
 			->where('tradingsymbol','=', $script)
 			->orderBy('id', 'DESC')
 			//->orderBy('insert_on')
-			->take($sma6);
+			->take($sma4);
 			if ($time) {
 				$last50 = $last50->where('insert_on', '<',  $time);
 			} else {
@@ -374,17 +377,17 @@ class KiteController extends \BaseController {
 			$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($last50));
 			$l = iterator_to_array($it, false);
 			//echo "<pre>"; print_r($l); exit;
-			if (count($l) == $sma6) {
+			if (count($l) == $sma4) {
 				$smaVal1 = trader_sma($l, $sma3);
 				$smaVal2 = trader_sma($l, $sma4);
-				$smaVal3 = trader_sma($l, $sma5);
-				$smaVal4 = trader_sma($l, $sma6); 
+				// $smaVal3 = trader_sma($l, $sma5);
+				// $smaVal4 = trader_sma($l, $sma6); 
 				$chkSMA3 = $this->trendCheck($smaVal1, $cPrice, $sma3);
 				$chkSMA4 = $this->trendCheck($smaVal2, $cPrice, $sma4);
-				$chkSMA5 = $this->trendCheck($smaVal3, $cPrice, $sma5);
-				$chkSMA6 = $this->trendCheck($smaVal4, $cPrice, $sma6);
+				// $chkSMA5 = $this->trendCheck($smaVal3, $cPrice, $sma5);
+				// $chkSMA6 = $this->trendCheck($smaVal4, $cPrice, $sma6);
 				//echo "<pre>"; print_r($chkSMA6); 
-				if($chkSMA3 == $chkSMA4 && $chkSMA3 == $chkSMA5 && $chkSMA3 == $chkSMA6)	
+				if($chkSMA3 == $chkSMA4 /* && $chkSMA3 == $chkSMA5  && $chkSMA3 == $chkSMA6 */)	
 				    return $chkSMA3;
 				else
 					return 'Range';

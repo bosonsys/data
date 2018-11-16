@@ -33,11 +33,13 @@ class BacktestController extends \KiteController {
 		// 	$this->runTest($c->tradingsymbol, $ldate);
 		// 	// exit;
 		// }
-		$this->runTest('JETAIRWAYS', $ldate);
+		$this->runTest('PCJEWELLER', $ldate);
 
 	}
 	public function runTest($script, $ldate)
 	{
+		DB::table('intra_call')->truncate();
+		DB::table('swingdata')->truncate();
 		$test = DB::table('kite_watch')
 			->where('tradingsymbol','=', $script)
 			->where('insert_on', '>',  $ldate.' 09:14:00')
