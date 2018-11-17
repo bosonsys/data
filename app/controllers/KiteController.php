@@ -44,12 +44,12 @@ class KiteController extends \BaseController {
 	public function marketwatch($v, $id, $ldate=null, $time=null)
 	{
 		//echo '<pre>'; print_r($id); 
-			$indData = $this->insertIndicators($v['tradingsymbol'], $id, $ldate, $time);
+			$indData = $this->insertIndicators($v, $id, $ldate, $time);
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
 				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
-				return $this->callWatch($v, $trend, $time);
+				return $this->callWatch($v, $trend, $ldate, $time);
 			}
         // echo "<pre>"; print_r($a);
 	}
@@ -116,6 +116,7 @@ class KiteController extends \BaseController {
 	{
 		if (!$ldate)
 			$ldate = date('Y-m-d');
+		// echo $ldate;
 		$pData = DB::table('kite_watch')
 					->where('tradingsymbol','=', $script)
 					->where('insert_on', '>',  $ldate.' 09:14:00');
@@ -130,6 +131,7 @@ class KiteController extends \BaseController {
 	{
 		$mi = 0;
 		$mData = $this->getPastData($script, $ldate, $time, 5);
+		// echo '<pre>'; print_r($mData);
 		foreach ($mData as $val) {
 			// echo '<pre>'; print_r($val);
 			$mi += $val->mHigh - $val->mLow;
@@ -137,18 +139,21 @@ class KiteController extends \BaseController {
 		$miA = $mi/5;
 		$cmi = $data['mHigh'] - $data['mLow'];
 		$sMI = 0;
-		if (Session::get($script)) {
-			$sdata = Session::get($script);
-			if (isset($sdata['MI'])) {
-				$sMI = $sdata['MI'];
+		$miA = ($miA * 1.5);
+		if ($cmi > $miA) {
+			if (Session::get($script)) {
+				$sdata = Session::get($script);
+				if (isset($sdata['MI'])) {
+					$sMI = $sdata['MI'];
+				}
 			}
-		}
-		if ($cmi > ($miA * 2)) {
 			$sMI++;
 		}
+		// echo "<pre>";
 		$sdata['MI'] = $sMI;
+		echo "MI - $mi - CMI - $cmi - $miA - sMI - $sMI <br>";
 		Session::put($script, $sdata);
-		if ($sMI >= 3) {
+		if ($sMI >= 2) {
 			return true;
 		}
 		return false;
@@ -169,7 +174,7 @@ class KiteController extends \BaseController {
 		return NULL;
 	}
 
-	public function callWatch($data, $trend, $time = NULL)
+	public function callWatch($data, $trend, $ldate=null,  $time = NULL)
 	{
 		$calls = DB::table('intra_call')->where('nse','=', $data['tradingsymbol'])->where('status','=', 0)->take(1)->get();
 		if (isset($calls[0])) {
@@ -177,7 +182,7 @@ class KiteController extends \BaseController {
 		}
 		else {
 			// if($trend)
-				return $this->callEnter($data['tradingsymbol'], $data, $time);
+				return $this->callEnter($data['tradingsymbol'], $data, $ldate, $time);
 		}
 	}
 
@@ -195,11 +200,11 @@ class KiteController extends \BaseController {
 		DB::table('nifty')->insert($update);
 	}
 	
-	public function callEnter($script, $data, $i=null, $ldate=null, $time=null)
+	public function callEnter($script, $data, $ldate=null, $time=null)
 	{
 		$r = null;
 		$sTrend = $this->getCTrend($script);
-		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
+		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $time);
 		// echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
@@ -209,7 +214,7 @@ class KiteController extends \BaseController {
 				{
 					// $pA = $this->priceAction($script, $data['mHigh'], $ldate, $time);
 					// if ($pA == "upTrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $i);
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'1',$sTrend, $time);
 				}
 			}
 		}
@@ -221,7 +226,7 @@ class KiteController extends \BaseController {
 				 {
 					// $pA = $this->priceAction($script, $data['mLow'], $ldate, $time);
 					// if ($pA == "downTrend")
-						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $i);
+						$r = $this->insIntraCall($script, $data['lastPrice'], $data['change'],'2',$sTrend, $time);
 				}
 			 }
 		}
@@ -231,7 +236,7 @@ class KiteController extends \BaseController {
 	{
 		$sdata = Session::get($script);
 		$sTrend = null;
-		if ($sdata['trend']) {
+		if (isset($sdata['trend'])) {
 			$sTrend = $sdata['trend'];
 		}
 		return $sTrend;
@@ -275,7 +280,7 @@ class KiteController extends \BaseController {
 		return $callData;
 	}
 
-	public function insertIndicators($script, $ref_id, $ldate = NULL, $time = NULL)
+	public function insertIndicators($data, $ref_id, $ldate = NULL, $time = NULL)
 	{
 	if (!$ldate)
 		$ldate = date('Y-m-d');
@@ -288,7 +293,7 @@ class KiteController extends \BaseController {
 	  $smaAvg2 = $smaAvg1 = null;
 	  $historyData = DB::table('kite_watch')
 			->select('lastPrice')
-			->where('tradingsymbol','=', $script)
+			->where('tradingsymbol','=', $data['tradingsymbol'])
 			->where('insert_on', '>',  $ldate.' 09:14:00');
 			if ($time) {
 				// echo "<br>$time";
@@ -306,10 +311,11 @@ class KiteController extends \BaseController {
 				$r = trader_rsi($s, $rsi);
 				$s1 = trader_sma($s, $sma1);
 				$s2 = trader_sma($s, $sma2);
-				$a = $this->adx($script, $ldate, $time);
+				// $a = $this->adx($data['tradingsymbol'], $ldate, $time);
+				// $MC = $this->momentumChk($data['tradingsymbol'], $data, $ldate, $time);
 			//  print_r($r); print_r($s1); print_r($s2);
 			// echo "<pre> SMA"; print_r($s2);
-			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $script, 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time, 'indicator4' => $a[0], 'indicator5' => $a[1]));
+			DB::table('indicators')->insert(array('ref_id' => $ref_id, 'tradingsymbol' => $data['tradingsymbol'], 'sma1' => $s1[($sma1 - 1)], 'sma2' => $s2[($sma2 - 1)], 'indicator3' => $r[($sma1 - 1)], 'insert_on' => $time/* , 'indicator4' => $a[0], 'indicator5' => $a[1]*/));
 			return array($s1[($sma1 - 1)], $s2[($sma2 - 1)], $r[($sma1 - 1)]);
 		}
 		return NULL;
@@ -319,7 +325,7 @@ class KiteController extends \BaseController {
 	{
 		$sTrend = null;
 		$sdata = Session::get($script);
-		if ($sdata['trend']) {
+		if (isset($sdata['trend'])) {
 			$sTrend = $sdata['trend'];
 		}
 		if ($sTrend == "uptrend" || !isset($sTrend)) {
