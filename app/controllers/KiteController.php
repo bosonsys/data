@@ -48,7 +48,7 @@ class KiteController extends \BaseController {
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
+				// $this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
 				return $this->callWatch($v, $trend, $ldate, $time);
 			}
         // echo "<pre>"; print_r($a);
@@ -148,12 +148,15 @@ class KiteController extends \BaseController {
 				}
 			}
 			$sMI++;
+			// $miA = ($miA * 1.5);
+			// if ($cmi > $miA)
+			// 	$sMI++;
 		}
 		// echo "<pre>";
 		$sdata['MI'] = $sMI;
 		echo "MI - $mi - CMI - $cmi - $miA - sMI - $sMI <br>";
 		Session::put($script, $sdata);
-		if ($sMI >= 2) {
+		if ($sMI >= 3) {
 			return true;
 		}
 		return false;
@@ -291,6 +294,7 @@ class KiteController extends \BaseController {
 	  $rsi = 14;
 	  $r = NULL;
 	  $smaAvg2 = $smaAvg1 = null;
+	//   $historyData = $this->getPastData($data['tradingsymbol'], $ldate, $time, $sma1);
 	  $historyData = DB::table('kite_watch')
 			->select('lastPrice')
 			->where('tradingsymbol','=', $data['tradingsymbol'])
