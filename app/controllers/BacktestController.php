@@ -29,11 +29,15 @@ class BacktestController extends \KiteController {
 					->get();
 					//echo "<pre>"; print_r($compList);
 		Session::flush();
-		// foreach ($compList as $key => $c) {
-		// 	$this->runTest($c->tradingsymbol, $ldate);
-		// 	// exit;
-		// }
-		$this->runTest('JETAIRWAYS', $ldate);
+		DB::table('intra_call')->truncate();
+		DB::table('swingdata')->truncate();
+		DB::table('indicators')->truncate();
+		
+		foreach ($compList as $key => $c) {
+			$this->runTest($c->tradingsymbol, $ldate);
+			// exit;
+		}
+		// $this->runTest('INFIBEAM', $ldate);
 
 	}
 	public function runTest($script, $ldate)
