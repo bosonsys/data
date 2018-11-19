@@ -4,12 +4,9 @@ var liveData;
 var high = [];
 var low = [];
 let watchList = getWatchList(4);
-<<<<<<< HEAD
-=======
 // pullWatchList();
 // sampleAPI();
 
->>>>>>> 23d38971b928c3a96e8625ef2f714246f4ad7480
 setInterval(function () {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');
     liveData = parseSData(JSON.parse(sData), watchList);
