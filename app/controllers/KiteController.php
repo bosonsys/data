@@ -48,7 +48,7 @@ class KiteController extends \BaseController {
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				// $this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
+				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
 				return $this->callWatch($v, $trend, $ldate, $time);
 			}
         // echo "<pre>"; print_r($a);
