@@ -207,13 +207,8 @@ class KiteController extends \BaseController {
 	{
 		$r = null;
 		$sTrend = $this->getCTrend($script);
-<<<<<<< HEAD
-		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $i);
-		echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
-=======
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $time);
 		// echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
->>>>>>> 348d3d895049998baebb36d9e812433d0ade1cd3
 		if ($sTrend == "uptrend") {
 			if ($primaryTrend == "Uptrend")
 			{
