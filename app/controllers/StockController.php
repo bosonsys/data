@@ -67,9 +67,12 @@ class StockController extends \BaseController {
 		$high = array_slice($lastval, 0, 10);
 		//$high = array_reverse(array_slice($lastval, -10, 10, true));
 
-		$lasttop = $this->getlastDay($lastday, 'desc');
+		$lasttop = $this->getlastDay($lastday, 'desc'); 
 		$lastlosers = $this->getlastDay($lastday, 'asc');
-		return View::make('stock.intra-suggest')->with(array('top'=>$high, 'last'=>$low))->with('lasttop',$lasttop)->with('lastlosers',$lastlosers);
+
+		$lastgain = $this->getlastVol($lastday, 'desc'); 
+		$lastlose = $this->getlastVol($lastday, 'asc');
+		return View::make('stock.intra-suggest')->with(array('top'=>$high, 'last'=>$low))->with('lasttop',$lasttop)->with('lastlosers',$lastlosers)->with('lastgain',$lastgain)->with('lastlose',$lastlose);
 	}
 	function getlastDay($lastday, $order)
 	{
@@ -79,6 +82,17 @@ class StockController extends \BaseController {
 				->where('csvdata.series','EQ')
 				->take(10)
 				->orderBy('csvdata.CLOSEP', $order)
+				->get();
+	}
+
+	function getlastVol($lastday, $order)
+	{
+		return DB::table('csvdata')->select('SYMBOL', 'TOTTRDQTY', 'TIMESTAMP')
+				->join('kite_margin', 'csvdata.SYMBOL', '=', 'kite_margin.Scrip')
+				->where('TIMESTAMP',$lastday)
+				->where('csvdata.series','EQ')
+				->take(10)
+				->orderBy('csvdata.TOTTRDQTY', $order)
 				->get();
 	}
 

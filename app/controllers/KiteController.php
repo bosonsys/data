@@ -8,6 +8,8 @@ class KiteController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
+	public $gData;
+
 	public function updateMarketwatch()
 	{
 		// print_r($id);
@@ -44,6 +46,9 @@ class KiteController extends \BaseController {
 	public function marketwatch($v, $id, $ldate=null, $time=null)
 	{
 		//echo '<pre>'; print_r($id); 
+		// getData($script, $ldate, $time, $limit)
+			$this->gData = $this->getData($v['tradingsymbol'], $ldate, $time, 80);
+
 			$indData = $this->insertIndicators($v, $id, $ldate, $time);
 			if($indData)
 			{
@@ -112,7 +117,12 @@ class KiteController extends \BaseController {
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
 
-	public function getPastData($script, $ldate, $time, $limit)
+	public function getPastData($limit)
+	{
+		return $this->gData;
+	}
+
+	public function getData($script, $ldate, $time, $limit)
 	{
 		if (!$ldate)
 			$ldate = date('Y-m-d');

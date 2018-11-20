@@ -3,14 +3,23 @@
     Intra-Suggest List View
 @stop
 @section('content')
-   <table class="table table-striped" border="1">
+
+<table class="table table-striped" border="1">
         <tr>
-            <th style="text-align:center">GAINERS</th>
-            <th style="text-align:center">LOSERS</th>
+            <th style="text-align:center">VOLATILITY</th>
+            <th style="text-align:center">HIGH LOW</th>
         </tr>
         <tr>
-        <td style="text-align:center">High Volatility
-        <table border="1" width="50%" align="center">
+        <td>
+        <table class="table table-striped" border="0">
+        <!-- <tr>
+            <th style="text-align:center">GAINERS</th>
+            <th style="text-align:center">LOSERS</th>
+        </tr> -->
+        <tr>
+        <!-- <column 1 nd 2> -->
+        <td style="text-align:center;background-color:#fff">High Volatility
+         <table border="1" width="75%" align="center">
         <tr>
         <td>SYMBOL</td>
         <td>PERCENTAGE</td>
@@ -29,8 +38,8 @@
         ?>
         </table>
         </td>
-        <td style="text-align:center">Low Volatility
-        <table border="1" width="50%" align="center">
+         <td style="text-align:center;background-color:#fff">Low Volatility
+         <table border="1" width="75%" align="center">
         <tr>
         <td>SYMBOL</td>
         <td>PERCENTAGE</td>
@@ -41,17 +50,27 @@
         ?>
         <tr>
         <td><?php echo "<a href='".url('stock/'.$p->SYMBOL)."' target='_blank'>$p->SYMBOL</a>" ?></td>
-        <td> <?php echo round(($p->per),2) ?></td>
+        <td>
+        <?php echo round(($p->per),2) ?> </td>
         </tr>
         <?php
         }
         ?>
         </table>
-        </td>
-        </tr>
+         </td>
+</tr>
+</table>
+</td>
+        <td>
+          <table class="table table-striped" border="0">
+        <!-- <tr>
+            <th style="text-align:center">GAINERS</th>
+            <th style="text-align:center">LOSERS</th>
+        </tr> -->
         <tr>
-        <td style="text-align:center">Last High
-        <table border="1" width="50%" align="center">
+                <!-- <column 3 nd 4> -->
+        <td style="text-align:center;background-color:#fff">Last High
+        <table border="1" width="75%" align="center">
         <tr>
         <td>SYMBOL</td>
         <td>PERCENTAGE</td>
@@ -69,8 +88,8 @@
         ?>
         </table>
         </td>
-        <td style="text-align:center">Last Low
-        <table border="1" width="50%" align="center">
+         <td style="text-align:center;background-color:#fff">Last Low
+         <table border="1" width="75%" align="center">
         <tr>
         <td>SYMBOL</td>
         <td>PERCENTAGE</td>
@@ -87,8 +106,10 @@
         }
         ?>
         </table>
+         </td>
+        </tr>
+        </table>
         </td>
         </tr>
-   </table>
-
+</table>
 @stop

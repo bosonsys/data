@@ -159,7 +159,7 @@
         <tr style="background-color:#e0e0e0">
             <td style="text-align:center">Overall Percentage
             <?php 
-            echo $total; 
+            echo round(($total), 2); 
             ?>
             </td>
         </tr>

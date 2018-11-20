@@ -20,7 +20,7 @@
         </div>
         <div>
             <ul class="nav navbar-nav">
-                <li class="{{ Request::is('*dashboard/lastday') ? 'active' : '' }}"><a href="{{url('/dashboard/lastday')}}">Dashboard</a></li>
+                <li class="{{ Request::is('*dashboard') ? 'active' : '' }}"><a href="{{url('/dashboard')}}">Dashboard</a></li>
                 <li class="{{ Request::is('/') ? 'active' : '' }}"><a href="{{url('/')}}">Import</a></li>
                 <li role="presentation" class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
