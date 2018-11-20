@@ -24,14 +24,12 @@ class DashboardController extends \BaseController {
     public function lastday()
 	{
 		$date = date( 'Y-m-d');
-		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->orderBy('TIMESTAMP', 'desc')->take(1)->get(array('TIMESTAMP'));
 		//$dates = $dates[0];
 		$pWeek = date( 'Y-m-d', strtotime( $date . ' -1 week' ) );
-		$last5days = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pWeek)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
 		
-		$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
-		$pMonth = date( 'Y-m-d', strtotime( $yesterday . ' -1 month' ) );
-        $lastmonth = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $pMonth)->orderBy('TIMESTAMP', 'desc')->get();
+		//$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
+		$pMonth = date( 'Y-m-d', strtotime( $date . ' -1 month' ) );
 		
 		//$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
 		//$last3month = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $p3Month)->orderBy('TIMESTAMP', 'desc')->get();
@@ -60,7 +58,7 @@ class DashboardController extends \BaseController {
 		$arr1 = $this->getTopList($cDate, $pWeek);
 		//echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
-		echo "<pre>"; print_r($arr2); exit;
+		//echo "<pre>"; print_r($arr2); exit;
 	    //$arr3 = $this->getTopList($cDate, $p3Month);
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
@@ -68,10 +66,12 @@ class DashboardController extends \BaseController {
 		//->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last'])
 		 //return json_encode($stock);
 	}
-	function getTopList($cDate, $date)
+	function getTopList($cDate, $d)
 	{
+		$date = $this->getdate($d);
 		$data = $this->compData($date);
 		$compList = array();
+		$data_per = array();
         foreach($cDate as $key => $v)
 		{ 
 			$comp = $v->n;
@@ -90,6 +90,8 @@ class DashboardController extends \BaseController {
 			}
 		}
 		//echo $data_per;
+		// echo "<pre>";
+		// print_r($data_per);
 		array_multisort($data_per, SORT_DESC, SORT_NUMERIC, $compList);
 		$top = array_slice($compList, 0, 5);
 		
@@ -99,6 +101,7 @@ class DashboardController extends \BaseController {
 
 		//$last = array_slice($compList, 0, 5, true);
 		//echo "<pre>"; print_r($top); print_r($last); exit;
+		unset($data_per, $compList);
 		return array('top' => $top , 'last' => $last );
 	}
 
@@ -113,6 +116,12 @@ class DashboardController extends \BaseController {
 						->orderby('TIMESTAMP','DESC')
 						->orderby('CLOSE','DESC')
 						->get();
+	}
+	public function getdate($d)
+	{
+		$date = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $d)->take(1)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
+		//echo "<pre>"; print_r($date); exit;
+		return $date[0]->TIMESTAMP;
 	}
 	function getPercentageChange($oldNumber, $newNumber){
 		$decreaseValue = $oldNumber - $newNumber;

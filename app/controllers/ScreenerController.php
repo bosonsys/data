@@ -17,51 +17,38 @@ class ScreenerController extends \BaseController {
     public function screener($name=null)
 	{
 		if(!$name)
-			$name = 'ind_nifty500list';	
+			$name = 'ind_nifty50list';	
 		$data = fopen("C:\\xampp\\htdocs\\market\\public\\data\\".$name.".csv", "r"); 
         //echo "<pre>"; print_r($data); exit;
+        
         $sma1 = 21;
         $sma2 = 9;
-        
-        $list = DB::table('csvdata')
-                 ->select('SYMBOL')
-                 ->orderBy('TIMESTAMP', 'desc')
-                 ->take(1)
-                 ->get();
-                 //echo "<pre>"; print_r($list); exit;
-
-        
-        $close = DB::table('csvdata')
-                 ->select('CLOSEP')
-                 ->where('SYMBOL',$list[0]->SYMBOL)
-                 ->orderBy('TIMESTAMP', 'desc')
-                 ->take($sma1)
-                ->get();
-                //echo "<pre>"; print_r($close); exit;
-                $arr = array();
-        $t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($close));
-        $s = iterator_to_array($t, false);
-        $s1 = trader_sma($s, $sma1);
-        $s2 = trader_sma($s, $sma2);
-                echo "<pre>"; print_r($s1); print_r($s2); 
-        $arr = array();
-         $a = array();
+         $arr = array();
+         $j = 0;
          while(($d = fgetcsv($data)) !== FALSE)
          {
-             //echo "<pre> ".$d[2];
-             foreach ($list as $key => $l) 
+             $j++;
+             if($j == 1)
              {
-                 foreach ($close as $key => $value) 				// print_r($value->Scrip);
-                 {  
-                if ($d[2] == $l->SYMBOL) 
+                continue; 
+             }
+            $close = DB::table('csvdata')
+                 ->select('CLOSEP')
+                 ->where('SYMBOL',$d[2])
+                 ->orderBy('TIMESTAMP', 'desc')
+                 ->take($sma1)
+                 ->get();
+                 $t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($close));
+                 $s = iterator_to_array($t, false);
+                if(count($s) >= $sma1)
                 {
-                     array_push($a, array($l->SYMBOL));
-                     array_push($arr, array($value->CLOSEP));
-				}
-			 }
+                    $s1 = trader_sma($s, $sma1);
+                    $s2 = trader_sma($s, $sma2);
+                    //return array($s1, $s2);
+                    array_push($arr, array('sma1' => $s1, 'sma2' => $s2));
+                }    
+           }
+           return json_encode($arr);  
         }
-        return json_encode($a);
-	return json_encode($arr);
+        //return array($l->SYMBOL, $value->CLOSEP, $s1, $s2);
     }
-}
-}
