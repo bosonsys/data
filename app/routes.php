@@ -74,3 +74,4 @@ Route::get('/backtest/{ldate?}', 'BacktestController@backtest');
 Route::get('/autoclose', 'KiteController@autoclose');
 Route::get('/watch-list/{name?}', 'WatchlistController@watchList');
 Route::get('/screener/{name?}', 'ScreenerController@screener');
+Route::get('/kite/company', 'KiteclientController@getCompanyList');
