@@ -45,7 +45,7 @@ class ScreenerController extends \BaseController {
                     $s1 = trader_sma($s, $sma1);
                     $s2 = trader_sma($s, $sma2);
                     //return array($s1, $s2);
-                    array_push($arr, array('sma1' => $s1, 'sma2' => $s2));
+                    array_push($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
                 }    
            }
            return json_encode($arr);  

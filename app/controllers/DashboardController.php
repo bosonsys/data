@@ -10,7 +10,7 @@ class DashboardController extends \BaseController {
 
 	public function index()
 	{
-	  return View::make('dashboard.lastday');
+	  return View::make('dashboard.dashboard');
 	}
     // public function stock($nse)
 	// {
@@ -21,7 +21,7 @@ class DashboardController extends \BaseController {
     //     //return json_encode($stock);
     // }
     
-    public function lastday()
+    public function dashboard()
 	{
 		$date = date( 'Y-m-d');
 		$dates = DB::table('csvdata')->distinct('TIMESTAMP')->orderBy('TIMESTAMP', 'desc')->take(1)->get(array('TIMESTAMP'));
@@ -30,10 +30,11 @@ class DashboardController extends \BaseController {
 		
 		//$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
 		$pMonth = date( 'Y-m-d', strtotime( $date . ' -1 month' ) );
+		$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
+		//$p6Month = date( 'Y-m-d', strtotime( $date . ' -6 month' ) );
+		// echo "<pre>"; print_r($p6Month); exit;
 		
-		//$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
 		//$last3month = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $p3Month)->orderBy('TIMESTAMP', 'desc')->get();
-		// echo "<pre>"; print_r($last3month); exit;
 		$it =  new RecursiveIteratorIterator(new RecursiveArrayIterator($dates));
 		$l = iterator_to_array($it, false);
 		$lastday = $l[0];
@@ -59,11 +60,11 @@ class DashboardController extends \BaseController {
 		//echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
 		//echo "<pre>"; print_r($arr2); exit;
-	    //$arr3 = $this->getTopList($cDate, $p3Month);
+	    $arr3 = $this->getTopList($cDate, $p3Month);
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
-		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last']);
-		//->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last'])
+		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last'])
+		->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last']);
 		 //return json_encode($stock);
 	}
 	function getTopList($cDate, $d)
@@ -119,9 +120,13 @@ class DashboardController extends \BaseController {
 	}
 	public function getdate($d)
 	{
+		// echo $d;
 		$date = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $d)->take(1)->orderBy('TIMESTAMP', 'desc')->get(array('TIMESTAMP'));
-		//echo "<pre>"; print_r($date); exit;
-		return $date[0]->TIMESTAMP;
+		// print_r($date);
+		if (isset($date[0]->TIMESTAMP)) {
+			return $date[0]->TIMESTAMP;
+		}
+		return false;
 	}
 	function getPercentageChange($oldNumber, $newNumber){
 		$decreaseValue = $oldNumber - $newNumber;
