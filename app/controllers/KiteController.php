@@ -47,7 +47,7 @@ class KiteController extends \BaseController {
 	{
 		//echo '<pre>'; print_r($id); 
 		// getData($script, $ldate, $time, $limit)
-			$this->gData = $this->getData($v['tradingsymbol'], $ldate, $time, 80);
+			// $this->gData = $this->getData($v['tradingsymbol'], $ldate, $time, 80);
 
 			$indData = $this->insertIndicators($v, $id, $ldate, $time);
 			if($indData)
@@ -117,9 +117,9 @@ class KiteController extends \BaseController {
 		return array('sHigh' => $sHigh,'sHighT' => $sHighT,'sLow' => $sLow,'sLowT' => $sLowT );
 	}
 
-	public function getPastData($limit)
+	public function getPastData($script, $ldate, $time, $limit)
 	{
-		return $this->gData;
+		return $this->getData($script, $ldate, $time, $limit);
 	}
 
 	public function getData($script, $ldate, $time, $limit)
