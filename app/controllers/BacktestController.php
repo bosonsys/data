@@ -37,7 +37,7 @@ class BacktestController extends \KiteController {
 			$this->runTest($c->tradingsymbol, $ldate);
 			// exit;
 		}
-		// $this->runTest('INFIBEAM', $ldate);
+		 //$this->runTest('JSL', $ldate);
 
 	}
 	public function runTest($script, $ldate)

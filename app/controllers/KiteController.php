@@ -216,6 +216,8 @@ class KiteController extends \BaseController {
 	public function callEnter($script, $data, $ldate=null, $time=null)
 	{
 		$r = null;
+		$scriptHighDiff = $this->getPercentageChange($data['highPrice'], $data['lowPrice']);
+	if($scriptHighDiff >= 2) {
 		$sTrend = $this->getCTrend($script);
 		$primaryTrend = $this->getPrimaryTrend($script, $data['lastPrice'], $time);
 		// echo "<br>Entry - $i | $primaryTrend | ". $sTrend;
@@ -243,8 +245,10 @@ class KiteController extends \BaseController {
 				}
 			 }
 		}
+	}
 		return $r;
-    }
+	}
+
 	public function getCTrend($script)
 	{
 		$sdata = Session::get($script);
@@ -476,9 +480,9 @@ class KiteController extends \BaseController {
 				->where('inserted_on', '>',  $ldate.' 09:20:00')
 				->where('status','=', 0)
 				->get();
-		
+		      
+				print_r($opencalls);
 				echo "<pre>"; 
-				// print_r($opencalls);
 				foreach($opencalls as $c)
 				{
 				    $comp = DB::table('kite_watch')
@@ -488,12 +492,12 @@ class KiteController extends \BaseController {
 						->orderBy('id','DESC')
 						->get();
 					$comp = $comp[0];
-					// print_r($c);
-					// print_r($comp);
+					print_r($c);
+					print_r($comp);
 
                 //   $call = $c->
-				$dif = $comp->lastPrice - $c->price;
-				//print_r($dif);
+				$dif = $c->price - $comp->lastPrice;
+				print_r($dif);
 				if($dif > 0)
 				{
 					DB::table('intra_call')
@@ -506,7 +510,7 @@ class KiteController extends \BaseController {
 				      ->where('id', $c->id)
 				      ->update(array('status' => -1, 'cPrice' => $comp->lastPrice, 'cPer' => $comp->change, 'updated_on' => $comp->insert_on));
 				}
-				//exit;
+				exit;
 			    }
 	}
 	function getPercentageChange($oldNumber, $newNumber){

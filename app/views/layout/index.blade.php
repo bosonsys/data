@@ -43,7 +43,7 @@
                     </ul>
                 </li>
                 <li class="{{ Request::is('*news') ? 'active' : '' }}"><a href="{{url('/news')}}">News</a></li>
-                <li class="{{ Request::is('*marketwatch') ? 'active' : '' }}"><a href="{{url('/marketwatch')}}">Market Watch</a></li>
+                <li class="{{ Request::is('*screener') ? 'active' : '' }}"><a href="{{url('/screener')}}">Screener</a></li>
                 <li class="{{ Request::is('*strategy/first15') ? 'active' : '' }}"><a href="{{url('/strategy/first15')}}">First 15M</a></li>
                 <li class="{{ Request::is('*strategy/uptrend') ? 'active' : '' }}"><a href="{{url('/strategy/uptrend')}}">Uptrend</a></li>
                 <li class="{{ Request::is('*strategy/upDown') ? 'active' : '' }}"><a href="{{url('/strategy/upDown')}}">upDown</a></li>

@@ -38,17 +38,35 @@ class ScreenerController extends \BaseController {
                  ->orderBy('TIMESTAMP', 'desc')
                  ->take($sma1)
                  ->get();
+                //echo "<pre>"; print_r($close); exit;
                  $t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($close));
                  $s = iterator_to_array($t, false);
                 if(count($s) >= $sma1)
                 {
                     $s1 = trader_sma($s, $sma1);
                     $s2 = trader_sma($s, $sma2);
+                   // echo "<pre>"; print_r($s2); exit;
                     //return array($s1, $s2);
                     array_push($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
-                }    
+                   // echo "<pre>"; print_r($arr);
+                } 
+                $positive = array_slice($cDate, 0, 10);
+                echo "<pre>"; print_r($positive); exit;
+                // foreach($close as $key => $p)
+                // {
+                //     // echo "<pre>"; print_r($p->CLOSEP); exit;
+                //     if($s1 > $p->CLOSEP)
+                //     {
+                //         echo "true";
+                //     }
+                //     elseif($s2 > $p->CLOSEP)
+                //     {
+                //         echo "false";
+                //     }
+                // } 
            }
-           return json_encode($arr);  
+          // return json_encode($arr);  
+          return View::make('screener.screener')->with('symbol', $close[0]->SYMBOL);
         }
         //return array($l->SYMBOL, $value->CLOSEP, $s1, $s2);
     }

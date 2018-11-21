@@ -57,13 +57,13 @@ class DashboardController extends \BaseController {
 	   
 	
 		$arr1 = $this->getTopList($cDate, $pWeek);
-		//echo "<pre>"; print_r($arr1); exit;
+		// echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
-		//echo "<pre>"; print_r($arr2); exit;
 	    $arr3 = $this->getTopList($cDate, $p3Month);
+		// echo "<pre>"; print_r($arr3); exit;
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
-		->with('top',$arr1['top'])->with('last',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last'])
+		->with('top5',$arr1['top'])->with('last5',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last'])
 		->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last']);
 		 //return json_encode($stock);
 	}
@@ -94,10 +94,10 @@ class DashboardController extends \BaseController {
 		// echo "<pre>";
 		// print_r($data_per);
 		array_multisort($data_per, SORT_DESC, SORT_NUMERIC, $compList);
-		$top = array_slice($compList, 0, 5);
+		$top = array_slice($compList, 0, 10);
 		
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $compList);
-		$last = array_slice($compList, 0, 5);
+		$last = array_slice($compList, 0, 10);
 		//$top = array_slice($compList, 0, 5, true);
 
 		//$last = array_slice($compList, 0, 5, true);
