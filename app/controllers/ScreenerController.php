@@ -9,6 +9,7 @@ class ScreenerController extends \BaseController {
 	 */
 	public function index()
 	{
+        return View::make('screener.screener');
         // $calls = DB::table('calls')->get();
         // return View::make('stock.calllist')
         //     ->with('calls', $calls);
@@ -17,12 +18,14 @@ class ScreenerController extends \BaseController {
     public function screener($name=null)
 	{
 		if(!$name)
-			$name = 'ind_nifty50list';	
+			$name = 'ind_nifty50list';
 		$data = fopen("C:\\xampp\\htdocs\\market\\public\\data\\".$name.".csv", "r"); 
         //echo "<pre>"; print_r($data); exit;
         
         $sma1 = 21;
-        $sma2 = 9;
+        $sma2 = 14;
+        $sma3 = 80;
+        $rsi = 14;
          $arr = array();
          $j = 0;
          while(($d = fgetcsv($data)) !== FALSE)
@@ -33,48 +36,55 @@ class ScreenerController extends \BaseController {
                 continue; 
              }
             $close = DB::table('csvdata')
-                 ->select('CLOSEP')
+                 ->select('CLOSE')
                  ->where('SYMBOL',$d[2])
                  ->orderBy('TIMESTAMP', 'desc')
-                 ->take($sma1)
+                 ->take($sma3)
                  ->get();
-                //echo "<pre>"; print_r($close); exit;
                  $t =  new RecursiveIteratorIterator(new RecursiveArrayIterator($close));
                  $s = iterator_to_array($t, false);
-                if(count($s) >= $sma1)
+                if(count($s) >= $sma3)
                 {
-                    $s1 = trader_sma($s, $sma1);
-                    $s2 = trader_sma($s, $sma2);
-                   // echo "<pre>"; print_r($s2); exit;
-                    //return array($s1, $s2);
-                    array_push($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
-                } 
-                //echo "<pre>"; print_r($arr);
-                // foreach($arr as $key => $a)
-                // {
-                //     $symbol = $a['symbol'];
-                //     $sma1 = $a['sma1'];
-                //     $sma2 = $a['sma2'];
-                //     //echo "<pre>"; print_r($sma2[20]);
+                    $r = trader_rsi($s, $rsi);
+                    $trend1 = $this->getSMA($s, $sma1);
+                    $trend2 = $this->getSMA($s, $sma2);
+                    $trend3 = $this->getSMA($s, $sma3);
+                  //echo "<pre>"; print_r($r);
+                    //echo "<pre>"; print_r($trend1); print_r($trend2);
+                    // if($s[($sma1-1)] <  $s2[($sma1-1)])
+                    //     echo "Up";
+                    // elseif($p['close'] > $p['sma2'])
+                    //     echo "Down"; 
 
-                // }
-                // foreach($close as $key => $p)
+                    array_push($arr, array('symbol' => $d[2], 'sma1' => $trend1, 'sma2' => $trend2, 'sma3' => $trend3, 'close' => $s[($sma1-1)], 'rsi' => $r[($sma1-1)]));
+                    //array_push($arr, array('symbol' => $d[2], 'sma1' => $s1[($sma1-1)], 'sma2' => $s2[($sma1-1)], 'close' => $s[($sma1-1)], 'rsi' => $r[($sma1-1)]));
+
+                } else {
+                    // echo $d[2]."<br>";
+                }
+               //echo "<pre>"; print_r($arr);
+                //echo $s1[20]. ">" .$s[20];
+                 //echo $s2[20]. ">" .$s[20]; 
+                // if($s1[20] > $s[20])
                 // {
-                //     // echo "<pre>"; print_r($p->CLOSEP); exit;
-                //     if($s1 > $p->CLOSEP)
-                //     {
-                //         echo "true";
-                //     }
-                //     elseif($s2 > $p->CLOSEP)
-                //     {
-                //         echo "false";
-                //     }
+                //     return true;
+                // }
+                // elseif($s2[20] > $s[20])
+                // {
+                //     return false;
                 // } 
            }
           // return json_encode($arr);  
-          //return View::make('screener.screener')->with($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
-          //return View::make('screener.screener')->with('symbol', $close[0]->SYMBOL);
        return View::make('screener.screener')->with('arr',$arr);
+        }
+
+        function getSMA($ltp, $sma)
+        {
+            $s = trader_sma($ltp, $sma);
+            if($ltp[($sma-1)] >  $s[($sma-1)])
+                        return 'Up';
+            elseif($ltp[($sma-1)] <  $s[($sma-1)])
+                        return 'Down'; 
         }
         //return array($l->SYMBOL, $value->CLOSEP, $s1, $s2);
     }
