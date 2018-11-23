@@ -93,7 +93,10 @@ class DashboardController extends \BaseController {
 		//echo $data_per;
 		// echo "<pre>";
 		// print_r($data_per);
+		// print_r($compList);
 		array_multisort($data_per, SORT_DESC, SORT_NUMERIC, $compList);
+		// print_r($compList);
+// exit;
 		$top = array_slice($compList, 0, 10);
 		
 		array_multisort($data_per, SORT_ASC, SORT_NUMERIC, $compList);

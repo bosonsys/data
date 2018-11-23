@@ -59,7 +59,7 @@ class KiteclientController extends \BaseController {
     {
         // FtYrjNkcigvxfBRuid5NX3pEVKqqnkoQ
         $kite = new KiteConnect("qw4l9hh030dgujks");
-        // echo $kite->getLoginURL(); exit;
+        echo $kite->getLoginURL(); exit;
         // try {
         //     $user = $kite->generateSession("WBOMkJMGUQb2da3B5dZY9eWFUNvz6V62", "l5ztksspq9jslkvp5gx9nq44qcdzvwdy");
         //     $kite->setAccessToken($user->access_token);
