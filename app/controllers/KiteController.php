@@ -53,7 +53,7 @@ class KiteController extends \BaseController {
 			if($indData)
 			{
 				echo $trend = $this->isTrendChange($indData[0], $indData[1], $v['tradingsymbol']);
-				$this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
+				// $this->watchSwing($v['tradingsymbol'], $trend, $ldate, $time);
 				return $this->callWatch($v, $trend, $ldate, $time);
 			}
         // echo "<pre>"; print_r($a);
@@ -150,6 +150,7 @@ class KiteController extends \BaseController {
 		$cmi = $data['mHigh'] - $data['mLow'];
 		$sMI = 0;
 		$miA = ($miA * 1.5);
+		if ($miA != 0)
 		if ($cmi > $miA) {
 			if (Session::get($script)) {
 				$sdata = Session::get($script);
@@ -195,7 +196,10 @@ class KiteController extends \BaseController {
 		}
 		else {
 			// if($trend)
+			if(date("H:i") <= '16:28'){
+				// echo "Time";
 				return $this->callEnter($data['tradingsymbol'], $data, $ldate, $time);
+			}
 		}
 	}
 
