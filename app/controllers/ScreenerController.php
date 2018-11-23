@@ -46,6 +46,7 @@ class ScreenerController extends \BaseController {
                 if(count($s) >= $sma3)
                 {
                     $r = trader_rsi($s, $rsi);
+                    // echo '<pre>'; print_r($r); exit();
                     $trend1 = $this->getSMA($s, $sma1);
                     $trend2 = $this->getSMA($s, $sma2);
                     $trend3 = $this->getSMA($s, $sma3);
@@ -56,7 +57,7 @@ class ScreenerController extends \BaseController {
                     // elseif($p['close'] > $p['sma2'])
                     //     echo "Down"; 
 
-                    array_push($arr, array('symbol' => $d[2], 'sma1' => $trend1, 'sma2' => $trend2, 'sma3' => $trend3, 'close' => $s[($sma1-1)], 'rsi' => $r[($sma1-1)]));
+                    array_push($arr, array('symbol' => $d[2], 'sma1' => $trend1, 'sma2' => $trend2, 'sma3' => $trend3, 'close' => $s[($sma3-1)], 'rsi' => $r[($sma3-1)]));
                     //array_push($arr, array('symbol' => $d[2], 'sma1' => $s1[($sma1-1)], 'sma2' => $s2[($sma1-1)], 'close' => $s[($sma1-1)], 'rsi' => $r[($sma1-1)]));
 
                 } else {
@@ -81,9 +82,9 @@ class ScreenerController extends \BaseController {
         function getSMA($ltp, $sma)
         {
             $s = trader_sma($ltp, $sma);
-            if($ltp[($sma-1)] >  $s[($sma-1)])
+            if($ltp[($sma-1)] <  $s[($sma-1)])
                         return 'Up';
-            elseif($ltp[($sma-1)] <  $s[($sma-1)])
+            elseif($ltp[($sma-1)] >  $s[($sma-1)])
                         return 'Down'; 
         }
         //return array($l->SYMBOL, $value->CLOSEP, $s1, $s2);
