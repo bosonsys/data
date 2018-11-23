@@ -8,7 +8,7 @@
 		<div class="col-md-3">
         <table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Lastday Gainers</td>
+        <td style="text-align:center" colspan="2">Last day Gainers</td>
         
         </tr>
             <?php
@@ -28,7 +28,7 @@
 		<div class="col-md-3">
         <table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Lastday Losers</td>
+        <td style="text-align:center" colspan="2">Last day Losers</td>
         <!-- <td></td> -->
         </tr>
         <?php
@@ -48,7 +48,7 @@
 		<div class="col-md-3">
         <table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last5Days Gainers</td>
+        <td style="text-align:center" colspan="2">Weekly Gainers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -71,7 +71,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last5Days Losers</td>
+        <td style="text-align:center" colspan="2">Weekly Losers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -97,7 +97,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last30Days Gainers</td>
+        <td style="text-align:center" colspan="2">Monthly Gainers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -120,7 +120,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last30Days Losers</td>
+        <td style="text-align:center" colspan="2">Monthly Losers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -143,7 +143,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last3Months Gainers</td>
+        <td style="text-align:center" colspan="2">3 Months Gainers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -166,7 +166,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last3Months Losers</td>
+        <td style="text-align:center" colspan="2">3 Months Losers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -193,7 +193,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last6Months Gainers</td>
+        <td style="text-align:center" colspan="2">6 Months Gainers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -216,7 +216,7 @@
 		<div class="col-md-3">
 		        <table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last6Months Losers</td>
+        <td style="text-align:center" colspan="2">6 Months Losers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -239,7 +239,7 @@
 		<div class="col-md-3">
 		<table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last1Year Gainers</td>
+        <td style="text-align:center" colspan="2">Yearly Gainers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
@@ -262,7 +262,7 @@
 		<div class="col-md-3">
 		  <table border="1" width="100%" align="center">
         <tr>
-        <td style="text-align:center" colspan="2">Last1Year Losers</td>
+        <td style="text-align:center" colspan="2">Yearly Losers</td>
         <!-- <td>%</td> -->
         </tr>
         <?php
