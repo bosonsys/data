@@ -510,7 +510,7 @@ class KiteController extends \BaseController {
 				      ->where('id', $c->id)
 				      ->update(array('status' => -1, 'cPrice' => $comp->lastPrice, 'cPer' => $comp->change, 'updated_on' => $comp->insert_on));
 				}
-				exit;
+				//exit;
 			    }
 	}
 	function getPercentageChange($oldNumber, $newNumber){

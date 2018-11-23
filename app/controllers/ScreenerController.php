@@ -48,10 +48,16 @@ class ScreenerController extends \BaseController {
                    // echo "<pre>"; print_r($s2); exit;
                     //return array($s1, $s2);
                     array_push($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
-                   // echo "<pre>"; print_r($arr);
                 } 
-                $positive = array_slice($cDate, 0, 10);
-                echo "<pre>"; print_r($positive); exit;
+                //echo "<pre>"; print_r($arr);
+                // foreach($arr as $key => $a)
+                // {
+                //     $symbol = $a['symbol'];
+                //     $sma1 = $a['sma1'];
+                //     $sma2 = $a['sma2'];
+                //     //echo "<pre>"; print_r($sma2[20]);
+
+                // }
                 // foreach($close as $key => $p)
                 // {
                 //     // echo "<pre>"; print_r($p->CLOSEP); exit;
@@ -66,7 +72,9 @@ class ScreenerController extends \BaseController {
                 // } 
            }
           // return json_encode($arr);  
-          return View::make('screener.screener')->with('symbol', $close[0]->SYMBOL);
+          //return View::make('screener.screener')->with($arr, array('symbol' => $d[2], 'sma1' => $s1, 'sma2' => $s2));
+          //return View::make('screener.screener')->with('symbol', $close[0]->SYMBOL);
+       return View::make('screener.screener')->with('arr',$arr);
         }
         //return array($l->SYMBOL, $value->CLOSEP, $s1, $s2);
     }
