@@ -52,6 +52,25 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
+
+for($j = 0; $j < count($top5); $j++)
+ {
+    for($i = 0; $i < count($top5)-1; $i++)
+	{
+ 
+        if($top5[$i]->per < $top5[$i+1]->per)
+		 {
+            $temp = $top5[$i+1]->per;
+            $top5[$i+1]->per=$top5[$i]->per;
+            $top5[$i]->per=$temp;
+
+            $temp = $top5[$i+1]->n;
+            $top5[$i+1]->n=$top5[$i]->n;
+            $top5[$i]->n=$temp;
+        }       
+    }
+}
+
     foreach ($top5 as $key => $t)
     { 
     //    if($t->per)
@@ -75,6 +94,25 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
+
+for($j = 0; $j < count($last5); $j++)
+ {
+    for($i = 0; $i < count($last5)-1; $i++)
+	{
+ 
+        if($last5[$i]->per < $last5[$i+1]->per)
+		 {
+            $temp = $last5[$i+1]->per;
+            $last5[$i+1]->per=$last5[$i]->per;
+            $last5[$i]->per=$temp;
+
+            $temp = $last5[$i+1]->n;
+            $last5[$i+1]->n=$last5[$i]->n;
+            $last5[$i]->n=$temp;
+        }       
+    }
+}
+
     foreach ($last5 as $key => $l)
     { 
         
@@ -197,7 +235,7 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
-    foreach ($t3Month as $key => $p)
+    foreach ($t6Month as $key => $p)
     { 
         
     ?>
@@ -220,7 +258,7 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
-    foreach ($l3Month as $key => $n)
+    foreach ($l6Month as $key => $n)
     { 
         
     ?>
@@ -243,7 +281,7 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
-    foreach ($t3Month as $key => $p)
+    foreach ($t1Year as $key => $p)
     { 
         
     ?>
@@ -266,7 +304,7 @@
         <!-- <td>%</td> -->
         </tr>
         <?php
-    foreach ($l3Month as $key => $n)
+    foreach ($l1Year as $key => $n)
     { 
         
     ?>
