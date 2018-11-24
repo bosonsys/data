@@ -31,7 +31,8 @@ class DashboardController extends \BaseController {
 		//$yesterday = date( 'Y-m-d', strtotime( $date . ' +2 day' ) );
 		$pMonth = date( 'Y-m-d', strtotime( $date . ' -1 month' ) );
 		$p3Month = date( 'Y-m-d', strtotime( $date . ' -3 month' ) );
-		//$p6Month = date( 'Y-m-d', strtotime( $date . ' -6 month' ) );
+		$p6Month = date( 'Y-m-d', strtotime( $date . ' -6 month' ) );
+		$p1Year = date( 'Y-m-d', strtotime( $date . ' -1 year' ) );
 		// echo "<pre>"; print_r($p6Month); exit;
 		
 		//$last3month = DB::table('csvdata')->distinct('TIMESTAMP')->where('TIMESTAMP', '<=', $p3Month)->orderBy('TIMESTAMP', 'desc')->get();
@@ -59,12 +60,15 @@ class DashboardController extends \BaseController {
 		$arr1 = $this->getTopList($cDate, $pWeek);
 		// echo "<pre>"; print_r($arr1); exit;
 		$arr2 = $this->getTopList($cDate, $pMonth);
-	    $arr3 = $this->getTopList($cDate, $p3Month);
+		$arr3 = $this->getTopList($cDate, $p3Month);
+		$arr4 = $this->getTopList($cDate, $p6Month);
+		$arr5 = $this->getTopList($cDate, $p1Year);
 		// echo "<pre>"; print_r($arr3); exit;
 		
 	return View::make('dashboard.dashboard')->with('lastday',$lastday)->with('positive',$positive)->with('negative',$negative)
 		->with('top5',$arr1['top'])->with('last5',$arr1['last'])->with('tMonth',$arr2['top'])->with('lMonth',$arr2['last'])
-		->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last']);
+		->with('t3Month', $arr3['top'])->with('l3Month', $arr3['last'])->with('t6Month', $arr4['top'])->with('l6Month', $arr4['last'])
+		->with('t1Year', $arr5['top'])->with('l1Year', $arr5['last']);
 		 //return json_encode($stock);
 	}
 	function getTopList($cDate, $d)
