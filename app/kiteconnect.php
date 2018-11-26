@@ -254,6 +254,7 @@ class KiteConnect {
 		]);
 
 		if($resp->access_token) {
+			echo '<pre>'; print_r($resp); exit();
 			$this->setAccessToken($resp->access_token);
 		}
 

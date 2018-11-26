@@ -4,12 +4,18 @@ require dirname(__FILE__)."/../kiteconnect.php";
 
 class KiteclientController extends \BaseController {
 
+	public $kite;
+
 	/**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
+
+	public function __construct() {
+        $this->kite = new KiteConnect("qw4l9hh030dgujks");
+	}
 	public function updateMarketwatch()
 	{
 		// print_r($id);
@@ -58,8 +64,7 @@ class KiteclientController extends \BaseController {
     public function getCompanyList()
     {
         // FtYrjNkcigvxfBRuid5NX3pEVKqqnkoQ
-        $kite = new KiteConnect("qw4l9hh030dgujks");
-        echo $kite->getLoginURL(); exit;
+        echo $this->kite->getLoginURL(); exit;
         // try {
         //     $user = $kite->generateSession("WBOMkJMGUQb2da3B5dZY9eWFUNvz6V62", "l5ztksspq9jslkvp5gx9nq44qcdzvwdy");
         //     $kite->setAccessToken($user->access_token);
@@ -67,7 +72,7 @@ class KiteclientController extends \BaseController {
         //     echo "Authentication failed: ".$e->getMessage();
         //     throw $e;
         // }
-        $insList = $kite->getInstruments('NSE');
+        $insList = $this->kite->getInstruments('NSE');
         foreach ($insList as $val) {
             if(/* $val->instrument_type == 'EQ' &&  */$val->expiry == '' && $val->segment == 'NSE')
             {
@@ -81,7 +86,11 @@ class KiteclientController extends \BaseController {
                 DB::table('kite_comp')->insert($d);
             }
         }
-    }
+	}
+	public function getKey(Type $var = null)
+	{
+		 $this->kite->generateSession('SJ5u0vW2RDYb57JKJ73mZlidwpjnD0y4', 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
+	}
 
 	function getPercentageChange($oldNumber, $newNumber){
 		$decreaseValue = $oldNumber - $newNumber;
