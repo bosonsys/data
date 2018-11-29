@@ -4,12 +4,16 @@ var liveData;
 var high = [];
 var low = [];
 let watchList = getWatchList(4);
+console.log(watchList);
+
 // pullWatchList();
 // sampleAPI();
 let arrList = Array();
 watchList.forEach( function(a) {
     // return a.instrument_token;
-    arrList.push(a.instrument_token);
+    // ts = a.tradingsymbol;
+    token = a.instrument_token;
+    arrList.push(token);
 });
 
 console.log(arrList);
@@ -21,7 +25,7 @@ setInterval(function () {
 }, 1 * 1000);
 
 setInterval(function () {
-    getData();
+    // getData();
     liveData.forEach(e => {
         e.mLow = low[e.tradingsymbol];
         e.mHigh = high[e.tradingsymbol];
