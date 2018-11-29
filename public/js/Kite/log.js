@@ -6,6 +6,14 @@ var low = [];
 let watchList = getWatchList(4);
 // pullWatchList();
 // sampleAPI();
+let arrList = Array();
+watchList.forEach( function(a) {
+    // return a.instrument_token;
+    arrList.push(a.instrument_token);
+});
+
+console.log(arrList);
+
 
 setInterval(function () {
     let sData = localStorage.getItem('__storejs_kite_ticker/ticks');

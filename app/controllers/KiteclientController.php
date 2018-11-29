@@ -87,9 +87,9 @@ class KiteclientController extends \BaseController {
             }
         }
 	}
-	public function getKey(Type $var = null)
+	public function getKey($var = null)
 	{
-		 $this->kite->generateSession('SJ5u0vW2RDYb57JKJ73mZlidwpjnD0y4', 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
+		 $this->kite->generateSession($var, 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
 	}
 
 	function getPercentageChange($oldNumber, $newNumber){
