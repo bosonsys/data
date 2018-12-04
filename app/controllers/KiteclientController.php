@@ -64,7 +64,8 @@ class KiteclientController extends \BaseController {
     public function getCompanyList()
     {
         // FtYrjNkcigvxfBRuid5NX3pEVKqqnkoQ
-        echo $this->kite->getLoginURL(); exit;
+		// echo $this->kite->getLoginURL(); exit;
+		return Redirect::to($this->kite->getLoginURL());
         // try {
         //     $user = $kite->generateSession("WBOMkJMGUQb2da3B5dZY9eWFUNvz6V62", "l5ztksspq9jslkvp5gx9nq44qcdzvwdy");
         //     $kite->setAccessToken($user->access_token);
@@ -89,7 +90,9 @@ class KiteclientController extends \BaseController {
 	}
 	public function getKey($var = null)
 	{
-		 $this->kite->generateSession($var, 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
+		// request_token
+		$var = Input::get('request_token');
+		$this->kite->generateSession($var, 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
 	}
 
 	function getPercentageChange($oldNumber, $newNumber){
