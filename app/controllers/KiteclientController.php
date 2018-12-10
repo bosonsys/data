@@ -91,8 +91,12 @@ class KiteclientController extends \BaseController {
 	public function getKey($var = null)
 	{
 		// request_token
-		$var = Input::get('request_token');
-		$this->kite->generateSession($var, 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
+		echo $var = Input::get('request_token');
+		$key = $this->kite->generateSession($var, 'l5ztksspq9jslkvp5gx9nq44qcdzvwdy');
+		// print_r($key);
+		// $set = Setting::find(1);
+		// $set->key = 'john@foo.com';
+		// $set->save();
 	}
 
 	function getPercentageChange($oldNumber, $newNumber){
