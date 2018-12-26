@@ -606,11 +606,12 @@ public function insertIntraTableDB()
 	{
 		//
 	}
+
 public function report($ldate=null)
 {
 	if (!$ldate)
 		$ldate = date('Y-m-d');
-	$buy = DB::table('intra_call')
+	$buy = DB::table('kite_call')
 		->select(DB::raw('count("call") as value, status, strategy'))
 		->where('call',1)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
@@ -618,7 +619,7 @@ public function report($ldate=null)
 		->groupBy('status')
 		->get();
 
-	$sell = DB::table('intra_call')
+	$sell = DB::table('kite_call')
 	    ->select(DB::raw('count("call") as total, status, strategy'))
 		->where('call',2)
 		->where('inserted_on', '>',$ldate.' 09:00:00')
@@ -626,15 +627,17 @@ public function report($ldate=null)
 		->groupBy('status')
 		->get();
 		//echo "<pre>"; print_r($sell); exit();
-		$calldetail = DB::table('intra_call')//->select('SYMBOL','HIGH','LOW')
+		$calldetail = DB::table('kite_call')//->select('SYMBOL','HIGH','LOW')
 		// ->select('id','nse','price','cPrice','per','cPer','call','status')
 		->where('inserted_on', '>',$ldate.' 09:00:00')
 		->where('inserted_on', '<',$ldate.' 15:20:00')
 		->orderBy('id')
 		// ->take(5)
 		->get();
+		// print_r($calldetail);
 	return View::make('report.report')->with(array('buy'=>$buy, 'sell'=>$sell, 'calldetail'=>$calldetail));
 }
+
 public function summary($ldate=null)
 {
 	if (!$ldate)
