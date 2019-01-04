@@ -99,6 +99,30 @@ class KiteclientController extends \BaseController {
 		// $set->save();
 	}
 
+	public function updown()
+	{
+		// $user = $this->kite->generateSession("gEtauIHimeMJjIzk74ycCsv5rBV9mflm", "your_api_secret");
+		// print_r($user);
+		$this->kite->setAccessToken('7v6zCvRLrKrKtGCp8OwVSd7voX4Ta3Sy');
+
+		$stock = DB::table('kite_margin')
+		// ->where('SERIES','EQ')
+		->get();
+		// print_r($stock);
+		$data = array();
+		echo "<pre>";
+		foreach ($stock as $row) {
+			// echo $row->Scrip;
+			array_push($data, 'NSE:'.$row->Scrip);
+		}
+		// print_r($data);
+	// Retrieve quote and market depth for list of instruments.
+		echo "Quote: \n";
+		$k = $this->kite->getQuote($data);
+		print_r($k);
+
+	}
+
 	function getPercentageChange($oldNumber, $newNumber){
 		$decreaseValue = $oldNumber - $newNumber;
 		return ($decreaseValue / $oldNumber) * 100;

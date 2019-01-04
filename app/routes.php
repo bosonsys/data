@@ -76,3 +76,4 @@ Route::get('/watch-list/{name?}', 'WatchlistController@watchList');
 Route::get('/screener/{name?}', 'ScreenerController@screener');
 Route::get('/kite/company', 'KiteclientController@getCompanyList');
 Route::get('/kite/access_token', 'KiteclientController@getkey');
+Route::get('/kite/updown', 'KiteclientController@updown');
